@@ -14,6 +14,11 @@ interface Vehicle {
   owner: string;
 }
 
+interface Part {
+  name: string;
+  cost: number;
+}
+
 interface ServiceHistoryProps {
   selectedVehicle?: Vehicle | null;
   vehicles: Vehicle[];
@@ -22,17 +27,20 @@ interface ServiceHistoryProps {
 const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
   const [currentVehicle, setCurrentVehicle] = useState(selectedVehicle?.id || "");
 
-  // Mock service data
+  // Mock service data with individual part costs
   const serviceRecords = [
     {
       id: "SRV001",
       vehicleId: "VIN001",
       date: "2024-05-15",
       type: "Regular Maintenance",
-      parts: ["Engine Oil", "Oil Filter", "Air Filter"],
-      cost: 120.00,
+      parts: [
+        { name: "Engine Oil", cost: 35.00 },
+        { name: "Oil Filter", cost: 15.00 },
+        { name: "Air Filter", cost: 25.00 }
+      ],
+      laborCost: 45.00,
       discount: 10.00,
-      finalCost: 110.00,
       technician: "Mike Wilson",
       notes: "Routine maintenance completed. Next service due in 6 months.",
       hasCoupon: true,
@@ -43,10 +51,12 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
       vehicleId: "VIN001",
       date: "2024-02-20",
       type: "Brake Service",
-      parts: ["Brake Pads", "Brake Fluid"],
-      cost: 250.00,
+      parts: [
+        { name: "Brake Pads", cost: 85.00 },
+        { name: "Brake Fluid", cost: 20.00 }
+      ],
+      laborCost: 145.00,
       discount: 0.00,
-      finalCost: 250.00,
       technician: "Sarah Johnson",
       notes: "Replaced worn brake pads. Brake system functioning properly.",
       hasCoupon: false,
@@ -57,10 +67,13 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
       vehicleId: "VIN002",
       date: "2024-04-20",
       type: "Chain Maintenance",
-      parts: ["Chain", "Chain Oil", "Sprockets"],
-      cost: 85.00,
+      parts: [
+        { name: "Chain", cost: 45.00 },
+        { name: "Chain Oil", cost: 12.00 },
+        { name: "Sprockets", cost: 28.00 }
+      ],
+      laborCost: 40.00,
       discount: 5.00,
-      finalCost: 80.00,
       technician: "Tom Brown",
       notes: "Chain and sprockets replaced. Lubrication service completed.",
       hasCoupon: true,
@@ -78,6 +91,18 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const calculateTotalPartsCost = (parts: Part[]) => {
+    return parts.reduce((total, part) => total + part.cost, 0);
+  };
+
+  const calculateTotalCost = (parts: Part[], laborCost: number) => {
+    return calculateTotalPartsCost(parts) + laborCost;
+  };
+
+  const calculateFinalCost = (parts: Part[], laborCost: number, discount: number) => {
+    return calculateTotalCost(parts, laborCost) - discount;
   };
 
   const selectedVehicleData = vehicles.find(v => v.id === currentVehicle);
@@ -130,6 +155,10 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
         ) : (
           filteredRecords.map((record) => {
             const vehicle = vehicles.find(v => v.id === record.vehicleId);
+            const totalPartsCost = calculateTotalPartsCost(record.parts);
+            const totalCost = calculateTotalCost(record.parts, record.laborCost);
+            const finalCost = calculateFinalCost(record.parts, record.laborCost, record.discount);
+            
             return (
               <Card key={record.id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
                 <CardHeader>
@@ -157,21 +186,38 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
 
                   <div>
                     <h4 className="font-medium text-gray-900 mb-2">Parts & Services</h4>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="space-y-2">
                       {record.parts.map((part, index) => (
-                        <Badge key={index} variant="secondary">
-                          {part}
-                        </Badge>
+                        <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                          <Badge variant="secondary">{part.name}</Badge>
+                          <span className="text-sm font-medium">${part.cost.toFixed(2)}</span>
+                        </div>
                       ))}
+                      {record.parts.length > 0 && (
+                        <div className="border-t pt-2">
+                          <div className="flex justify-between text-sm font-medium">
+                            <span>Total Parts Cost:</span>
+                            <span>${totalPartsCost.toFixed(2)}</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-1">
-                      <p className="text-sm text-gray-600">Service Cost</p>
+                      <p className="text-sm text-gray-600">Parts Cost</p>
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">${record.cost.toFixed(2)}</span>
+                        <span className="font-medium">${totalPartsCost.toFixed(2)}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <p className="text-sm text-gray-600">Labor Cost</p>
+                      <div className="flex items-center gap-1">
+                        <DollarSign className="h-4 w-4 text-gray-400" />
+                        <span className="font-medium">${record.laborCost.toFixed(2)}</span>
                       </div>
                     </div>
                     
@@ -189,7 +235,7 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                       <p className="text-sm text-gray-600">Final Amount</p>
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4 text-blue-600" />
-                        <span className="font-bold text-blue-600">${record.finalCost.toFixed(2)}</span>
+                        <span className="font-bold text-blue-600">${finalCost.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>

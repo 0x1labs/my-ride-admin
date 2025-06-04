@@ -19,6 +19,11 @@ interface Vehicle {
   owner: string;
 }
 
+interface Part {
+  name: string;
+  cost: number;
+}
+
 interface AddServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -28,9 +33,10 @@ interface AddServiceModalProps {
 const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) => {
   const [selectedVehicle, setSelectedVehicle] = useState("");
   const [serviceType, setServiceType] = useState("");
-  const [parts, setParts] = useState<string[]>([]);
-  const [newPart, setNewPart] = useState("");
-  const [cost, setCost] = useState("");
+  const [parts, setParts] = useState<Part[]>([]);
+  const [newPartName, setNewPartName] = useState("");
+  const [newPartCost, setNewPartCost] = useState("");
+  const [laborCost, setLaborCost] = useState("");
   const [discount, setDiscount] = useState("");
   const [technician, setTechnician] = useState("");
   const [notes, setNotes] = useState("");
@@ -39,21 +45,46 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
   const { toast } = useToast();
 
   const addPart = () => {
-    if (newPart.trim() && !parts.includes(newPart.trim())) {
-      setParts([...parts, newPart.trim()]);
-      setNewPart("");
+    if (newPartName.trim() && newPartCost && !isNaN(parseFloat(newPartCost))) {
+      const newPart = {
+        name: newPartName.trim(),
+        cost: parseFloat(newPartCost)
+      };
+      
+      // Check if part already exists
+      if (!parts.some(part => part.name === newPart.name)) {
+        setParts([...parts, newPart]);
+        setNewPartName("");
+        setNewPartCost("");
+      }
     }
   };
 
-  const removePart = (partToRemove: string) => {
-    setParts(parts.filter(part => part !== partToRemove));
+  const removePart = (partToRemove: Part) => {
+    setParts(parts.filter(part => part.name !== partToRemove.name));
+  };
+
+  const calculateTotalPartsCost = () => {
+    return parts.reduce((total, part) => total + part.cost, 0);
+  };
+
+  const calculateTotalCost = () => {
+    const partsCost = calculateTotalPartsCost();
+    const labor = parseFloat(laborCost) || 0;
+    return partsCost + labor;
+  };
+
+  const calculateFinalCost = () => {
+    const total = calculateTotalCost();
+    const discountAmount = parseFloat(discount) || 0;
+    return total - discountAmount;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     // Basic validation
-    if (!selectedVehicle || !serviceType || !technician || !cost) {
+    if (!selectedVehicle || !serviceType || !technician) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields.",
@@ -67,8 +98,11 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
       vehicleId: selectedVehicle,
       serviceType,
       parts,
-      cost: parseFloat(cost),
-      discount: discount ? parseFloat(discount) : 0,
+      laborCost: parseFloat(laborCost) || 0,
+      totalPartsCost: calculateTotalPartsCost(),
+      totalCost: calculateTotalCost(),
+      discount: parseFloat(discount) || 0,
+      finalCost: calculateFinalCost(),
       technician,
       notes,
       hasCoupon,
@@ -85,7 +119,7 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
     setSelectedVehicle("");
     setServiceType("");
     setParts([]);
-    setCost("");
+    setLaborCost("");
     setDiscount("");
     setTechnician("");
     setNotes("");
@@ -156,46 +190,65 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
             </Select>
           </div>
 
-          {/* Parts */}
+          {/* Parts with Individual Costs */}
           <div className="space-y-2">
             <Label>Parts & Components</Label>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Input
-                placeholder="Add part or component"
-                value={newPart}
-                onChange={(e) => setNewPart(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addPart())}
+                placeholder="Part name"
+                value={newPartName}
+                onChange={(e) => setNewPartName(e.target.value)}
+                className="col-span-2"
               />
-              <Button type="button" onClick={addPart} size="sm">
-                <Plus className="h-4 w-4" />
-              </Button>
+              <div className="flex gap-1">
+                <Input
+                  placeholder="Cost"
+                  type="number"
+                  step="0.01"
+                  value={newPartCost}
+                  onChange={(e) => setNewPartCost(e.target.value)}
+                />
+                <Button type="button" onClick={addPart} size="sm">
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             {parts.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="space-y-2 mt-3">
+                <h4 className="text-sm font-medium">Added Parts:</h4>
                 {parts.map((part, index) => (
-                  <Badge key={index} variant="secondary" className="flex items-center gap-1">
-                    {part}
+                  <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">{part.name}</Badge>
+                      <span className="text-sm font-medium">${part.cost.toFixed(2)}</span>
+                    </div>
                     <X 
-                      className="h-3 w-3 cursor-pointer hover:text-red-600" 
+                      className="h-4 w-4 cursor-pointer hover:text-red-600" 
                       onClick={() => removePart(part)}
                     />
-                  </Badge>
+                  </div>
                 ))}
+                <div className="border-t pt-2">
+                  <div className="flex justify-between text-sm font-medium">
+                    <span>Total Parts Cost:</span>
+                    <span>${calculateTotalPartsCost().toFixed(2)}</span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
 
-          {/* Cost and Discount */}
+          {/* Labor Cost and Discount */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="cost">Service Cost ($) *</Label>
+              <Label htmlFor="laborCost">Labor Cost ($)</Label>
               <Input
-                id="cost"
+                id="laborCost"
                 type="number"
                 step="0.01"
                 placeholder="0.00"
-                value={cost}
-                onChange={(e) => setCost(e.target.value)}
+                value={laborCost}
+                onChange={(e) => setLaborCost(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -217,7 +270,7 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
               <Checkbox 
                 id="hasCoupon" 
                 checked={hasCoupon}
-                onCheckedChange={setHasCoupon}
+                onCheckedChange={(checked) => setHasCoupon(checked === true)}
               />
               <Label htmlFor="hasCoupon">Customer has coupon/contract</Label>
             </div>
@@ -262,13 +315,25 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
           </div>
 
           {/* Total Summary */}
-          {cost && (
+          {(parts.length > 0 || laborCost) && (
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-medium text-gray-900 mb-2">Service Summary</h4>
               <div className="space-y-1 text-sm">
+                {parts.length > 0 && (
+                  <div className="flex justify-between">
+                    <span>Parts Cost:</span>
+                    <span>${calculateTotalPartsCost().toFixed(2)}</span>
+                  </div>
+                )}
+                {laborCost && (
+                  <div className="flex justify-between">
+                    <span>Labor Cost:</span>
+                    <span>${parseFloat(laborCost).toFixed(2)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
-                  <span>Service Cost:</span>
-                  <span>${parseFloat(cost || "0").toFixed(2)}</span>
+                  <span>Subtotal:</span>
+                  <span>${calculateTotalCost().toFixed(2)}</span>
                 </div>
                 {discount && (
                   <div className="flex justify-between text-green-600">
@@ -278,7 +343,7 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
                 )}
                 <div className="flex justify-between font-medium text-lg border-t pt-1">
                   <span>Total:</span>
-                  <span>${(parseFloat(cost || "0") - parseFloat(discount || "0")).toFixed(2)}</span>
+                  <span>${calculateFinalCost().toFixed(2)}</span>
                 </div>
               </div>
             </div>

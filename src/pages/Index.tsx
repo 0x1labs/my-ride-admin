@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,11 +17,11 @@ const Index = () => {
   const [isAddServiceOpen, setIsAddServiceOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
 
-  // Mock data for vehicles
+  // Mock data for vehicles - fixed type issues
   const vehicles = [
     {
       id: "VIN001",
-      type: "car",
+      type: "car" as const,
       make: "Honda",
       model: "Civic",
       year: 2020,
@@ -30,11 +29,11 @@ const Index = () => {
       phone: "+1-555-0123",
       lastService: "2024-05-15",
       nextService: "2024-11-15",
-      status: "active"
+      status: "active" as const
     },
     {
       id: "VIN002",
-      type: "bike",
+      type: "bike" as const,
       make: "Yamaha",
       model: "MT-07",
       year: 2021,
@@ -42,11 +41,11 @@ const Index = () => {
       phone: "+1-555-0124",
       lastService: "2024-04-20",
       nextService: "2024-10-20",
-      status: "overdue"
+      status: "overdue" as const
     },
     {
       id: "VIN003",
-      type: "car",
+      type: "car" as const,
       make: "Toyota",
       model: "Camry",
       year: 2019,
@@ -54,10 +53,11 @@ const Index = () => {
       phone: "+1-555-0125",
       lastService: "2024-06-01",
       nextService: "2024-12-01",
-      status: "active"
+      status: "active" as const
     }
   ];
 
+  // Filter vehicles based on search term
   const filteredVehicles = vehicles.filter(vehicle =>
     vehicle.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
     vehicle.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
