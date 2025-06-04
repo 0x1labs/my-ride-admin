@@ -1,21 +1,8 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Car, Bike, Calendar, Phone, Eye } from "lucide-react";
-
-interface Vehicle {
-  id: string;
-  type: "car" | "bike";
-  make: string;
-  model: string;
-  year: number;
-  owner: string;
-  phone: string;
-  lastService: string;
-  nextService: string;
-  status: "active" | "overdue" | "upcoming";
-}
+import { Vehicle } from "@/services/vehicleService";
 
 interface VehicleCardProps {
   vehicle: Vehicle;

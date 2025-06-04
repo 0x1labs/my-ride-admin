@@ -1,33 +1,13 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Phone, Calendar, Car, Bike, Clock, CheckCircle } from "lucide-react";
-
-interface Vehicle {
-  id: string;
-  type: "car" | "bike";
-  make: string;
-  model: string;
-  year: number;
-  owner: string;
-  phone: string;
-  lastService: string;
-  nextService: string;
-  status: "active" | "overdue" | "upcoming";
-}
+import { Vehicle } from "@/services/vehicleService";
 
 interface CustomerCallDashboardProps {
   vehicles: Vehicle[];
-}
-
-interface CallRecord {
-  vehicleId: string;
-  called: boolean;
-  callDate?: string;
-  notes?: string;
 }
 
 const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {

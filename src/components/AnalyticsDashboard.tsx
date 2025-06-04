@@ -1,12 +1,7 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { TrendingUp, DollarSign, Wrench, Calendar } from "lucide-react";
-
-interface Vehicle {
-  id: string;
-  type: "car" | "bike";
-}
+import { Vehicle } from "@/services/vehicleService";
 
 interface AnalyticsDashboardProps {
   vehicles: Vehicle[];

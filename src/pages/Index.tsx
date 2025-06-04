@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import DashboardStats from "@/components/DashboardStats";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import CustomerCallDashboard from "@/components/CustomerCallDashboard";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { getVehicles } from "@/services/vehicleService";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,44 +26,8 @@ const Index = () => {
   const [sortBy, setSortBy] = useState("default");
   const vehiclesPerPage = 12;
 
-  // Generate 200 mock vehicles
-  const generateVehicles = () => {
-    const carMakes = ["Honda", "Toyota", "Ford", "Chevrolet", "BMW", "Mercedes", "Audi", "Volkswagen", "Nissan", "Hyundai"];
-    const carModels = ["Civic", "Camry", "F-150", "Silverado", "3 Series", "C-Class", "A4", "Jetta", "Altima", "Elantra"];
-    const bikeMakes = ["Yamaha", "Honda", "Kawasaki", "Suzuki", "Ducati", "Harley", "BMW", "KTM", "Triumph", "Indian"];
-    const bikeModels = ["MT-07", "CBR600", "Ninja", "GSX-R", "Panigale", "Sportster", "R1250", "Duke", "Street Triple", "Scout"];
-    
-    const firstNames = ["John", "Jane", "Mike", "Sarah", "David", "Lisa", "Chris", "Emma", "Ryan", "Ashley"];
-    const lastNames = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez"];
-    const statuses = ["active", "overdue", "upcoming"] as const;
-
-    const vehicles = [];
-    
-    for (let i = 1; i <= 200; i++) {
-      const isCarType = Math.random() > 0.4; // 60% cars, 40% bikes
-      const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-      
-      const vehicle = {
-        id: `VIN${String(i).padStart(3, '0')}`,
-        type: isCarType ? "car" as const : "bike" as const,
-        make: isCarType ? carMakes[Math.floor(Math.random() * carMakes.length)] : bikeMakes[Math.floor(Math.random() * bikeMakes.length)],
-        model: isCarType ? carModels[Math.floor(Math.random() * carModels.length)] : bikeModels[Math.floor(Math.random() * bikeModels.length)],
-        year: 2015 + Math.floor(Math.random() * 10), // Years 2015-2024
-        owner: `${firstName} ${lastName}`,
-        phone: `+1-555-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
-        lastService: new Date(Date.now() - Math.floor(Math.random() * 365) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        nextService: new Date(Date.now() + Math.floor(Math.random() * 365) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        status: statuses[Math.floor(Math.random() * statuses.length)]
-      };
-      
-      vehicles.push(vehicle);
-    }
-    
-    return vehicles;
-  };
-
-  const vehicles = generateVehicles();
+  // Get vehicles from centralized data
+  const vehicles = getVehicles();
 
   // Get unique manufacturers for filter dropdown
   const uniqueManufacturers = Array.from(new Set(vehicles.map(v => v.make))).sort();

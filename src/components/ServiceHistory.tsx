@@ -1,22 +1,9 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Wrench, Calendar, DollarSign, FileText, Car, Bike } from "lucide-react";
-
-interface Vehicle {
-  id: string;
-  type: "car" | "bike";
-  make: string;
-  model: string;
-  owner: string;
-}
-
-interface Part {
-  name: string;
-  cost: number;
-}
+import { getServiceRecords, getServiceRecordsByVehicleId, Vehicle } from "@/services/vehicleService";
 
 interface ServiceHistoryProps {
   selectedVehicle?: Vehicle | null;
@@ -26,63 +13,12 @@ interface ServiceHistoryProps {
 const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
   const [currentVehicle, setCurrentVehicle] = useState(selectedVehicle?.id || "all");
 
-  // Mock service data with individual part costs
-  const serviceRecords = [
-    {
-      id: "SRV001",
-      vehicleId: "VIN001",
-      date: "2024-05-15",
-      type: "Regular Maintenance",
-      parts: [
-        { name: "Engine Oil", cost: 35.00 },
-        { name: "Oil Filter", cost: 15.00 },
-        { name: "Air Filter", cost: 25.00 }
-      ],
-      laborCost: 45.00,
-      discount: 10.00,
-      technician: "Mike Wilson",
-      notes: "Routine maintenance completed. Next service due in 6 months.",
-      hasCoupon: true,
-      couponType: "Annual Maintenance Contract"
-    },
-    {
-      id: "SRV002",
-      vehicleId: "VIN001",
-      date: "2024-02-20",
-      type: "Brake Service",
-      parts: [
-        { name: "Brake Pads", cost: 85.00 },
-        { name: "Brake Fluid", cost: 20.00 }
-      ],
-      laborCost: 145.00,
-      discount: 0.00,
-      technician: "Sarah Johnson",
-      notes: "Replaced worn brake pads. Brake system functioning properly.",
-      hasCoupon: false,
-      couponType: null
-    },
-    {
-      id: "SRV003",
-      vehicleId: "VIN002",
-      date: "2024-04-20",
-      type: "Chain Maintenance",
-      parts: [
-        { name: "Chain", cost: 45.00 },
-        { name: "Chain Oil", cost: 12.00 },
-        { name: "Sprockets", cost: 28.00 }
-      ],
-      laborCost: 40.00,
-      discount: 5.00,
-      technician: "Tom Brown",
-      notes: "Chain and sprockets replaced. Lubrication service completed.",
-      hasCoupon: true,
-      couponType: "Loyalty Discount"
-    }
-  ];
-
+  // Get service records from centralized data
+  const allServiceRecords = getServiceRecords();
+  
   const filteredRecords = currentVehicle !== "all"
-    ? serviceRecords.filter(record => record.vehicleId === currentVehicle)
-    : serviceRecords;
+    ? getServiceRecordsByVehicleId(currentVehicle)
+    : allServiceRecords;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
