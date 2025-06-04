@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +24,7 @@ interface ServiceHistoryProps {
 }
 
 const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
-  const [currentVehicle, setCurrentVehicle] = useState(selectedVehicle?.id || "");
+  const [currentVehicle, setCurrentVehicle] = useState(selectedVehicle?.id || "all");
 
   // Mock service data with individual part costs
   const serviceRecords = [
@@ -81,7 +80,7 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
     }
   ];
 
-  const filteredRecords = currentVehicle 
+  const filteredRecords = currentVehicle !== "all"
     ? serviceRecords.filter(record => record.vehicleId === currentVehicle)
     : serviceRecords;
 
@@ -116,7 +115,7 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
             <SelectValue placeholder="Select a vehicle" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Vehicles</SelectItem>
+            <SelectItem value="all">All Vehicles</SelectItem>
             {vehicles.map((vehicle) => (
               <SelectItem key={vehicle.id} value={vehicle.id}>
                 <div className="flex items-center gap-2">
@@ -177,7 +176,7 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {!currentVehicle && vehicle && (
+                  {currentVehicle === "all" && vehicle && (
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       {vehicle.type === "car" ? <Car className="h-4 w-4" /> : <Bike className="h-4 w-4" />}
                       <span>{vehicle.make} {vehicle.model} - {vehicle.owner}</span>
