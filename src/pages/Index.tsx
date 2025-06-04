@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, Car, Bike, Calendar, Wrench, DollarSign, TrendingUp } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Search, Plus, Car, Bike, Calendar, Wrench, DollarSign, TrendingUp, Phone } from "lucide-react";
 import ServiceHistory from "@/components/ServiceHistory";
 import AddServiceModal from "@/components/AddServiceModal";
 import VehicleCard from "@/components/VehicleCard";
 import DashboardStats from "@/components/DashboardStats";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
+import CustomerCallDashboard from "@/components/CustomerCallDashboard";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 const Index = () => {
@@ -19,6 +21,9 @@ const Index = () => {
   const [isAddServiceOpen, setIsAddServiceOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [manufacturerFilter, setManufacturerFilter] = useState("all");
+  const [serviceFilter, setServiceFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("default");
   const vehiclesPerPage = 12;
 
   // Generate 200 mock vehicles
@@ -60,13 +65,52 @@ const Index = () => {
 
   const vehicles = generateVehicles();
 
-  // Filter vehicles based on search term
-  const filteredVehicles = vehicles.filter(vehicle =>
-    vehicle.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    vehicle.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    vehicle.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    vehicle.model.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Get unique manufacturers for filter dropdown
+  const uniqueManufacturers = Array.from(new Set(vehicles.map(v => v.make))).sort();
+
+  // Enhanced filtering logic
+  const getFilteredAndSortedVehicles = () => {
+    let filtered = vehicles.filter(vehicle => {
+      const matchesSearch = vehicle.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        vehicle.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        vehicle.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        vehicle.model.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesManufacturer = manufacturerFilter === "all" || vehicle.make === manufacturerFilter;
+
+      let matchesService = true;
+      if (serviceFilter === "recent") {
+        const lastServiceDate = new Date(vehicle.lastService);
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        matchesService = lastServiceDate >= thirtyDaysAgo;
+      } else if (serviceFilter === "overdue") {
+        matchesService = vehicle.status === "overdue";
+      } else if (serviceFilter === "upcoming") {
+        matchesService = vehicle.status === "upcoming";
+      }
+
+      return matchesSearch && matchesManufacturer && matchesService;
+    });
+
+    // Sort vehicles
+    if (sortBy === "nextServiceAsc") {
+      filtered.sort((a, b) => new Date(a.nextService).getTime() - new Date(b.nextService).getTime());
+    } else if (sortBy === "overduePriority") {
+      filtered.sort((a, b) => {
+        if (a.status === "overdue" && b.status !== "overdue") return -1;
+        if (b.status === "overdue" && a.status !== "overdue") return 1;
+        if (a.status === "upcoming" && b.status !== "upcoming") return -1;
+        if (b.status === "upcoming" && a.status !== "upcoming") return 1;
+        return new Date(a.nextService).getTime() - new Date(b.nextService).getTime();
+      });
+    } else if (sortBy === "lastServiceDesc") {
+      filtered.sort((a, b) => new Date(b.lastService).getTime() - new Date(a.lastService).getTime());
+    }
+
+    return filtered;
+  };
+
+  const filteredVehicles = getFilteredAndSortedVehicles();
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredVehicles.length / vehiclesPerPage);
@@ -74,10 +118,14 @@ const Index = () => {
   const endIndex = startIndex + vehiclesPerPage;
   const paginatedVehicles = filteredVehicles.slice(startIndex, endIndex);
 
-  // Reset to first page when search changes
+  // Reset to first page when filters change
+  const handleFilterChange = () => {
+    setCurrentPage(1);
+  };
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1);
+    handleFilterChange();
   };
 
   return (
@@ -104,7 +152,7 @@ const Index = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-white shadow-sm">
+          <TabsList className="grid w-full grid-cols-5 bg-white shadow-sm">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               Dashboard
@@ -116,6 +164,10 @@ const Index = () => {
             <TabsTrigger value="services" className="flex items-center gap-2">
               <Wrench className="h-4 w-4" />
               Service History
+            </TabsTrigger>
+            <TabsTrigger value="calls" className="flex items-center gap-2">
+              <Phone className="h-4 w-4" />
+              Customer Calls
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
@@ -145,16 +197,56 @@ const Index = () => {
                     Showing {startIndex + 1}-{Math.min(endIndex, filteredVehicles.length)} of {filteredVehicles.length} vehicles
                   </p>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <div className="relative">
+              </div>
+
+              {/* Enhanced Filters */}
+              <div className="bg-white p-4 rounded-lg shadow-sm space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                  <div className="relative lg:col-span-2">
                     <Search className="h-4 w-4 absolute left-3 top-3 text-gray-400" />
                     <Input
                       placeholder="Search vehicles..."
                       value={searchTerm}
                       onChange={handleSearchChange}
-                      className="pl-10 w-80"
+                      className="pl-10"
                     />
                   </div>
+                  
+                  <Select value={manufacturerFilter} onValueChange={(value) => { setManufacturerFilter(value); handleFilterChange(); }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Manufacturer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Manufacturers</SelectItem>
+                      {uniqueManufacturers.map(manufacturer => (
+                        <SelectItem key={manufacturer} value={manufacturer}>{manufacturer}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={serviceFilter} onValueChange={(value) => { setServiceFilter(value); handleFilterChange(); }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Service Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Services</SelectItem>
+                      <SelectItem value="recent">Recently Serviced</SelectItem>
+                      <SelectItem value="overdue">Overdue</SelectItem>
+                      <SelectItem value="upcoming">Upcoming</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={sortBy} onValueChange={(value) => { setSortBy(value); handleFilterChange(); }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sort By" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Default</SelectItem>
+                      <SelectItem value="nextServiceAsc">Next Service Date</SelectItem>
+                      <SelectItem value="overduePriority">Priority (Overdue First)</SelectItem>
+                      <SelectItem value="lastServiceDesc">Last Service Date</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
@@ -222,6 +314,10 @@ const Index = () => {
 
           <TabsContent value="services">
             <ServiceHistory selectedVehicle={selectedVehicle} vehicles={vehicles} />
+          </TabsContent>
+
+          <TabsContent value="calls">
+            <CustomerCallDashboard vehicles={vehicles} />
           </TabsContent>
 
           <TabsContent value="analytics">

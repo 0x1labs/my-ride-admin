@@ -42,6 +42,7 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
   const [notes, setNotes] = useState("");
   const [hasCoupon, setHasCoupon] = useState(false);
   const [couponType, setCouponType] = useState("");
+  const [kilometers, setKilometers] = useState("");
   const { toast } = useToast();
 
   const addPart = () => {
@@ -107,6 +108,7 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
       notes,
       hasCoupon,
       couponType,
+      kilometers: parseFloat(kilometers) || 0,
       date: new Date().toISOString()
     });
 
@@ -125,6 +127,7 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
     setNotes("");
     setHasCoupon(false);
     setCouponType("");
+    setKilometers("");
     
     onClose();
   };
@@ -167,27 +170,40 @@ const AddServiceModal = ({ isOpen, onClose, vehicles }: AddServiceModalProps) =>
             )}
           </div>
 
-          {/* Service Type */}
-          <div className="space-y-2">
-            <Label htmlFor="serviceType">Service Type *</Label>
-            <Select value={serviceType} onValueChange={setServiceType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select service type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Regular Maintenance">Regular Maintenance</SelectItem>
-                <SelectItem value="Oil Change">Oil Change</SelectItem>
-                <SelectItem value="Brake Service">Brake Service</SelectItem>
-                <SelectItem value="Tire Service">Tire Service</SelectItem>
-                <SelectItem value="Engine Repair">Engine Repair</SelectItem>
-                <SelectItem value="Transmission Service">Transmission Service</SelectItem>
-                <SelectItem value="Chain Maintenance">Chain Maintenance (Bike)</SelectItem>
-                <SelectItem value="Battery Service">Battery Service</SelectItem>
-                <SelectItem value="Electrical Repair">Electrical Repair</SelectItem>
-                <SelectItem value="Body Work">Body Work</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
+          {/* Service Type and Kilometers */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="serviceType">Service Type *</Label>
+              <Select value={serviceType} onValueChange={setServiceType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select service type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Regular Maintenance">Regular Maintenance</SelectItem>
+                  <SelectItem value="Oil Change">Oil Change</SelectItem>
+                  <SelectItem value="Brake Service">Brake Service</SelectItem>
+                  <SelectItem value="Tire Service">Tire Service</SelectItem>
+                  <SelectItem value="Engine Repair">Engine Repair</SelectItem>
+                  <SelectItem value="Transmission Service">Transmission Service</SelectItem>
+                  <SelectItem value="Chain Maintenance">Chain Maintenance (Bike)</SelectItem>
+                  <SelectItem value="Battery Service">Battery Service</SelectItem>
+                  <SelectItem value="Electrical Repair">Electrical Repair</SelectItem>
+                  <SelectItem value="Body Work">Body Work</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="kilometers">Current Kilometers *</Label>
+              <Input
+                id="kilometers"
+                type="number"
+                placeholder="e.g., 85000"
+                value={kilometers}
+                onChange={(e) => setKilometers(e.target.value)}
+              />
+            </div>
           </div>
 
           {/* Parts with Individual Costs */}
