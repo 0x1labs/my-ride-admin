@@ -1,4 +1,3 @@
-
 import vehiclesData from '../data/vehicles.json';
 
 export interface Vehicle {
@@ -16,12 +15,17 @@ export interface Vehicle {
   currentKilometers: number;
 }
 
+export interface Part {
+  name: string;
+  cost: number;
+}
+
 export interface ServiceRecord {
   id: string;
   vehicleId: string;
   date: string;
   type: string;
-  parts: Array<{ name: string; cost: number }>;
+  parts: Array<Part>;
   laborCost: number;
   discount: number;
   technician: string;
@@ -29,6 +33,12 @@ export interface ServiceRecord {
   hasCoupon: boolean;
   couponType: string | null;
   kilometers: number;
+}
+
+export interface CallRecord {
+  vehicleId: string;
+  called: boolean;
+  callDate?: string;
 }
 
 // Sample service records

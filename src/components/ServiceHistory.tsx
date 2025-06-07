@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Wrench, Calendar, DollarSign, FileText, Car, Bike } from "lucide-react";
-import { getServiceRecords, getServiceRecordsByVehicleId, Vehicle } from "@/services/vehicleService";
+import { getServiceRecords, getServiceRecordsByVehicleId, Vehicle, Part } from "@/services/vehicleService";
 
 interface ServiceHistoryProps {
   selectedVehicle?: Vehicle | null;

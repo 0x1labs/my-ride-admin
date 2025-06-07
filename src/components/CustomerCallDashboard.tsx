@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Phone, Calendar, Car, Bike, Clock, CheckCircle } from "lucide-react";
-import { Vehicle } from "@/services/vehicleService";
+import { Vehicle, CallRecord } from "@/services/vehicleService";
 
 interface CustomerCallDashboardProps {
   vehicles: Vehicle[];
