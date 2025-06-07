@@ -1,143 +1,264 @@
 
-[
-  {
-    "id": "VIN001",
-    "type": "car",
-    "make": "Honda",
-    "model": "Civic",
-    "year": 2020,
-    "owner": "John Smith",
-    "phone": "+1-555-0123",
-    "lastService": "2024-05-15",
-    "nextService": "2024-11-15",
-    "status": "active",
-    "lastServiceKilometers": 45000,
-    "currentKilometers": 48500
-  },
-  {
-    "id": "VIN002",
-    "type": "bike",
-    "make": "Yamaha",
-    "model": "MT-07",
-    "year": 2021,
-    "owner": "Jane Johnson",
-    "phone": "+1-555-0124",
-    "lastService": "2024-03-20",
-    "nextService": "2024-06-10",
-    "status": "overdue",
-    "lastServiceKilometers": 12000,
-    "currentKilometers": 15500
-  },
-  {
-    "id": "VIN003",
-    "type": "car",
-    "make": "Toyota",
-    "model": "Camry",
-    "year": 2019,
-    "owner": "Mike Williams",
-    "phone": "+1-555-0125",
-    "lastService": "2024-04-10",
-    "nextService": "2024-06-15",
-    "status": "upcoming",
-    "lastServiceKilometers": 52000,
-    "currentKilometers": 54200
-  },
-  {
-    "id": "VIN004",
-    "type": "car",
-    "make": "Ford",
-    "model": "F-150",
-    "year": 2022,
-    "owner": "Sarah Brown",
-    "phone": "+1-555-0126",
-    "lastService": "2024-05-01",
-    "nextService": "2024-11-01",
-    "status": "active",
-    "lastServiceKilometers": 28000,
-    "currentKilometers": 31500
-  },
-  {
-    "id": "VIN005",
-    "type": "bike",
-    "make": "Honda",
-    "model": "CBR600",
-    "year": 2020,
-    "owner": "David Jones",
-    "phone": "+1-555-0127",
-    "lastService": "2024-02-15",
-    "nextService": "2024-06-08",
-    "status": "overdue",
-    "lastServiceKilometers": 8500,
-    "currentKilometers": 11200
-  },
-  {
-    "id": "VIN006",
-    "type": "car",
-    "make": "Chevrolet",
-    "model": "Silverado",
-    "year": 2021,
-    "owner": "Lisa Garcia",
-    "phone": "+1-555-0128",
-    "lastService": "2024-04-25",
-    "nextService": "2024-10-25",
-    "status": "active",
-    "lastServiceKilometers": 35000,
-    "currentKilometers": 38900
-  },
-  {
-    "id": "VIN007",
-    "type": "bike",
-    "make": "Kawasaki",
-    "model": "Ninja",
-    "year": 2019,
-    "owner": "Chris Miller",
-    "phone": "+1-555-0129",
-    "lastService": "2024-05-20",
-    "nextService": "2024-11-20",
-    "status": "active",
-    "lastServiceKilometers": 15000,
-    "currentKilometers": 17800
-  },
-  {
-    "id": "VIN008",
-    "type": "car",
-    "make": "BMW",
-    "model": "3 Series",
-    "year": 2023,
-    "owner": "Emma Davis",
-    "phone": "+1-555-0130",
-    "lastService": "2024-03-10",
-    "nextService": "2024-06-12",
-    "status": "upcoming",
-    "lastServiceKilometers": 18000,
-    "currentKilometers": 21500
-  },
-  {
-    "id": "VIN009",
-    "type": "car",
-    "make": "Mercedes",
-    "model": "C-Class",
-    "year": 2020,
-    "owner": "Ryan Rodriguez",
-    "phone": "+1-555-0131",
-    "lastService": "2024-01-20",
-    "nextService": "2024-06-05",
-    "status": "overdue",
-    "lastServiceKilometers": 42000,
-    "currentKilometers": 46800
-  },
-  {
-    "id": "VIN010",
-    "type": "bike",
-    "make": "Suzuki",
-    "model": "GSX-R",
-    "year": 2021,
-    "owner": "Ashley Martinez",
-    "phone": "+1-555-0132",
-    "lastService": "2024-04-15",
-    "nextService": "2024-10-15",
-    "status": "active",
-    "lastServiceKilometers": 9500,
-    "currentKilometers": 12100
+{
+  "vehicles": [
+    {
+      "id": "VIN001",
+      "type": "car",
+      "make": "Honda",
+      "model": "Civic",
+      "year": 2020,
+      "owner": "John Smith",
+      "phone": "+1-555-0123",
+      "lastService": "2024-05-15",
+      "nextService": "2024-11-15",
+      "status": "active",
+      "lastServiceKilometers": 45000,
+      "currentKilometers": 48500
+    },
+    {
+      "id": "VIN002",
+      "type": "bike",
+      "make": "Yamaha",
+      "model": "MT-07",
+      "year": 2021,
+      "owner": "Jane Johnson",
+      "phone": "+1-555-0124",
+      "lastService": "2024-03-20",
+      "nextService": "2024-06-10",
+      "status": "overdue",
+      "lastServiceKilometers": 12000,
+      "currentKilometers": 15500
+    },
+    {
+      "id": "VIN003",
+      "type": "car",
+      "make": "Toyota",
+      "model": "Camry",
+      "year": 2019,
+      "owner": "Mike Williams",
+      "phone": "+1-555-0125",
+      "lastService": "2024-04-10",
+      "nextService": "2024-06-15",
+      "status": "upcoming",
+      "lastServiceKilometers": 52000,
+      "currentKilometers": 54200
+    },
+    {
+      "id": "VIN004",
+      "type": "car",
+      "make": "Ford",
+      "model": "F-150",
+      "year": 2022,
+      "owner": "Sarah Brown",
+      "phone": "+1-555-0126",
+      "lastService": "2024-05-01",
+      "nextService": "2024-11-01",
+      "status": "active",
+      "lastServiceKilometers": 28000,
+      "currentKilometers": 31500
+    },
+    {
+      "id": "VIN005",
+      "type": "bike",
+      "make": "Honda",
+      "model": "CBR600",
+      "year": 2020,
+      "owner": "David Jones",
+      "phone": "+1-555-0127",
+      "lastService": "2024-02-15",
+      "nextService": "2024-06-08",
+      "status": "overdue",
+      "lastServiceKilometers": 8500,
+      "currentKilometers": 11200
+    },
+    {
+      "id": "VIN006",
+      "type": "car",
+      "make": "Chevrolet",
+      "model": "Silverado",
+      "year": 2021,
+      "owner": "Lisa Garcia",
+      "phone": "+1-555-0128",
+      "lastService": "2024-04-25",
+      "nextService": "2024-10-25",
+      "status": "active",
+      "lastServiceKilometers": 35000,
+      "currentKilometers": 38900
+    },
+    {
+      "id": "VIN007",
+      "type": "bike",
+      "make": "Kawasaki",
+      "model": "Ninja",
+      "year": 2019,
+      "owner": "Chris Miller",
+      "phone": "+1-555-0129",
+      "lastService": "2024-05-20",
+      "nextService": "2024-11-20",
+      "status": "active",
+      "lastServiceKilometers": 15000,
+      "currentKilometers": 17800
+    },
+    {
+      "id": "VIN008",
+      "type": "car",
+      "make": "BMW",
+      "model": "3 Series",
+      "year": 2023,
+      "owner": "Emma Davis",
+      "phone": "+1-555-0130",
+      "lastService": "2024-03-10",
+      "nextService": "2024-06-12",
+      "status": "upcoming",
+      "lastServiceKilometers": 18000,
+      "currentKilometers": 21500
+    },
+    {
+      "id": "VIN009",
+      "type": "car",
+      "make": "Mercedes",
+      "model": "C-Class",
+      "year": 2020,
+      "owner": "Ryan Rodriguez",
+      "phone": "+1-555-0131",
+      "lastService": "2024-01-20",
+      "nextService": "2024-06-05",
+      "status": "overdue",
+      "lastServiceKilometers": 42000,
+      "currentKilometers": 46800
+    },
+    {
+      "id": "VIN010",
+      "type": "bike",
+      "make": "Suzuki",
+      "model": "GSX-R",
+      "year": 2021,
+      "owner": "Ashley Martinez",
+      "phone": "+1-555-0132",
+      "lastService": "2024-04-15",
+      "nextService": "2024-10-15",
+      "status": "active",
+      "lastServiceKilometers": 9500,
+      "currentKilometers": 12100
+    }
+  ],
+  "serviceRecords": [
+    {
+      "id": "SRV001",
+      "vehicleId": "VIN001",
+      "date": "2024-05-15",
+      "type": "Regular Maintenance",
+      "parts": [
+        { "name": "Engine Oil", "cost": 35.00 },
+        { "name": "Oil Filter", "cost": 15.00 },
+        { "name": "Air Filter", "cost": 25.00 }
+      ],
+      "laborCost": 45.00,
+      "discount": 10.00,
+      "technician": "Mike Wilson",
+      "notes": "Routine maintenance completed. Next service due in 6 months.",
+      "hasCoupon": true,
+      "couponType": "Annual Maintenance Contract",
+      "kilometers": 45000
+    },
+    {
+      "id": "SRV002",
+      "vehicleId": "VIN001",
+      "date": "2024-02-20",
+      "type": "Brake Service",
+      "parts": [
+        { "name": "Brake Pads", "cost": 85.00 },
+        { "name": "Brake Fluid", "cost": 20.00 }
+      ],
+      "laborCost": 145.00,
+      "discount": 0.00,
+      "technician": "Sarah Johnson",
+      "notes": "Replaced worn brake pads. Brake system functioning properly.",
+      "hasCoupon": false,
+      "couponType": null,
+      "kilometers": 42000
+    },
+    {
+      "id": "SRV003",
+      "vehicleId": "VIN002",
+      "date": "2024-03-20",
+      "type": "Chain Maintenance",
+      "parts": [
+        { "name": "Chain", "cost": 45.00 },
+        { "name": "Chain Oil", "cost": 12.00 },
+        { "name": "Sprockets", "cost": 28.00 }
+      ],
+      "laborCost": 40.00,
+      "discount": 5.00,
+      "technician": "Tom Brown",
+      "notes": "Chain and sprockets replaced. Lubrication service completed.",
+      "hasCoupon": true,
+      "couponType": "Loyalty Discount",
+      "kilometers": 12000
+    },
+    {
+      "id": "SRV004",
+      "vehicleId": "VIN003",
+      "date": "2024-04-10",
+      "type": "Oil Change",
+      "parts": [
+        { "name": "Engine Oil", "cost": 40.00 },
+        { "name": "Oil Filter", "cost": 18.00 }
+      ],
+      "laborCost": 35.00,
+      "discount": 0.00,
+      "technician": "Mike Wilson",
+      "notes": "Regular oil change service completed.",
+      "hasCoupon": false,
+      "couponType": null,
+      "kilometers": 52000
+    },
+    {
+      "id": "SRV005",
+      "vehicleId": "VIN004",
+      "date": "2024-05-01",
+      "type": "Tire Rotation",
+      "parts": [
+        { "name": "Tire Balancing", "cost": 25.00 }
+      ],
+      "laborCost": 30.00,
+      "discount": 5.00,
+      "technician": "Tom Brown",
+      "notes": "Tire rotation and balancing completed.",
+      "hasCoupon": true,
+      "couponType": "Loyalty Discount",
+      "kilometers": 28000
+    }
+  ],
+  "analytics": {
+    "monthlyRevenue": [
+      { "month": "Jan", "revenue": 8400, "services": 24 },
+      { "month": "Feb", "revenue": 9200, "services": 28 },
+      { "month": "Mar", "revenue": 11600, "services": 32 },
+      { "month": "Apr", "revenue": 10800, "services": 30 },
+      { "month": "May", "revenue": 12450, "services": 35 },
+      { "month": "Jun", "revenue": 13200, "services": 38 }
+    ],
+    "serviceTypes": [
+      { "name": "Regular Maintenance", "value": 45, "color": "#3B82F6" },
+      { "name": "Brake Service", "value": 25, "color": "#10B981" },
+      { "name": "Oil Change", "value": 20, "color": "#F59E0B" },
+      { "name": "Tire Service", "value": 10, "color": "#EF4444" }
+    ],
+    "dailyServices": [
+      { "day": "Mon", "services": 5 },
+      { "day": "Tue", "services": 8 },
+      { "day": "Wed", "services": 6 },
+      { "day": "Thu", "services": 9 },
+      { "day": "Fri", "services": 12 },
+      { "day": "Sat", "services": 15 },
+      { "day": "Sun", "services": 4 }
+    ],
+    "metrics": {
+      "averageServiceValue": 285,
+      "monthlyServices": 38,
+      "customerRetention": 92,
+      "averageServiceTime": 2.5
+    }
   }
-]
+}

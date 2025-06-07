@@ -1,70 +1,47 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { TrendingUp, DollarSign, Wrench, Calendar } from "lucide-react";
-import { Vehicle } from "@/services/vehicleService";
+import { Vehicle, getAnalyticsData } from "@/services/vehicleService";
 
 interface AnalyticsDashboardProps {
   vehicles: Vehicle[];
 }
 
 const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
-  // Mock analytics data
-  const monthlyRevenue = [
-    { month: "Jan", revenue: 8400, services: 24 },
-    { month: "Feb", revenue: 9200, services: 28 },
-    { month: "Mar", revenue: 11600, services: 32 },
-    { month: "Apr", revenue: 10800, services: 30 },
-    { month: "May", revenue: 12450, services: 35 },
-    { month: "Jun", revenue: 13200, services: 38 }
-  ];
-
-  const serviceTypes = [
-    { name: "Regular Maintenance", value: 45, color: "#3B82F6" },
-    { name: "Brake Service", value: 25, color: "#10B981" },
-    { name: "Oil Change", value: 20, color: "#F59E0B" },
-    { name: "Tire Service", value: 10, color: "#EF4444" }
-  ];
+  // Get analytics data from centralized source
+  const analyticsData = getAnalyticsData();
 
   const vehicleTypes = [
     { name: "Cars", value: vehicles.filter(v => v.type === "car").length, color: "#3B82F6" },
     { name: "Bikes", value: vehicles.filter(v => v.type === "bike").length, color: "#10B981" }
   ];
 
-  const dailyServices = [
-    { day: "Mon", services: 5 },
-    { day: "Tue", services: 8 },
-    { day: "Wed", services: 6 },
-    { day: "Thu", services: 9 },
-    { day: "Fri", services: 12 },
-    { day: "Sat", services: 15 },
-    { day: "Sun", services: 4 }
-  ];
-
   const metrics = [
     {
       title: "Average Service Value",
-      value: "$285",
+      value: `$${analyticsData.metrics.averageServiceValue}`,
       change: "+12%",
       icon: DollarSign,
       color: "text-green-600"
     },
     {
       title: "Services This Month",
-      value: "38",
+      value: analyticsData.metrics.monthlyServices.toString(),
       change: "+8%",
       icon: Wrench,
       color: "text-blue-600"
     },
     {
       title: "Customer Retention",
-      value: "92%",
+      value: `${analyticsData.metrics.customerRetention}%`,
       change: "+5%",
       icon: TrendingUp,
       color: "text-purple-600"
     },
     {
       title: "Avg. Service Time",
-      value: "2.5h",
+      value: `${analyticsData.metrics.averageServiceTime}h`,
       change: "-15min",
       icon: Calendar,
       color: "text-orange-600"
@@ -105,7 +82,7 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={monthlyRevenue}>
+              <BarChart data={analyticsData.monthlyRevenue}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
@@ -131,7 +108,7 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
-                  data={serviceTypes}
+                  data={analyticsData.serviceTypes}
                   cx="50%"
                   cy="50%"
                   outerRadius={80}
@@ -139,7 +116,7 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
-                  {serviceTypes.map((entry, index) => (
+                  {analyticsData.serviceTypes.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -185,7 +162,7 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={dailyServices}>
+              <LineChart data={analyticsData.dailyServices}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
                 <YAxis />

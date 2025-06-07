@@ -1,4 +1,5 @@
-import vehiclesData from '../data/vehicles.json';
+
+import appData from '../data/vehicles.json';
 
 export interface Vehicle {
   id: string;
@@ -41,69 +42,27 @@ export interface CallRecord {
   callDate?: string;
 }
 
-// Sample service records
-const serviceRecords: ServiceRecord[] = [
-  {
-    id: "SRV001",
-    vehicleId: "VIN001",
-    date: "2024-05-15",
-    type: "Regular Maintenance",
-    parts: [
-      { name: "Engine Oil", cost: 35.00 },
-      { name: "Oil Filter", cost: 15.00 },
-      { name: "Air Filter", cost: 25.00 }
-    ],
-    laborCost: 45.00,
-    discount: 10.00,
-    technician: "Mike Wilson",
-    notes: "Routine maintenance completed. Next service due in 6 months.",
-    hasCoupon: true,
-    couponType: "Annual Maintenance Contract",
-    kilometers: 45000
-  },
-  {
-    id: "SRV002",
-    vehicleId: "VIN001",
-    date: "2024-02-20",
-    type: "Brake Service",
-    parts: [
-      { name: "Brake Pads", cost: 85.00 },
-      { name: "Brake Fluid", cost: 20.00 }
-    ],
-    laborCost: 145.00,
-    discount: 0.00,
-    technician: "Sarah Johnson",
-    notes: "Replaced worn brake pads. Brake system functioning properly.",
-    hasCoupon: false,
-    couponType: null,
-    kilometers: 42000
-  },
-  {
-    id: "SRV003",
-    vehicleId: "VIN002",
-    date: "2024-03-20",
-    type: "Chain Maintenance",
-    parts: [
-      { name: "Chain", cost: 45.00 },
-      { name: "Chain Oil", cost: 12.00 },
-      { name: "Sprockets", cost: 28.00 }
-    ],
-    laborCost: 40.00,
-    discount: 5.00,
-    technician: "Tom Brown",
-    notes: "Chain and sprockets replaced. Lubrication service completed.",
-    hasCoupon: true,
-    couponType: "Loyalty Discount",
-    kilometers: 12000
-  }
-];
+export interface AnalyticsData {
+  monthlyRevenue: Array<{ month: string; revenue: number; services: number }>;
+  serviceTypes: Array<{ name: string; value: number; color: string }>;
+  dailyServices: Array<{ day: string; services: number }>;
+  metrics: {
+    averageServiceValue: number;
+    monthlyServices: number;
+    customerRetention: number;
+    averageServiceTime: number;
+  };
+}
+
+// In-memory storage for service records (starts with data from JSON)
+let serviceRecords: ServiceRecord[] = [...(appData.serviceRecords as ServiceRecord[])];
 
 export const getVehicles = (): Vehicle[] => {
-  return vehiclesData as Vehicle[];
+  return appData.vehicles as Vehicle[];
 };
 
 export const getVehicleById = (id: string): Vehicle | undefined => {
-  return vehiclesData.find(vehicle => vehicle.id === id) as Vehicle | undefined;
+  return appData.vehicles.find(vehicle => vehicle.id === id) as Vehicle | undefined;
 };
 
 export const getServiceRecords = (): ServiceRecord[] => {
@@ -121,4 +80,8 @@ export const addServiceRecord = (record: Omit<ServiceRecord, 'id'>): ServiceReco
   };
   serviceRecords.push(newRecord);
   return newRecord;
+};
+
+export const getAnalyticsData = (): AnalyticsData => {
+  return appData.analytics as AnalyticsData;
 };
