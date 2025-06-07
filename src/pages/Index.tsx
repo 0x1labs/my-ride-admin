@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import DashboardStats from "@/components/DashboardStats";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import CustomerCallDashboard from "@/components/CustomerCallDashboard";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { getVehicles } from "@/services/vehicleService";
+import { useVehicles, useVehiclesWithFilters } from "@/hooks/useVehicles";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,58 +27,20 @@ const Index = () => {
   const [sortBy, setSortBy] = useState("default");
   const vehiclesPerPage = 12;
 
-  // Get vehicles from centralized data
-  const vehicles = getVehicles();
+  // Get vehicles from Supabase using React Query
+  const { data: allVehicles = [], isLoading: vehiclesLoading, error: vehiclesError } = useVehicles();
+  const { vehicles: filteredVehicles, totalCount } = useVehiclesWithFilters(
+    searchTerm,
+    manufacturerFilter,
+    serviceFilter,
+    sortBy
+  );
 
   // Get unique manufacturers for filter dropdown
-  const uniqueManufacturers = Array.from(new Set(vehicles.map(v => v.make))).sort();
-
-  // Enhanced filtering logic
-  const getFilteredAndSortedVehicles = () => {
-    let filtered = vehicles.filter(vehicle => {
-      const matchesSearch = vehicle.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vehicle.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vehicle.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vehicle.model.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const matchesManufacturer = manufacturerFilter === "all" || vehicle.make === manufacturerFilter;
-
-      let matchesService = true;
-      if (serviceFilter === "recent") {
-        const lastServiceDate = new Date(vehicle.lastService);
-        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-        matchesService = lastServiceDate >= thirtyDaysAgo;
-      } else if (serviceFilter === "overdue") {
-        matchesService = vehicle.status === "overdue";
-      } else if (serviceFilter === "upcoming") {
-        matchesService = vehicle.status === "upcoming";
-      }
-
-      return matchesSearch && matchesManufacturer && matchesService;
-    });
-
-    // Sort vehicles
-    if (sortBy === "nextServiceAsc") {
-      filtered.sort((a, b) => new Date(a.nextService).getTime() - new Date(b.nextService).getTime());
-    } else if (sortBy === "overduePriority") {
-      filtered.sort((a, b) => {
-        if (a.status === "overdue" && b.status !== "overdue") return -1;
-        if (b.status === "overdue" && a.status !== "overdue") return 1;
-        if (a.status === "upcoming" && b.status !== "upcoming") return -1;
-        if (b.status === "upcoming" && a.status !== "upcoming") return 1;
-        return new Date(a.nextService).getTime() - new Date(b.nextService).getTime();
-      });
-    } else if (sortBy === "lastServiceDesc") {
-      filtered.sort((a, b) => new Date(b.lastService).getTime() - new Date(a.lastService).getTime());
-    }
-
-    return filtered;
-  };
-
-  const filteredVehicles = getFilteredAndSortedVehicles();
+  const uniqueManufacturers = Array.from(new Set(allVehicles.map(v => v.make))).sort();
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredVehicles.length / vehiclesPerPage);
+  const totalPages = Math.ceil(totalCount / vehiclesPerPage);
   const startIndex = (currentPage - 1) * vehiclesPerPage;
   const endIndex = startIndex + vehiclesPerPage;
   const paginatedVehicles = filteredVehicles.slice(startIndex, endIndex);
@@ -91,6 +54,30 @@ const Index = () => {
     setSearchTerm(e.target.value);
     handleFilterChange();
   };
+
+  // Show loading state
+  if (vehiclesLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading vehicle data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (vehiclesError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Error loading vehicle data</p>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
@@ -140,12 +127,12 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="dashboard">
-            <DashboardStats vehicles={vehicles} />
+            <DashboardStats vehicles={allVehicles} />
             
             <div className="mt-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {vehicles.slice(0, 3).map((vehicle) => (
+                {allVehicles.slice(0, 3).map((vehicle) => (
                   <VehicleCard key={vehicle.id} vehicle={vehicle} />
                 ))}
               </div>
@@ -158,7 +145,7 @@ const Index = () => {
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">Vehicle Management</h2>
                   <p className="text-sm text-gray-600 mt-1">
-                    Showing {startIndex + 1}-{Math.min(endIndex, filteredVehicles.length)} of {filteredVehicles.length} vehicles
+                    Showing {startIndex + 1}-{Math.min(endIndex, totalCount)} of {totalCount} vehicles
                   </p>
                 </div>
               </div>
@@ -277,15 +264,15 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="services">
-            <ServiceHistory selectedVehicle={selectedVehicle} vehicles={vehicles} />
+            <ServiceHistory selectedVehicle={selectedVehicle} vehicles={allVehicles} />
           </TabsContent>
 
           <TabsContent value="calls">
-            <CustomerCallDashboard vehicles={vehicles} />
+            <CustomerCallDashboard vehicles={allVehicles} />
           </TabsContent>
 
           <TabsContent value="analytics">
-            <AnalyticsDashboard vehicles={vehicles} />
+            <AnalyticsDashboard vehicles={allVehicles} />
           </TabsContent>
         </Tabs>
       </div>
@@ -293,7 +280,7 @@ const Index = () => {
       <AddServiceModal 
         isOpen={isAddServiceOpen} 
         onClose={() => setIsAddServiceOpen(false)}
-        vehicles={vehicles}
+        vehicles={allVehicles}
       />
     </div>
   );

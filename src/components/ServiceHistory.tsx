@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Wrench, Calendar, DollarSign, FileText, Car, Bike } from "lucide-react";
-import { getServiceRecords, getServiceRecordsByVehicleId, Vehicle, Part } from "@/services/vehicleService";
+import { Vehicle, Part } from "@/services/supabaseService";
+import { useServiceRecords, useServiceRecordsByVehicle } from "@/hooks/useServiceRecords";
 
 interface ServiceHistoryProps {
   selectedVehicle?: Vehicle | null;
@@ -13,12 +14,14 @@ interface ServiceHistoryProps {
 const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
   const [currentVehicle, setCurrentVehicle] = useState(selectedVehicle?.id || "all");
 
-  // Get service records from centralized data
-  const allServiceRecords = getServiceRecords();
-  
-  const filteredRecords = currentVehicle !== "all"
-    ? getServiceRecordsByVehicleId(currentVehicle)
-    : allServiceRecords;
+  // Use appropriate hook based on vehicle selection
+  const { data: allServiceRecords = [], isLoading: allLoading } = useServiceRecords();
+  const { data: vehicleServiceRecords = [], isLoading: vehicleLoading } = useServiceRecordsByVehicle(
+    currentVehicle !== "all" ? currentVehicle : undefined
+  );
+
+  const filteredRecords = currentVehicle !== "all" ? vehicleServiceRecords : allServiceRecords;
+  const isLoading = currentVehicle !== "all" ? vehicleLoading : allLoading;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -41,6 +44,18 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
   };
 
   const selectedVehicleData = vehicles.find(v => v.id === currentVehicle);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-gray-900">Service History</h2>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-2 text-gray-600">Loading service records...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

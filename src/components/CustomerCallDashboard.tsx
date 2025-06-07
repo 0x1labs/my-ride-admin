@@ -1,17 +1,20 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Phone, Calendar, Car, Bike, Clock, CheckCircle } from "lucide-react";
-import { Vehicle, CallRecord } from "@/services/vehicleService";
+import { Vehicle } from "@/services/supabaseService";
+import { useCallRecords, useUpdateCallRecord } from "@/hooks/useCallRecords";
 
 interface CustomerCallDashboardProps {
   vehicles: Vehicle[];
 }
 
 const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
-  const [callRecords, setCallRecords] = useState<CallRecord[]>([]);
+  const { data: callRecords = [], isLoading } = useCallRecords();
+  const updateCallRecord = useUpdateCallRecord();
 
   // Get vehicles that need service calls (due within 7 days or overdue)
   const getVehiclesNeedingCalls = () => {
@@ -37,22 +40,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
   };
 
   const updateCallStatus = (vehicleId: string, called: boolean) => {
-    setCallRecords(prev => {
-      const existing = prev.find(record => record.vehicleId === vehicleId);
-      if (existing) {
-        return prev.map(record => 
-          record.vehicleId === vehicleId 
-            ? { ...record, called, callDate: called ? new Date().toISOString() : undefined }
-            : record
-        );
-      } else {
-        return [...prev, { 
-          vehicleId, 
-          called, 
-          callDate: called ? new Date().toISOString() : undefined 
-        }];
-      }
-    });
+    updateCallRecord.mutate({ vehicleId, called });
   };
 
   const formatDate = (dateString: string) => {
@@ -88,6 +76,18 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
 
   const calledCount = callRecords.filter(record => record.called).length;
   const pendingCount = vehiclesNeedingCalls.length - calledCount;
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-gray-900">Customer Call Dashboard</h2>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-2 text-gray-600">Loading call records...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -162,6 +162,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
                           checked={isCalled}
                           onCheckedChange={(checked) => updateCallStatus(vehicle.id, checked === true)}
                           className="h-5 w-5"
+                          disabled={updateCallRecord.isPending}
                         />
                         
                         <div className="flex items-center gap-2">

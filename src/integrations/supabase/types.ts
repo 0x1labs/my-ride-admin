@@ -9,7 +9,154 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      call_records: {
+        Row: {
+          call_date: string | null
+          called: boolean
+          created_at: string | null
+          id: string
+          notes: string | null
+          updated_at: string | null
+          vehicle_id: string
+        }
+        Insert: {
+          call_date?: string | null
+          called?: boolean
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          updated_at?: string | null
+          vehicle_id: string
+        }
+        Update: {
+          call_date?: string | null
+          called?: boolean
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          updated_at?: string | null
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_records_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_records: {
+        Row: {
+          coupon_type: string | null
+          created_at: string | null
+          date: string
+          discount: number
+          has_coupon: boolean
+          id: string
+          kilometers: number
+          labor_cost: number
+          notes: string | null
+          parts: Json
+          technician: string
+          type: string
+          updated_at: string | null
+          vehicle_id: string
+        }
+        Insert: {
+          coupon_type?: string | null
+          created_at?: string | null
+          date: string
+          discount?: number
+          has_coupon?: boolean
+          id: string
+          kilometers: number
+          labor_cost?: number
+          notes?: string | null
+          parts?: Json
+          technician: string
+          type: string
+          updated_at?: string | null
+          vehicle_id: string
+        }
+        Update: {
+          coupon_type?: string | null
+          created_at?: string | null
+          date?: string
+          discount?: number
+          has_coupon?: boolean
+          id?: string
+          kilometers?: number
+          labor_cost?: number
+          notes?: string | null
+          parts?: Json
+          technician?: string
+          type?: string
+          updated_at?: string | null
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_records_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vehicles: {
+        Row: {
+          created_at: string | null
+          current_kilometers: number
+          id: string
+          last_service: string
+          last_service_kilometers: number
+          make: string
+          model: string
+          next_service: string
+          owner: string
+          phone: string
+          status: string
+          type: string
+          updated_at: string | null
+          year: number
+        }
+        Insert: {
+          created_at?: string | null
+          current_kilometers: number
+          id: string
+          last_service: string
+          last_service_kilometers: number
+          make: string
+          model: string
+          next_service: string
+          owner: string
+          phone: string
+          status: string
+          type: string
+          updated_at?: string | null
+          year: number
+        }
+        Update: {
+          created_at?: string | null
+          current_kilometers?: number
+          id?: string
+          last_service?: string
+          last_service_kilometers?: number
+          make?: string
+          model?: string
+          next_service?: string
+          owner?: string
+          phone?: string
+          status?: string
+          type?: string
+          updated_at?: string | null
+          year?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
