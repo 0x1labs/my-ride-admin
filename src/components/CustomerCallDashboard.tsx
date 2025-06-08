@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Phone, PhoneCall, MessageSquare, Calendar, Users, AlertCircle } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
-import { useCallRecords, useUpsertCallRecord } from "@/hooks/useCallRecords";
+import { useCallRecords, useUpdateCallRecord } from "@/hooks/useCallRecords";
 import { useToast } from "@/hooks/use-toast";
 
 interface CustomerCallDashboardProps {
@@ -25,7 +25,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
   
   const { toast } = useToast();
   const { data: callRecords = [] } = useCallRecords();
-  const upsertCallRecord = useUpsertCallRecord();
+  const updateCallRecord = useUpdateCallRecord();
 
   // Memoized filtered vehicles and stats calculations
   const filteredVehicles = useMemo(() => {
@@ -87,7 +87,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
     try {
       console.log('Updating call status:', { vehicleId, called });
       
-      await upsertCallRecord.mutateAsync({
+      await updateCallRecord.mutateAsync({
         vehicleId,
         called,
         notes: notes[vehicleId] || undefined
@@ -240,7 +240,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
                             updateCallStatus(vehicle.id, Boolean(checked));
                           }}
                           className="h-5 w-5"
-                          disabled={upsertCallRecord.isPending}
+                          disabled={updateCallRecord.isPending}
                         />
                         <div>
                           <h3 className="font-semibold text-lg">{vehicle.owner}</h3>
