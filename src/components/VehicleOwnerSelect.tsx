@@ -51,8 +51,9 @@ const VehicleOwnerSelect = ({
     return Array.from(ownerMap.values()).sort((a, b) => a.name.localeCompare(b.name));
   }, [vehicles]);
 
-  // Filter owners based on search term
+  // Filter owners based on search term - show all if no search term
   const filteredOwners = uniqueOwners.filter(owner =>
+    ownerSearchTerm.trim() === "" || 
     owner.name.toLowerCase().includes(ownerSearchTerm.toLowerCase())
   );
 
@@ -100,23 +101,29 @@ const VehicleOwnerSelect = ({
                 />
               </div>
               
-              <Select value={selectedOwnerId || ""} onValueChange={handleOwnerSelect}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select owner" />
-                </SelectTrigger>
-                <SelectContent>
-                  {filteredOwners.map((owner) => (
-                    <SelectItem key={owner.id} value={owner.id}>
-                      <div className="flex items-center justify-between w-full">
-                        <span>{owner.name}</span>
-                        <span className="text-xs text-gray-500 ml-2">
-                          {owner.vehicleCount} vehicle{owner.vehicleCount !== 1 ? 's' : ''}
-                        </span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <Label>Select Owner ({filteredOwners.length} found)</Label>
+                <Select value={selectedOwnerId || ""} onValueChange={handleOwnerSelect}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select owner" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60">
+                    {filteredOwners.map((owner) => (
+                      <SelectItem key={owner.id} value={owner.id}>
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex flex-col">
+                            <span className="font-medium">{owner.name}</span>
+                            <span className="text-xs text-gray-500">{owner.phone}</span>
+                          </div>
+                          <span className="text-xs text-gray-500 ml-4">
+                            {owner.vehicleCount} vehicle{owner.vehicleCount !== 1 ? 's' : ''}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               
               <Button 
                 variant="outline" 

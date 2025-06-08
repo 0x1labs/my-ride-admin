@@ -193,7 +193,10 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
                       <div className="flex items-center space-x-4">
                         <Checkbox
                           checked={isCalled}
-                          onCheckedChange={(checked) => updateCallStatus(vehicle.id, checked === true)}
+                          onCheckedChange={(checked) => {
+                            console.log('Checkbox clicked:', { vehicleId: vehicle.id, checked });
+                            updateCallStatus(vehicle.id, Boolean(checked));
+                          }}
                           className="h-5 w-5"
                           disabled={updateCallRecord.isPending}
                         />
