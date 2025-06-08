@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Vehicle {
@@ -159,6 +160,9 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
   // Generate a new ID
   const newId = `SRV${String(Date.now()).slice(-6)}`;
   
+  // Convert parts array to JSON for database storage
+  const partsJson = JSON.stringify(record.parts);
+  
   const { data, error } = await supabase
     .from('service_records')
     .insert({
@@ -166,7 +170,7 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
       vehicle_id: record.vehicleId,
       date: record.date,
       type: record.type,
-      parts: record.parts,
+      parts: partsJson,
       labor_cost: record.laborCost,
       discount: record.discount,
       technician: record.technician,
