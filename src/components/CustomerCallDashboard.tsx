@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Phone, Calendar, Car, Bike, Clock, CheckCircle } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Phone, Calendar, Car, Bike, Clock, CheckCircle, User } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
 import { useCallRecords, useUpdateCallRecord } from "@/hooks/useCallRecords";
 
@@ -15,6 +16,8 @@ interface CustomerCallDashboardProps {
 const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
   const { data: callRecords = [], isLoading } = useCallRecords();
   const updateCallRecord = useUpdateCallRecord();
+  const [expandedNotes, setExpandedNotes] = useState<string>("");
+  const [noteText, setNoteText] = useState<string>("");
 
   // Get vehicles that need service calls (due within 7 days or overdue)
   const getVehiclesNeedingCalls = () => {
@@ -39,8 +42,14 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
     return callRecords.find(record => record.vehicleId === vehicleId);
   };
 
-  const updateCallStatus = (vehicleId: string, called: boolean) => {
-    updateCallRecord.mutate({ vehicleId, called });
+  const updateCallStatus = (vehicleId: string, called: boolean, notes?: string) => {
+    updateCallRecord.mutate({ 
+      vehicleId, 
+      called, 
+      notes: notes || noteText || undefined 
+    });
+    setNoteText("");
+    setExpandedNotes("");
   };
 
   const formatDate = (dateString: string) => {
@@ -61,7 +70,8 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
 
   const getUrgencyBadge = (vehicle: Vehicle) => {
     if (vehicle.status === "overdue") {
-      return <Badge className="bg-red-100 text-red-800">Overdue</Badge>;
+      const daysOverdue = Math.abs(getDaysUntilService(vehicle.nextService));
+      return <Badge className="bg-red-100 text-red-800">Overdue ({daysOverdue} days)</Badge>;
     }
     
     const days = getDaysUntilService(vehicle.nextService);
@@ -74,8 +84,15 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
     return <Badge className="bg-blue-100 text-blue-800">Upcoming</Badge>;
   };
 
-  const calledCount = callRecords.filter(record => record.called).length;
-  const pendingCount = vehiclesNeedingCalls.length - calledCount;
+  const calledVehicles = vehiclesNeedingCalls.filter(vehicle => {
+    const callRecord = getCallRecord(vehicle.id);
+    return callRecord?.called;
+  });
+
+  const pendingVehicles = vehiclesNeedingCalls.filter(vehicle => {
+    const callRecord = getCallRecord(vehicle.id);
+    return !callRecord?.called;
+  });
 
   if (isLoading) {
     return (
@@ -99,7 +116,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Calls Needed</CardTitle>
@@ -117,7 +134,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{calledCount}</div>
+            <div className="text-2xl font-bold text-green-600">{calledVehicles.length}</div>
             <p className="text-xs text-muted-foreground">Successfully contacted</p>
           </CardContent>
         </Card>
@@ -128,8 +145,23 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
             <Clock className="h-4 w-4 text-orange-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{pendingCount}</div>
+            <div className="text-2xl font-bold text-orange-600">{pendingVehicles.length}</div>
             <p className="text-xs text-muted-foreground">Still need to call</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Call Rate</CardTitle>
+            <User className="h-4 w-4 text-purple-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">
+              {vehiclesNeedingCalls.length > 0 
+                ? Math.round((calledVehicles.length / vehiclesNeedingCalls.length) * 100)
+                : 0}%
+            </div>
+            <p className="text-xs text-muted-foreground">Completion rate</p>
           </CardContent>
         </Card>
       </div>
@@ -153,6 +185,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
               {vehiclesNeedingCalls.map((vehicle) => {
                 const callRecord = getCallRecord(vehicle.id);
                 const isCalled = callRecord?.called || false;
+                const isExpanded = expandedNotes === vehicle.id;
                 
                 return (
                   <div key={vehicle.id} className={`border rounded-lg p-4 ${isCalled ? 'bg-green-50 border-green-200' : 'bg-white'}`}>
@@ -215,6 +248,45 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
                           </div>
                         )}
                       </div>
+
+                      {/* Notes Section */}
+                      {!isCalled && (
+                        <div className="mt-3">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setExpandedNotes(isExpanded ? "" : vehicle.id)}
+                          >
+                            {isExpanded ? "Cancel" : "Add Notes"}
+                          </Button>
+                          
+                          {isExpanded && (
+                            <div className="mt-2 space-y-2">
+                              <Textarea
+                                placeholder="Add notes about the call..."
+                                value={noteText}
+                                onChange={(e) => setNoteText(e.target.value)}
+                                rows={2}
+                              />
+                              <Button
+                                size="sm"
+                                onClick={() => updateCallStatus(vehicle.id, true, noteText)}
+                                disabled={updateCallRecord.isPending}
+                              >
+                                Mark as Called & Save Notes
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Display existing notes */}
+                      {callRecord?.notes && (
+                        <div className="mt-2 p-2 bg-gray-50 rounded text-sm">
+                          <span className="font-medium text-gray-700">Notes: </span>
+                          <span className="text-gray-600">{callRecord.notes}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );

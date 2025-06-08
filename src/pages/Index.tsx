@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,9 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Plus, Car, Bike, Calendar, Wrench, DollarSign, TrendingUp, Phone } from "lucide-react";
 import ServiceHistory from "@/components/ServiceHistory";
-import AddServiceModal from "@/components/AddServiceModal";
+import ImprovedAddServiceModal from "@/components/ImprovedAddServiceModal";
 import VehicleCard from "@/components/VehicleCard";
-import DashboardStats from "@/components/DashboardStats";
+import ImprovedDashboardStats from "@/components/ImprovedDashboardStats";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import CustomerCallDashboard from "@/components/CustomerCallDashboard";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
@@ -127,16 +126,7 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="dashboard">
-            <DashboardStats vehicles={allVehicles} />
-            
-            <div className="mt-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Activity</h2>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {allVehicles.slice(0, 3).map((vehicle) => (
-                  <VehicleCard key={vehicle.id} vehicle={vehicle} />
-                ))}
-              </div>
-            </div>
+            <ImprovedDashboardStats vehicles={allVehicles} />
           </TabsContent>
 
           <TabsContent value="vehicles">
@@ -277,7 +267,7 @@ const Index = () => {
         </Tabs>
       </div>
 
-      <AddServiceModal 
+      <ImprovedAddServiceModal 
         isOpen={isAddServiceOpen} 
         onClose={() => setIsAddServiceOpen(false)}
         vehicles={allVehicles}
