@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Search, Plus, Car, Bike, Calendar, Wrench, DollarSign, TrendingUp, Phone } from "lucide-react";
 import ServiceHistory from "@/components/ServiceHistory";
 import ImprovedAddServiceModal from "@/components/ImprovedAddServiceModal";
+import AddVehicleModal from "@/components/AddVehicleModal";
 import VehicleCard from "@/components/VehicleCard";
 import ImprovedDashboardStats from "@/components/ImprovedDashboardStats";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
@@ -19,6 +21,7 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isAddServiceOpen, setIsAddServiceOpen] = useState(false);
+  const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
@@ -88,13 +91,23 @@ const Index = () => {
               <h1 className="text-3xl font-bold text-gray-900">ServiceTracker Pro</h1>
               <p className="text-gray-600">Vehicle Service Management System</p>
             </div>
-            <Button 
-              onClick={() => setIsAddServiceOpen(true)}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Service Record
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={() => setIsAddVehicleOpen(true)}
+                variant="outline"
+                className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Vehicle
+              </Button>
+              <Button 
+                onClick={() => setIsAddServiceOpen(true)}
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Service Record
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -271,6 +284,11 @@ const Index = () => {
         isOpen={isAddServiceOpen} 
         onClose={() => setIsAddServiceOpen(false)}
         vehicles={allVehicles}
+      />
+
+      <AddVehicleModal 
+        isOpen={isAddVehicleOpen} 
+        onClose={() => setIsAddVehicleOpen(false)}
       />
     </div>
   );

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { X, Plus } from "lucide-react";
@@ -35,6 +34,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles }: ImprovedAddServi
   // Service Details
   const [serviceType, setServiceType] = useState("");
   const [serviceDate, setServiceDate] = useState(new Date().toISOString().split('T')[0]);
+  const [nextServiceDate, setNextServiceDate] = useState("");
   const [technician, setTechnician] = useState("");
   const [kilometers, setKilometers] = useState<number>(0);
   const [laborCost, setLaborCost] = useState<number>(0);
@@ -84,6 +84,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles }: ImprovedAddServi
     setNewOwnerName("");
     setServiceType("");
     setServiceDate(new Date().toISOString().split('T')[0]);
+    setNextServiceDate("");
     setTechnician("");
     setKilometers(0);
     setLaborCost(0);
@@ -99,7 +100,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles }: ImprovedAddServi
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedVehicleId || !serviceType || !technician) {
+    if (!selectedVehicleId || !serviceType || !technician.trim()) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields",
@@ -118,7 +119,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles }: ImprovedAddServi
         parts,
         laborCost,
         discount,
-        technician,
+        technician: technician.trim(),
         notes,
         hasCoupon,
         couponType: hasCoupon ? couponType : null,
@@ -206,19 +207,24 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles }: ImprovedAddServi
                 </div>
 
                 <div>
+                  <Label htmlFor="nextServiceDate">Next Service Date</Label>
+                  <Input
+                    id="nextServiceDate"
+                    type="date"
+                    value={nextServiceDate}
+                    onChange={(e) => setNextServiceDate(e.target.value)}
+                  />
+                </div>
+
+                <div>
                   <Label htmlFor="technician">Technician *</Label>
-                  <Select value={technician} onValueChange={setTechnician}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select technician" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Alex Turner">Alex Turner</SelectItem>
-                      <SelectItem value="Lisa Chen">Lisa Chen</SelectItem>
-                      <SelectItem value="Mike Wilson">Mike Wilson</SelectItem>
-                      <SelectItem value="Sarah Johnson">Sarah Johnson</SelectItem>
-                      <SelectItem value="Tom Brown">Tom Brown</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    id="technician"
+                    placeholder="Enter technician name"
+                    value={technician}
+                    onChange={(e) => setTechnician(e.target.value)}
+                    required
+                  />
                 </div>
 
                 <div>
@@ -328,17 +334,12 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles }: ImprovedAddServi
               {hasCoupon && (
                 <div>
                   <Label htmlFor="couponType">Coupon Type</Label>
-                  <Select value={couponType} onValueChange={setCouponType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select coupon type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Senior Citizen Discount">Senior Citizen Discount</SelectItem>
-                      <SelectItem value="Loyalty Discount">Loyalty Discount</SelectItem>
-                      <SelectItem value="First Time Customer">First Time Customer</SelectItem>
-                      <SelectItem value="Annual Maintenance Contract">Annual Maintenance Contract</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    id="couponType"
+                    placeholder="Enter coupon type"
+                    value={couponType}
+                    onChange={(e) => setCouponType(e.target.value)}
+                  />
                 </div>
               )}
 
@@ -363,7 +364,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles }: ImprovedAddServi
             </Button>
             <Button 
               type="submit" 
-              disabled={isSubmitting || !selectedVehicleId || !serviceType || !technician}
+              disabled={isSubmitting || !selectedVehicleId || !serviceType || !technician.trim()}
             >
               {isSubmitting ? "Adding..." : "Add Service Record"}
             </Button>
