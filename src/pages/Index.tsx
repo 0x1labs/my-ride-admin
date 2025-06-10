@@ -21,7 +21,6 @@ const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isAddServiceOpen, setIsAddServiceOpen] = useState(false);
-  const [isAddVehicleOpen, setIsAddVehicleOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [manufacturerFilter, setManufacturerFilter] = useState("all");
@@ -92,14 +91,7 @@ const Index = () => {
               <p className="text-gray-600">Vehicle Service Management System</p>
             </div>
             <div className="flex gap-2">
-              <Button 
-                onClick={() => setIsAddVehicleOpen(true)}
-                variant="outline"
-                className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Vehicle
-              </Button>
+              <AddVehicleModal />
               <Button 
                 onClick={() => setIsAddServiceOpen(true)}
                 className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
@@ -284,11 +276,6 @@ const Index = () => {
         isOpen={isAddServiceOpen} 
         onClose={() => setIsAddServiceOpen(false)}
         vehicles={allVehicles}
-      />
-
-      <AddVehicleModal 
-        isOpen={isAddVehicleOpen} 
-        onClose={() => setIsAddVehicleOpen(false)}
       />
     </div>
   );
