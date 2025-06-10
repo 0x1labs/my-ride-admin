@@ -2,11 +2,46 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { TrendingUp, DollarSign, Wrench, Calendar } from "lucide-react";
-import { Vehicle, getAnalyticsData } from "@/services/vehicleService";
+import { Vehicle } from "@/services/supabaseService";
 
 interface AnalyticsDashboardProps {
   vehicles: Vehicle[];
 }
+
+const getAnalyticsData = () => {
+  return {
+    metrics: {
+      averageServiceValue: 285,
+      monthlyServices: 42,
+      customerRetention: 85,
+      averageServiceTime: 2.5
+    },
+    monthlyRevenue: [
+      { month: "Jan", revenue: 12400, services: 38 },
+      { month: "Feb", revenue: 13200, services: 42 },
+      { month: "Mar", revenue: 11800, services: 35 },
+      { month: "Apr", revenue: 14500, services: 48 },
+      { month: "May", revenue: 13900, services: 45 },
+      { month: "Jun", revenue: 15200, services: 52 }
+    ],
+    serviceTypes: [
+      { name: "Oil Change", value: 35, color: "#3B82F6" },
+      { name: "Brake Service", value: 25, color: "#10B981" },
+      { name: "Tire Replacement", value: 20, color: "#F59E0B" },
+      { name: "Engine Tune-up", value: 15, color: "#EF4444" },
+      { name: "Other", value: 5, color: "#8B5CF6" }
+    ],
+    dailyServices: [
+      { day: "Mon", services: 8 },
+      { day: "Tue", services: 12 },
+      { day: "Wed", services: 10 },
+      { day: "Thu", services: 15 },
+      { day: "Fri", services: 14 },
+      { day: "Sat", services: 9 },
+      { day: "Sun", services: 4 }
+    ]
+  };
+};
 
 const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
   // Get analytics data from centralized source

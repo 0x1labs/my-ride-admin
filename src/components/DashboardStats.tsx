@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Car, Bike, AlertTriangle, CheckCircle, DollarSign, Calendar } from "lucide-react";
-import { Vehicle } from "@/services/vehicleService";
+import { Vehicle } from "@/services/supabaseService";
 
 interface DashboardStatsProps {
   vehicles: Vehicle[];

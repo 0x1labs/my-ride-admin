@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Car, Bike, Calendar, Phone, Eye } from "lucide-react";
-import { Vehicle } from "@/services/vehicleService";
+import { Vehicle } from "@/services/supabaseService";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
