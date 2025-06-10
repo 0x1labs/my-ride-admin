@@ -1,24 +1,18 @@
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Plus } from "lucide-react";
+import { useAddVehicle } from "@/hooks/useVehicles";
 import { useToast } from "@/hooks/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
 
-interface AddVehicleModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const AddVehicleModal = ({ isOpen, onClose }: AddVehicleModalProps) => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
-  const [vehicleData, setVehicleData] = useState({
-    type: "",
+const AddVehicleModal = () => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    type: "car" as "car" | "bike",
     make: "",
     model: "",
     year: new Date().getFullYear(),
@@ -26,61 +20,46 @@ const AddVehicleModal = ({ isOpen, onClose }: AddVehicleModalProps) => {
     phone: "",
     lastService: "",
     nextService: "",
-    status: "active",
     lastServiceKilometers: 0,
     currentKilometers: 0,
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const resetForm = () => {
-    setVehicleData({
-      type: "",
-      make: "",
-      model: "",
-      year: new Date().getFullYear(),
-      owner: "",
-      phone: "",
-      lastService: "",
-      nextService: "",
-      status: "active",
-      lastServiceKilometers: 0,
-      currentKilometers: 0,
-    });
-  };
+  const addVehicle = useAddVehicle();
+  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!vehicleData.type || !vehicleData.make || !vehicleData.model || !vehicleData.owner || !vehicleData.phone) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-
     try {
-      // Generate a unique vehicle ID
-      const vehicleId = `VIN${String(Date.now()).slice(-6)}`;
-      
-      // Here you would normally call your Supabase service to add the vehicle
-      // For now, we'll just show a success message since we need to add this to the service
-      console.log('Adding vehicle:', { id: vehicleId, ...vehicleData });
+      // Calculate status based on next service date
+      const nextServiceDate = new Date(formData.nextService);
+      const today = new Date();
+      const status = nextServiceDate < today ? "overdue" : nextServiceDate <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) ? "upcoming" : "active";
+
+      await addVehicle.mutateAsync({
+        ...formData,
+        status,
+      });
 
       toast({
         title: "Vehicle Added",
-        description: "The vehicle has been successfully added to the system.",
+        description: `${formData.make} ${formData.model} has been added successfully.`,
       });
 
-      // Invalidate vehicles query to refresh the list
-      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
-
-      resetForm();
-      onClose();
+      // Reset form and close modal
+      setFormData({
+        type: "car",
+        make: "",
+        model: "",
+        year: new Date().getFullYear(),
+        owner: "",
+        phone: "",
+        lastService: "",
+        nextService: "",
+        lastServiceKilometers: 0,
+        currentKilometers: 0,
+      });
+      setOpen(false);
     } catch (error) {
       console.error('Error adding vehicle:', error);
       toast({
@@ -88,173 +67,139 @@ const AddVehicleModal = ({ isOpen, onClose }: AddVehicleModalProps) => {
         description: "Failed to add vehicle. Please try again.",
         variant: "destructive",
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 30 }, (_, i) => currentYear - i);
-
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button>
+          <Plus className="h-4 w-4 mr-2" />
+          Add Vehicle
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add New Vehicle</DialogTitle>
           <DialogDescription>
-            Register a new vehicle in the system
+            Register a new vehicle when it's first bought.
           </DialogDescription>
         </DialogHeader>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Vehicle Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Vehicle Information</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="type">Vehicle Type *</Label>
-                <Select value={vehicleData.type} onValueChange={(value) => setVehicleData({...vehicleData, type: value})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select vehicle type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="car">Car</SelectItem>
-                    <SelectItem value="bike">Motorcycle</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="year">Year *</Label>
-                <Select value={vehicleData.year.toString()} onValueChange={(value) => setVehicleData({...vehicleData, year: parseInt(value)})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select year" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {years.map((year) => (
-                      <SelectItem key={year} value={year.toString()}>
-                        {year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="make">Make *</Label>
-                <Input
-                  id="make"
-                  placeholder="e.g., Toyota, Honda"
-                  value={vehicleData.make}
-                  onChange={(e) => setVehicleData({...vehicleData, make: e.target.value})}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="model">Model *</Label>
-                <Input
-                  id="model"
-                  placeholder="e.g., Camry, Civic"
-                  value={vehicleData.model}
-                  onChange={(e) => setVehicleData({...vehicleData, model: e.target.value})}
-                  required
-                />
-              </div>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="type">Vehicle Type</Label>
+            <Select value={formData.type} onValueChange={(value: "car" | "bike") => setFormData({ ...formData, type: value })}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="car">Car</SelectItem>
+                <SelectItem value="bike">Bike</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          {/* Owner Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Owner Information</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="owner">Owner Name *</Label>
-                <Input
-                  id="owner"
-                  placeholder="Full name"
-                  value={vehicleData.owner}
-                  onChange={(e) => setVehicleData({...vehicleData, owner: e.target.value})}
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="phone">Phone Number *</Label>
-                <Input
-                  id="phone"
-                  placeholder="+1-555-0123"
-                  value={vehicleData.phone}
-                  onChange={(e) => setVehicleData({...vehicleData, phone: e.target.value})}
-                  required
-                />
-              </div>
-            </div>
+          <div>
+            <Label htmlFor="make">Make</Label>
+            <Input
+              id="make"
+              value={formData.make}
+              onChange={(e) => setFormData({ ...formData, make: e.target.value })}
+              required
+            />
           </div>
 
-          {/* Service Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Service Information</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="currentKilometers">Current Kilometers</Label>
-                <Input
-                  id="currentKilometers"
-                  type="number"
-                  placeholder="0"
-                  value={vehicleData.currentKilometers}
-                  onChange={(e) => setVehicleData({...vehicleData, currentKilometers: Number(e.target.value)})}
-                  min="0"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="lastServiceKilometers">Last Service Kilometers</Label>
-                <Input
-                  id="lastServiceKilometers"
-                  type="number"
-                  placeholder="0"
-                  value={vehicleData.lastServiceKilometers}
-                  onChange={(e) => setVehicleData({...vehicleData, lastServiceKilometers: Number(e.target.value)})}
-                  min="0"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="lastService">Last Service Date</Label>
-                <Input
-                  id="lastService"
-                  type="date"
-                  value={vehicleData.lastService}
-                  onChange={(e) => setVehicleData({...vehicleData, lastService: e.target.value})}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="nextService">Next Service Date</Label>
-                <Input
-                  id="nextService"
-                  type="date"
-                  value={vehicleData.nextService}
-                  onChange={(e) => setVehicleData({...vehicleData, nextService: e.target.value})}
-                />
-              </div>
-            </div>
+          <div>
+            <Label htmlFor="model">Model</Label>
+            <Input
+              id="model"
+              value={formData.model}
+              onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+              required
+            />
           </div>
 
-          {/* Submit Buttons */}
-          <div className="flex justify-end gap-2 border-t pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div>
+            <Label htmlFor="year">Year</Label>
+            <Input
+              id="year"
+              type="number"
+              value={formData.year}
+              onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="owner">Owner</Label>
+            <Input
+              id="owner"
+              value={formData.owner}
+              onChange={(e) => setFormData({ ...formData, owner: e.target.value })}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="lastService">Last Service Date</Label>
+            <Input
+              id="lastService"
+              type="date"
+              value={formData.lastService}
+              onChange={(e) => setFormData({ ...formData, lastService: e.target.value })}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="nextService">Next Service Date</Label>
+            <Input
+              id="nextService"
+              type="date"
+              value={formData.nextService}
+              onChange={(e) => setFormData({ ...formData, nextService: e.target.value })}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="lastServiceKilometers">Last Service Kilometers</Label>
+            <Input
+              id="lastServiceKilometers"
+              type="number"
+              value={formData.lastServiceKilometers}
+              onChange={(e) => setFormData({ ...formData, lastServiceKilometers: parseInt(e.target.value) })}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="currentKilometers">Current Kilometers</Label>
+            <Input
+              id="currentKilometers"
+              type="number"
+              value={formData.currentKilometers}
+              onChange={(e) => setFormData({ ...formData, currentKilometers: parseInt(e.target.value) })}
+              required
+            />
+          </div>
+
+          <div className="flex justify-end space-x-2">
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button 
-              type="submit" 
-              disabled={isSubmitting || !vehicleData.type || !vehicleData.make || !vehicleData.model || !vehicleData.owner || !vehicleData.phone}
-            >
-              {isSubmitting ? "Adding..." : "Add Vehicle"}
+            <Button type="submit" disabled={addVehicle.isPending}>
+              {addVehicle.isPending ? "Adding..." : "Add Vehicle"}
             </Button>
           </div>
         </form>

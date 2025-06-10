@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { getVehicles, Vehicle } from '@/services/supabaseService';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getVehicles, addVehicle, Vehicle } from '@/services/supabaseService';
 
 export const useVehicles = () => {
   return useQuery({
@@ -9,6 +9,18 @@ export const useVehicles = () => {
     queryFn: getVehicles,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+export const useAddVehicle = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (vehicle: Omit<Vehicle, 'id'>) => addVehicle(vehicle),
+    onSuccess: () => {
+      // Invalidate vehicles to refresh the data
+      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+    },
   });
 };
 

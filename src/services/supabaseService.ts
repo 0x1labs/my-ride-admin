@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Vehicle {
@@ -117,6 +116,40 @@ export const getVehicleById = async (id: string): Promise<Vehicle | null> => {
   }
 
   return data ? transformVehicle(data) : null;
+};
+
+export const addVehicle = async (vehicle: Omit<Vehicle, 'id'>): Promise<Vehicle> => {
+  console.log('Adding new vehicle to Supabase...');
+  
+  // Generate a new ID
+  const newId = `VH${String(Date.now()).slice(-6)}`;
+  
+  const { data, error } = await supabase
+    .from('vehicles')
+    .insert({
+      id: newId,
+      type: vehicle.type,
+      make: vehicle.make,
+      model: vehicle.model,
+      year: vehicle.year,
+      owner: vehicle.owner,
+      phone: vehicle.phone,
+      last_service: vehicle.lastService,
+      next_service: vehicle.nextService,
+      status: vehicle.status,
+      last_service_kilometers: vehicle.lastServiceKilometers,
+      current_kilometers: vehicle.currentKilometers,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error adding vehicle:', error);
+    throw error;
+  }
+
+  console.log('Vehicle added successfully:', data.id);
+  return transformVehicle(data);
 };
 
 export const getServiceRecords = async (): Promise<ServiceRecord[]> => {
