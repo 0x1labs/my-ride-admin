@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortBy, setSortBy] = useState("nextService");
   const [notes, setNotes] = useState<{ [key: string]: string }>({});
+  const [showNotesFor, setShowNotesFor] = useState<{ [key: string]: boolean }>({});
   
   const { toast } = useToast();
   const { data: callRecords = [] } = useCallRecords();
@@ -42,7 +44,8 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
       const matchesFilter = filterStatus === "all" || 
         (filterStatus === "called" && isCalled) ||
         (filterStatus === "not-called" && !isCalled) ||
-        (filterStatus === "overdue" && vehicle.status === "overdue");
+        (filterStatus === "overdue" && vehicle.status === "overdue") ||
+        (filterStatus === "upcoming" && vehicle.status === "upcoming");
 
       return matchesSearch && matchesFilter;
     });
@@ -101,6 +104,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
       // Clear notes after successful update
       if (called && notes[vehicleId]) {
         setNotes(prev => ({ ...prev, [vehicleId]: "" }));
+        setShowNotesFor(prev => ({ ...prev, [vehicleId]: false }));
       }
     } catch (error) {
       console.error('Error updating call record:', error);
@@ -114,6 +118,14 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
 
   const updateNotes = (vehicleId: string, noteText: string) => {
     setNotes(prev => ({ ...prev, [vehicleId]: noteText }));
+  };
+
+  const toggleNotesSection = (vehicleId: string) => {
+    setShowNotesFor(prev => ({ ...prev, [vehicleId]: !prev[vehicleId] }));
+    // Initialize notes if not already present
+    if (!notes[vehicleId]) {
+      setNotes(prev => ({ ...prev, [vehicleId]: "" }));
+    }
   };
 
   return (
@@ -197,6 +209,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
                 <SelectItem value="called">Already Called</SelectItem>
                 <SelectItem value="not-called">Not Called</SelectItem>
                 <SelectItem value="overdue">Overdue Services</SelectItem>
+                <SelectItem value="upcoming">Upcoming Services</SelectItem>
               </SelectContent>
             </Select>
 
@@ -225,6 +238,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
           const callRecord = callRecords.find(record => record.vehicleId === vehicle.id);
           const isCalled = callRecord?.called || false;
           const existingNotes = callRecord?.notes || "";
+          const showNotes = showNotesFor[vehicle.id] || false;
           
           return (
             <Card key={vehicle.id} className={`${vehicle.status === 'overdue' ? 'border-red-200 bg-red-50' : vehicle.status === 'upcoming' ? 'border-yellow-200 bg-yellow-50' : ''}`}>
@@ -274,34 +288,54 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
                       </div>
                     </div>
 
-                    {(existingNotes || notes[vehicle.id]) && (
+                    {existingNotes && (
                       <div className="mb-4">
-                        <Label className="text-sm font-medium">Call Notes</Label>
-                        {existingNotes && (
-                          <div className="mt-1 p-2 bg-gray-50 rounded text-sm">
-                            <strong>Previous notes:</strong> {existingNotes}
-                            {callRecord?.callDate && (
-                              <span className="text-gray-500 ml-2">
-                                (Called on {new Date(callRecord.callDate).toLocaleDateString()})
-                              </span>
-                            )}
-                          </div>
-                        )}
+                        <Label className="text-sm font-medium">Previous Call Notes</Label>
+                        <div className="mt-1 p-2 bg-gray-50 rounded text-sm">
+                          <strong>Notes:</strong> {existingNotes}
+                          {callRecord?.callDate && (
+                            <span className="text-gray-500 ml-2">
+                              (Called on {new Date(callRecord.callDate).toLocaleDateString()})
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {showNotes && (
+                      <div className="mb-4">
+                        <Label className="text-sm font-medium">Add Call Notes</Label>
                         <Textarea
                           placeholder="Add call notes..."
                           value={notes[vehicle.id] || ""}
                           onChange={(e) => updateNotes(vehicle.id, e.target.value)}
                           className="mt-2"
-                          rows={2}
+                          rows={3}
                         />
+                        <div className="flex gap-2 mt-2">
+                          <Button
+                            size="sm"
+                            onClick={() => updateCallStatus(vehicle.id, true)}
+                            disabled={updateCallRecord.isPending}
+                          >
+                            Save & Mark Called
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => toggleNotesSection(vehicle.id)}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
                       </div>
                     )}
 
-                    {!isCalled && !notes[vehicle.id] && (
+                    {!showNotes && !isCalled && (
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => updateNotes(vehicle.id, "")}
+                        onClick={() => toggleNotesSection(vehicle.id)}
                         className="mt-2"
                       >
                         <MessageSquare className="h-4 w-4 mr-2" />

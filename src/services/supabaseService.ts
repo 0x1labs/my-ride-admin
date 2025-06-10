@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Vehicle {
@@ -308,40 +309,4 @@ export const upsertCallRecord = async (vehicleId: string, called: boolean, notes
 
     return transformCallRecord(data);
   }
-};
-
-// Analytics data (keeping this static for now as requested)
-export const getAnalyticsData = () => {
-  return {
-    monthlyRevenue: [
-      { month: "Jan", revenue: 8420, services: 34 },
-      { month: "Feb", revenue: 9240, services: 41 },
-      { month: "Mar", revenue: 10380, services: 38 },
-      { month: "Apr", revenue: 11200, services: 45 },
-      { month: "May", revenue: 12450, services: 52 },
-      { month: "Jun", revenue: 9800, services: 28 }
-    ],
-    serviceTypes: [
-      { name: "Oil Change", value: 35, color: "#3B82F6" },
-      { name: "Brake Service", value: 25, color: "#10B981" },
-      { name: "Tire Service", value: 20, color: "#F59E0B" },
-      { name: "Engine Repair", value: 15, color: "#EF4444" },
-      { name: "Other", value: 5, color: "#6B7280" }
-    ],
-    dailyServices: [
-      { day: "Mon", services: 8 },
-      { day: "Tue", services: 12 },
-      { day: "Wed", services: 10 },
-      { day: "Thu", services: 15 },
-      { day: "Fri", services: 18 },
-      { day: "Sat", services: 14 },
-      { day: "Sun", services: 6 }
-    ],
-    metrics: {
-      averageServiceValue: 240,
-      monthlyServices: 52,
-      customerRetention: 87,
-      averageServiceTime: 2.5
-    }
-  };
 };
