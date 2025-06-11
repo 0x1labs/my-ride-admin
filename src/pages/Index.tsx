@@ -15,7 +15,7 @@ import { LogOut, Settings, Users } from "lucide-react";
 
 const Index = () => {
   const { user, profile, signOut } = useAuth();
-  const { data: vehicles, isLoading } = useVehicles();
+  const { data: vehicles = [], isLoading } = useVehicles();
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
   const [isAddVehicleModalOpen, setIsAddVehicleModalOpen] = useState(false);
   const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
@@ -67,11 +67,11 @@ const Index = () => {
           ) : (
             // Show the same service dashboard as regular users
             <div className="space-y-8">
-              <DashboardStats />
+              <DashboardStats vehicles={vehicles} />
               
               <div className="grid gap-6">
-                <CustomerCallDashboard />
-                <AnalyticsDashboard />
+                <CustomerCallDashboard vehicles={vehicles} />
+                <AnalyticsDashboard vehicles={vehicles} />
                 
                 <div className="grid gap-4">
                   <div className="flex justify-between items-center">
@@ -89,7 +89,7 @@ const Index = () => {
                         <VehicleCard
                           key={vehicle.id}
                           vehicle={vehicle}
-                          onAddService={() => {
+                          onServiceClick={() => {
                             setSelectedVehicle(vehicle.id);
                             setIsAddServiceModalOpen(true);
                           }}
@@ -103,18 +103,18 @@ const Index = () => {
                   )}
                 </div>
                 
-                <ServiceHistory />
+                <ServiceHistory vehicles={vehicles} />
               </div>
 
               <AddVehicleModal
-                isOpen={isAddVehicleModalOpen}
-                onClose={() => setIsAddVehicleModalOpen(false)}
+                open={isAddVehicleModalOpen}
+                onOpenChange={setIsAddVehicleModalOpen}
               />
 
               <AddServiceModal
                 isOpen={isAddServiceModalOpen}
                 onClose={() => setIsAddServiceModalOpen(false)}
-                vehicleId={selectedVehicle}
+                vehicles={vehicles}
               />
             </div>
           )}
@@ -140,11 +140,11 @@ const Index = () => {
         </div>
 
         <div className="space-y-8">
-          <DashboardStats />
+          <DashboardStats vehicles={vehicles} />
           
           <div className="grid gap-6">
-            <CustomerCallDashboard />
-            <AnalyticsDashboard />
+            <CustomerCallDashboard vehicles={vehicles} />
+            <AnalyticsDashboard vehicles={vehicles} />
             
             <div className="grid gap-4">
               <div className="flex justify-between items-center">
@@ -162,7 +162,7 @@ const Index = () => {
                     <VehicleCard
                       key={vehicle.id}
                       vehicle={vehicle}
-                      onAddService={() => {
+                      onServiceClick={() => {
                         setSelectedVehicle(vehicle.id);
                         setIsAddServiceModalOpen(true);
                       }}
@@ -176,18 +176,18 @@ const Index = () => {
               )}
             </div>
             
-            <ServiceHistory />
+            <ServiceHistory vehicles={vehicles} />
           </div>
 
           <AddVehicleModal
-            isOpen={isAddVehicleModalOpen}
-            onClose={() => setIsAddVehicleModalOpen(false)}
+            open={isAddVehicleModalOpen}
+            onOpenChange={setIsAddVehicleModalOpen}
           />
 
           <AddServiceModal
             isOpen={isAddServiceModalOpen}
             onClose={() => setIsAddServiceModalOpen(false)}
-            vehicleId={selectedVehicle}
+            vehicles={vehicles}
           />
         </div>
       </div>
