@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      authorized_emails: {
+        Row: {
+          authorized_by: string | null
+          created_at: string | null
+          email: string
+          id: string
+          is_active: boolean | null
+        }
+        Insert: {
+          authorized_by?: string | null
+          created_at?: string | null
+          email: string
+          id?: string
+          is_active?: boolean | null
+        }
+        Update: {
+          authorized_by?: string | null
+          created_at?: string | null
+          email?: string
+          id?: string
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
       call_records: {
         Row: {
           call_date: string | null
@@ -46,6 +70,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       service_records: {
         Row: {
@@ -162,10 +210,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["user_role"]
+        }
+        Returns: boolean
+      }
+      is_email_authorized: {
+        Args: { _email: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      user_role: "superadmin" | "service_center"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -280,6 +338,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["superadmin", "service_center"],
+    },
   },
 } as const

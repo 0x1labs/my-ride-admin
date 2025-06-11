@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Plus, Car, Bike, Calendar, Wrench, DollarSign, TrendingUp, Phone } from "lucide-react";
+import { Search, Plus, Car, Bike, Calendar, Wrench, DollarSign, TrendingUp, Phone, LogOut, Settings, User } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import ServiceHistory from "@/components/ServiceHistory";
 import ImprovedAddServiceModal from "@/components/ImprovedAddServiceModal";
 import AddVehicleModal from "@/components/AddVehicleModal";
@@ -14,8 +15,10 @@ import VehicleCard from "@/components/VehicleCard";
 import ImprovedDashboardStats from "@/components/ImprovedDashboardStats";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import CustomerCallDashboard from "@/components/CustomerCallDashboard";
+import SuperAdminPanel from "@/components/auth/SuperAdminPanel";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { useVehicles, useVehiclesWithFilters } from "@/hooks/useVehicles";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +30,8 @@ const Index = () => {
   const [serviceFilter, setServiceFilter] = useState("all");
   const [sortBy, setSortBy] = useState("default");
   const vehiclesPerPage = 12;
+
+  const { user, profile, signOut } = useAuth();
 
   // Get vehicles from Supabase using React Query
   const { data: allVehicles = [], isLoading: vehiclesLoading, error: vehiclesError } = useVehicles();
@@ -54,6 +59,10 @@ const Index = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     handleFilterChange();
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
   };
 
   // Show loading state
@@ -90,15 +99,41 @@ const Index = () => {
               <h1 className="text-3xl font-bold text-gray-900">ServiceTracker Pro</h1>
               <p className="text-gray-600">Vehicle Service Management System</p>
             </div>
-            <div className="flex gap-2">
-              <AddVehicleModal />
-              <Button 
-                onClick={() => setIsAddServiceOpen(true)}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Service Record
-              </Button>
+            <div className="flex items-center gap-4">
+              <div className="flex gap-2">
+                <AddVehicleModal />
+                <Button 
+                  onClick={() => setIsAddServiceOpen(true)}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Service Record
+                </Button>
+              </div>
+              
+              {/* User Menu */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    {profile?.email}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem className="flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">{profile?.email}</span>
+                      <span className="text-xs text-gray-500 capitalize">{profile?.role?.replace('_', ' ')}</span>
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 text-red-600">
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -107,7 +142,7 @@ const Index = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-white shadow-sm">
+          <TabsList className={`grid w-full bg-white shadow-sm ${profile?.role === 'superadmin' ? 'grid-cols-6' : 'grid-cols-5'}`}>
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               Dashboard
@@ -128,6 +163,12 @@ const Index = () => {
               <DollarSign className="h-4 w-4" />
               Analytics
             </TabsTrigger>
+            {profile?.role === 'superadmin' && (
+              <TabsTrigger value="admin" className="flex items-center gap-2">
+                <Settings className="h-4 w-4" />
+                Admin Panel
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="dashboard">
@@ -269,6 +310,12 @@ const Index = () => {
           <TabsContent value="analytics">
             <AnalyticsDashboard vehicles={allVehicles} />
           </TabsContent>
+
+          {profile?.role === 'superadmin' && (
+            <TabsContent value="admin">
+              <SuperAdminPanel />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
 
