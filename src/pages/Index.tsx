@@ -17,7 +17,6 @@ const Index = () => {
   const { user, profile, signOut } = useAuth();
   const { data: vehicles = [], isLoading } = useVehicles();
   const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
-  const [isAddVehicleModalOpen, setIsAddVehicleModalOpen] = useState(false);
   const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
   const [currentView, setCurrentView] = useState<'dashboard' | 'admin'>('dashboard');
 
@@ -76,9 +75,7 @@ const Index = () => {
                 <div className="grid gap-4">
                   <div className="flex justify-between items-center">
                     <h2 className="text-2xl font-semibold text-gray-900">Vehicles</h2>
-                    <Button onClick={() => setIsAddVehicleModalOpen(true)}>
-                      Add Vehicle
-                    </Button>
+                    <AddVehicleModal />
                   </div>
                   
                   {isLoading ? (
@@ -89,7 +86,7 @@ const Index = () => {
                         <VehicleCard
                           key={vehicle.id}
                           vehicle={vehicle}
-                          onServiceClick={() => {
+                          onViewHistory={() => {
                             setSelectedVehicle(vehicle.id);
                             setIsAddServiceModalOpen(true);
                           }}
@@ -105,11 +102,6 @@ const Index = () => {
                 
                 <ServiceHistory vehicles={vehicles} />
               </div>
-
-              <AddVehicleModal
-                open={isAddVehicleModalOpen}
-                onOpenChange={setIsAddVehicleModalOpen}
-              />
 
               <AddServiceModal
                 isOpen={isAddServiceModalOpen}
@@ -149,9 +141,7 @@ const Index = () => {
             <div className="grid gap-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold text-gray-900">Vehicles</h2>
-                <Button onClick={() => setIsAddVehicleModalOpen(true)}>
-                  Add Vehicle
-                </Button>
+                <AddVehicleModal />
               </div>
               
               {isLoading ? (
@@ -162,7 +152,7 @@ const Index = () => {
                     <VehicleCard
                       key={vehicle.id}
                       vehicle={vehicle}
-                      onServiceClick={() => {
+                      onViewHistory={() => {
                         setSelectedVehicle(vehicle.id);
                         setIsAddServiceModalOpen(true);
                       }}
@@ -178,11 +168,6 @@ const Index = () => {
             
             <ServiceHistory vehicles={vehicles} />
           </div>
-
-          <AddVehicleModal
-            open={isAddVehicleModalOpen}
-            onOpenChange={setIsAddVehicleModalOpen}
-          />
 
           <AddServiceModal
             isOpen={isAddServiceModalOpen}
