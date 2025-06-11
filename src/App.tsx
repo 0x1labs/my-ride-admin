@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import LoginPage from "./components/auth/LoginPage";
+import SuperAdminSetup from "./components/auth/SuperAdminSetup";
 import ResetPasswordPage from "./components/auth/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 
@@ -22,6 +23,7 @@ const App = () => (
         <AuthProvider>
           <Routes>
             <Route path="/auth" element={<LoginPage />} />
+            <Route path="/setup-superadmin" element={<SuperAdminSetup />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route 
               path="/" 

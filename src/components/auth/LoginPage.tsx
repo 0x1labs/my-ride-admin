@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -226,6 +225,18 @@ const LoginPage = () => {
               </form>
             </TabsContent>
           </Tabs>
+          <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-2">Need to set up a SuperAdmin account?</p>
+              <Button 
+                variant="link" 
+                className="text-blue-600 hover:text-blue-800"
+                onClick={() => navigate('/setup-superadmin')}
+              >
+                Create SuperAdmin Account
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
