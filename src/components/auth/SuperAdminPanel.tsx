@@ -7,9 +7,10 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Trash2, CheckCircle, XCircle, AlertCircle, Users } from 'lucide-react';
+import { Plus, Trash2, CheckCircle, XCircle, AlertCircle, Users, Shield, Database } from 'lucide-react';
 
 interface AuthorizedEmail {
   id: string;
@@ -161,12 +162,12 @@ const SuperAdminPanel = () => {
 
   return (
     <div className="space-y-6">
-      {/* Stats Cards */}
+      {/* Stats Overview */}
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Authorized</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{authorizedEmails.length}</div>
@@ -195,141 +196,165 @@ const SuperAdminPanel = () => {
         </Card>
       </div>
 
-      {/* Add New Email */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Authorize New Email</CardTitle>
-          <CardDescription>Add a new email address that can create an account</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleAddEmail} className="flex gap-4">
-            <div className="flex-1">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                placeholder="Enter email address"
-                required
-              />
-            </div>
-            <div className="flex items-end">
-              <Button type="submit" disabled={addEmailMutation.isPending}>
-                <Plus className="h-4 w-4 mr-2" />
-                {addEmailMutation.isPending ? 'Adding...' : 'Add Email'}
-              </Button>
-            </div>
-          </form>
-          
-          {error && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          
-          {message && (
-            <Alert className="mt-4">
-              <CheckCircle className="h-4 w-4" />
-              <AlertDescription>{message}</AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
+      {/* Main Tabs Interface */}
+      <Tabs defaultValue="authorize" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="authorize" className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Authorize Email
+          </TabsTrigger>
+          <TabsTrigger value="emails" className="flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Authorized Emails
+          </TabsTrigger>
+          <TabsTrigger value="users" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Registered Users
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Authorized Emails Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Authorized Emails</CardTitle>
-          <CardDescription>Manage email addresses that can create accounts</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {emailsLoading ? (
-            <div className="text-center py-4">Loading...</div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Added</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {authorizedEmails.map((email) => (
-                  <TableRow key={email.id}>
-                    <TableCell className="font-medium">{email.email}</TableCell>
-                    <TableCell>
-                      <Badge variant={email.is_active ? "default" : "secondary"}>
-                        {email.is_active ? "Active" : "Inactive"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatDate(email.created_at)}</TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleToggleStatus(email.id, email.is_active)}
-                          disabled={toggleEmailMutation.isPending}
-                        >
-                          {email.is_active ? <XCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDeleteEmail(email.id)}
-                          disabled={deleteEmailMutation.isPending}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+        {/* Authorize New Email Tab */}
+        <TabsContent value="authorize">
+          <Card>
+            <CardHeader>
+              <CardTitle>Authorize New Email</CardTitle>
+              <CardDescription>Add a new email address that can create an account</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleAddEmail} className="flex gap-4">
+                <div className="flex-1">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    placeholder="Enter email address"
+                    required
+                  />
+                </div>
+                <div className="flex items-end">
+                  <Button type="submit" disabled={addEmailMutation.isPending}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    {addEmailMutation.isPending ? 'Adding...' : 'Add Email'}
+                  </Button>
+                </div>
+              </form>
+              
+              {error && (
+                <Alert variant="destructive" className="mt-4">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              
+              {message && (
+                <Alert className="mt-4">
+                  <CheckCircle className="h-4 w-4" />
+                  <AlertDescription>{message}</AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* User Profiles Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Registered Users</CardTitle>
-          <CardDescription>Users who have created accounts</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {profilesLoading ? (
-            <div className="text-center py-4">Loading...</div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Registered</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {profiles.map((profile) => (
-                  <TableRow key={profile.id}>
-                    <TableCell className="font-medium">{profile.email}</TableCell>
-                    <TableCell>
-                      <Badge variant={profile.role === "superadmin" ? "default" : "secondary"}>
-                        {profile.role === "superadmin" ? "Super Admin" : "Service Center"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatDate(profile.created_at)}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
+        {/* Authorized Emails Tab */}
+        <TabsContent value="emails">
+          <Card>
+            <CardHeader>
+              <CardTitle>Authorized Emails</CardTitle>
+              <CardDescription>Manage email addresses that can create accounts</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {emailsLoading ? (
+                <div className="text-center py-8">Loading...</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Added</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {authorizedEmails.map((email) => (
+                      <TableRow key={email.id}>
+                        <TableCell className="font-medium">{email.email}</TableCell>
+                        <TableCell>
+                          <Badge variant={email.is_active ? "default" : "secondary"}>
+                            {email.is_active ? "Active" : "Inactive"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{formatDate(email.created_at)}</TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleToggleStatus(email.id, email.is_active)}
+                              disabled={toggleEmailMutation.isPending}
+                            >
+                              {email.is_active ? <XCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleDeleteEmail(email.id)}
+                              disabled={deleteEmailMutation.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Registered Users Tab */}
+        <TabsContent value="users">
+          <Card>
+            <CardHeader>
+              <CardTitle>Registered Users</CardTitle>
+              <CardDescription>Users who have created accounts</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {profilesLoading ? (
+                <div className="text-center py-8">Loading...</div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Registered</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {profiles.map((profile) => (
+                      <TableRow key={profile.id}>
+                        <TableCell className="font-medium">{profile.email}</TableCell>
+                        <TableCell>
+                          <Badge variant={profile.role === "superadmin" ? "default" : "secondary"}>
+                            {profile.role === "superadmin" ? "Super Admin" : "Service Center"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{formatDate(profile.created_at)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
