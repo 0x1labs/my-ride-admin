@@ -40,6 +40,7 @@ const Index = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [vehicleToDelete, setVehicleToDelete] = useState<Vehicle | null>(null);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [vehicleForNewService, setVehicleForNewService] = useState<Vehicle | null>(null);
 
   const { mutate: deleteVehicle, isPending: isDeleting } = useDeleteVehicle();
 
@@ -50,6 +51,11 @@ const Index = () => {
   const handleViewServiceHistory = (vehicle: Vehicle) => {
     setSelectedVehicleForHistory(vehicle);
     setIsServiceHistoryModalOpen(true);
+  };
+
+  const handleAddServiceRecord = (vehicle: Vehicle) => {
+    setVehicleForNewService(vehicle);
+    setIsAddServiceModalOpen(true);
   };
 
   const handleEditVehicle = (vehicle: Vehicle) => {
@@ -169,6 +175,7 @@ const Index = () => {
                           key={vehicle.id}
                           vehicle={vehicle}
                           onViewHistory={() => handleViewServiceHistory(vehicle)}
+                          onAddService={() => handleAddServiceRecord(vehicle)}
                           onEdit={() => handleEditVehicle(vehicle)}
                           onDelete={() => handleDeleteVehicle(vehicle)}
                         />
@@ -208,8 +215,12 @@ const Index = () => {
 
           <ImprovedAddServiceModal
             isOpen={isAddServiceModalOpen}
-            onClose={() => setIsAddServiceModalOpen(false)}
+            onClose={() => {
+              setIsAddServiceModalOpen(false);
+              setVehicleForNewService(null);
+            }}
             vehicles={vehicles}
+            vehicle={vehicleForNewService}
           />
 
           <EditVehicleModal

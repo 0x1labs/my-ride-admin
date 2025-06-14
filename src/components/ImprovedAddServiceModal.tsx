@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,9 +17,10 @@ interface ImprovedAddServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
   vehicles: Vehicle[];
+  vehicle?: Vehicle | null;
 }
 
-const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles }: ImprovedAddServiceModalProps) => {
+const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: ImprovedAddServiceModalProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -49,6 +50,20 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles }: ImprovedAddServi
   const [newPartCost, setNewPartCost] = useState<number>(0);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (vehicle) {
+        setSelectedOwnerId(vehicle.owner);
+        setSelectedOwnerName(vehicle.owner);
+        setSelectedVehicleId(vehicle.id);
+        setSelectedVehicle(vehicle);
+        setKilometers(vehicle.currentKilometers);
+      } else {
+        resetForm();
+      }
+    }
+  }, [isOpen, vehicle]);
 
   const handleOwnerChange = (ownerId: string, ownerName: string) => {
     setSelectedOwnerId(ownerId);

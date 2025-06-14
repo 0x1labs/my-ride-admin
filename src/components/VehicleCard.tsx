@@ -2,18 +2,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Car, Bike, Calendar, Phone, Eye, MoreVertical, Edit, Trash2 } from "lucide-react";
+import { Car, Bike, Calendar, Phone, Eye, MoreVertical, Edit, Trash2, Plus } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
   onViewHistory?: () => void;
+  onAddService: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-const VehicleCard = ({ vehicle, onViewHistory, onEdit, onDelete }: VehicleCardProps) => {
+const VehicleCard = ({ vehicle, onViewHistory, onAddService, onEdit, onDelete }: VehicleCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
@@ -101,17 +102,27 @@ const VehicleCard = ({ vehicle, onViewHistory, onEdit, onDelete }: VehicleCardPr
           </div>
         </div>
 
-        {onViewHistory && (
+        <div className="flex w-full items-center gap-2 pt-2">
+          {onViewHistory && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onViewHistory}
+              className="w-full"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              View History
+            </Button>
+          )}
           <Button 
-            variant="outline" 
             size="sm" 
-            onClick={onViewHistory}
+            onClick={onAddService}
             className="w-full"
           >
-            <Eye className="h-4 w-4 mr-2" />
-            View Service History
+            <Plus className="h-4 w-4 mr-2" />
+            Add Service
           </Button>
-        )}
+        </div>
       </CardContent>
     </Card>
   );
