@@ -65,7 +65,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
         
-        // When user signs out, clear cache
+        // Invalidate cache on sign-in or session restoration to refetch data
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+          queryClient.invalidateQueries();
+        }
+        
+        // When user signs out, clear cache completely
         if (event === 'SIGNED_OUT') {
           queryClient.clear();
         }
@@ -87,34 +92,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        fetchProfile(session.user.id).then((profileData) => {
-          setProfile(profileData);
-          setLoading(false);
-        });
-      } else {
-        setLoading(false);
-      }
-    });
-
+    // Initial session check is now handled by onAuthStateChange with INITIAL_SESSION event
+    
     return () => subscription.unsubscribe();
   }, [queryClient]);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    // Invalidation is now handled by onAuthStateChange
+    return await supabase.auth.signInWithPassword({
       email,
       password,
     });
-    if (!error) {
-      // On successful sign-in, invalidate all queries to refetch data for the new user
-      await queryClient.invalidateQueries();
-    }
-    return { error };
   };
 
   const signUp = async (email: string, password: string) => {
