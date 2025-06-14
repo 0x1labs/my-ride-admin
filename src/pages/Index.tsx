@@ -1,10 +1,11 @@
+
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardStats from "@/components/DashboardStats";
 import VehicleCard from "@/components/VehicleCard";
 import VehicleSearchAndFilter from "@/components/VehicleSearchAndFilter";
 import VehicleServiceHistoryModal from "@/components/VehicleServiceHistoryModal";
 import AddVehicleModal from "@/components/AddVehicleModal";
-import AddServiceModal from "@/components/AddServiceModal";
+import ImprovedAddServiceModal from "@/components/ImprovedAddServiceModal";
 import ServiceHistory from "@/components/ServiceHistory";
 import CustomerCallDashboard from "@/components/CustomerCallDashboard";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
@@ -13,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useVehicles, useDeleteVehicle } from "@/hooks/useVehicles";
 import { useState } from "react";
-import { LogOut, Car, Phone, BarChart3, History } from "lucide-react";
+import { LogOut, Car, Phone, BarChart3, History, Plus } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
 import EditVehicleModal from "@/components/EditVehicleModal";
 import {
@@ -143,7 +144,13 @@ const Index = () => {
             <TabsContent value="vehicles" className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-semibold text-gray-900">Vehicle Management</h2>
-                <AddVehicleModal />
+                <div className="flex items-center gap-2">
+                  <Button variant="outline" onClick={() => setIsAddServiceModalOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Service
+                  </Button>
+                  <AddVehicleModal />
+                </div>
               </div>
               
               <VehicleSearchAndFilter 
@@ -199,7 +206,7 @@ const Index = () => {
             vehicles={vehicles}
           />
 
-          <AddServiceModal
+          <ImprovedAddServiceModal
             isOpen={isAddServiceModalOpen}
             onClose={() => setIsAddServiceModalOpen(false)}
             vehicles={vehicles}
