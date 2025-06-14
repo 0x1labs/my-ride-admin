@@ -4,18 +4,17 @@ import DashboardStats from "@/components/DashboardStats";
 import VehicleCard from "@/components/VehicleCard";
 import VehicleSearchAndFilter from "@/components/VehicleSearchAndFilter";
 import VehicleServiceHistoryModal from "@/components/VehicleServiceHistoryModal";
-import AddVehicleModal from "@/components/AddVehicleModal";
-import ImprovedAddServiceModal from "@/components/ImprovedAddServiceModal";
 import ServiceHistory from "@/components/ServiceHistory";
 import CustomerCallDashboard from "@/components/CustomerCallDashboard";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import SuperAdminPanel from "@/components/auth/SuperAdminPanel";
-import { Button } from "@/components/ui/button";
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
+import VehicleActions from "@/components/dashboard/VehicleActions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useVehicles, useDeleteVehicle } from "@/hooks/useVehicles";
 import { useState } from "react";
-import { LogOut, Car, Phone, BarChart3, History, Plus } from "lucide-react";
-import { Vehicle } from "@/services/supabaseService";
+import { Car, Phone, BarChart3, History } from "lucide-react";
+import { Vehicle } from "@/types/vehicle";
 import EditVehicleModal from "@/components/EditVehicleModal";
 import {
   AlertDialog,
@@ -90,39 +89,21 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
         <div className="container mx-auto px-4 py-8">
-          {/* SuperAdmin Header */}
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">SuperAdmin Dashboard</h1>
-              <p className="text-gray-600">Welcome back, {user?.email}</p>
-            </div>
-            <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
-          </div>
-
+          <DashboardHeader
+            userEmail={user?.email}
+            onLogout={handleLogout}
+            title="SuperAdmin Dashboard"
+          />
           <SuperAdminPanel />
         </div>
       </div>
     );
   }
 
-  // Show regular service center interface with tabs
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <div className="container mx-auto px-4 py-8">
-        {/* Service Center Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">ServiceTracker Pro</h1>
-            <p className="text-gray-600">Welcome back, {user?.email}</p>
-          </div>
-          <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
-            <LogOut className="h-4 w-4" />
-            Logout
-          </Button>
-        </div>
+        <DashboardHeader userEmail={user?.email} onLogout={handleLogout} />
 
         <div className="space-y-8">
           <DashboardStats vehicles={vehicles} />
@@ -148,16 +129,13 @@ const Index = () => {
             </TabsList>
 
             <TabsContent value="vehicles" className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-semibold text-gray-900">Vehicle Management</h2>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" onClick={() => setIsAddServiceModalOpen(true)}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Service
-                  </Button>
-                  <AddVehicleModal />
-                </div>
-              </div>
+              <VehicleActions
+                vehicles={vehicles}
+                isAddServiceModalOpen={isAddServiceModalOpen}
+                onAddServiceModalChange={setIsAddServiceModalOpen}
+                vehicleForNewService={vehicleForNewService}
+                onVehicleForNewServiceChange={setVehicleForNewService}
+              />
               
               <VehicleSearchAndFilter 
                 vehicles={vehicles} 
@@ -211,16 +189,6 @@ const Index = () => {
             onClose={() => setIsServiceHistoryModalOpen(false)}
             vehicle={selectedVehicleForHistory}
             vehicles={vehicles}
-          />
-
-          <ImprovedAddServiceModal
-            isOpen={isAddServiceModalOpen}
-            onClose={() => {
-              setIsAddServiceModalOpen(false);
-              setVehicleForNewService(null);
-            }}
-            vehicles={vehicles}
-            vehicle={vehicleForNewService}
           />
 
           <EditVehicleModal

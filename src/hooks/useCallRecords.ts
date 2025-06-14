@@ -1,6 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getCallRecords, upsertCallRecord } from '@/services/supabaseService';
+import { getCallRecords, upsertCallRecord } from '@/services/callRecordService';
 
 export const useCallRecords = () => {
   return useQuery({
@@ -18,7 +18,6 @@ export const useUpdateCallRecord = () => {
     mutationFn: ({ vehicleId, called, notes }: { vehicleId: string; called: boolean; notes?: string }) =>
       upsertCallRecord(vehicleId, called, notes),
     onSuccess: () => {
-      // Invalidate call records to refresh the data
       queryClient.invalidateQueries({ queryKey: ['callRecords'] });
     },
   });

@@ -1,6 +1,6 @@
 
 import { useQuery } from '@tanstack/react-query';
-import { getServiceRecords, getServiceRecordsByVehicleId } from '@/services/supabaseService';
+import { getServiceRecords, getServiceRecordsByVehicleId } from '@/services/serviceRecordService';
 
 export const useServiceRecords = () => {
   return useQuery({

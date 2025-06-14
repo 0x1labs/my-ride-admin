@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect } from "react";
 import { useUpdateVehicle } from "@/hooks/useVehicles";
-import { Vehicle } from "@/services/supabaseService";
+import { Vehicle } from "@/types/vehicle";
 import { toast } from "sonner";
 
 const vehicleSchema = z.object({
