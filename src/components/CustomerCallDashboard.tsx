@@ -282,7 +282,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <div>
                         <p className="text-sm text-gray-500">Vehicle</p>
-                        <p className="font-medium">{vehicle.make} {vehicle.model} ({vehicle.year})</p>
+                        <p className="font-medium">{vehicle.make} {vehicle.model} {vehicle.variant && `(${vehicle.variant})`} ({vehicle.year})</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Last Service</p>
