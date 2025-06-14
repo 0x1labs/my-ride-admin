@@ -2,6 +2,8 @@
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardStats from "@/components/DashboardStats";
 import VehicleCard from "@/components/VehicleCard";
+import VehicleSearchAndFilter from "@/components/VehicleSearchAndFilter";
+import VehicleServiceHistoryModal from "@/components/VehicleServiceHistoryModal";
 import AddVehicleModal from "@/components/AddVehicleModal";
 import AddServiceModal from "@/components/AddServiceModal";
 import ServiceHistory from "@/components/ServiceHistory";
@@ -13,15 +15,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useVehicles } from "@/hooks/useVehicles";
 import { useState } from "react";
 import { LogOut, Car, Phone, BarChart3, History } from "lucide-react";
+import { Vehicle } from "@/services/supabaseService";
 
 const Index = () => {
   const { user, profile, signOut } = useAuth();
   const { data: vehicles = [], isLoading } = useVehicles();
-  const [selectedVehicle, setSelectedVehicle] = useState<string | null>(null);
+  const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
+  const [selectedVehicleForHistory, setSelectedVehicleForHistory] = useState<Vehicle | null>(null);
+  const [isServiceHistoryModalOpen, setIsServiceHistoryModalOpen] = useState(false);
   const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
 
   const handleLogout = async () => {
     await signOut();
+  };
+
+  const handleViewServiceHistory = (vehicle: Vehicle) => {
+    setSelectedVehicleForHistory(vehicle);
+    setIsServiceHistoryModalOpen(true);
   };
 
   // Show SuperAdmin interface for superadmin users - only user management
@@ -92,25 +102,34 @@ const Index = () => {
                 <AddVehicleModal />
               </div>
               
+              <VehicleSearchAndFilter 
+                vehicles={vehicles} 
+                onFilteredVehiclesChange={setFilteredVehicles}
+              />
+              
               {isLoading ? (
                 <div className="text-center py-8">Loading vehicles...</div>
-              ) : vehicles && vehicles.length > 0 ? (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {vehicles.map((vehicle) => (
-                    <VehicleCard
-                      key={vehicle.id}
-                      vehicle={vehicle}
-                      onViewHistory={() => {
-                        setSelectedVehicle(vehicle.id);
-                        setIsAddServiceModalOpen(true);
-                      }}
-                    />
-                  ))}
-                </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No vehicles found. Add your first vehicle to get started.
-                </div>
+                <>
+                  {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).length > 0 ? (
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).map((vehicle) => (
+                        <VehicleCard
+                          key={vehicle.id}
+                          vehicle={vehicle}
+                          onViewHistory={() => handleViewServiceHistory(vehicle)}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      {filteredVehicles.length === 0 && vehicles.length > 0 
+                        ? "No vehicles match your search criteria."
+                        : "No vehicles found. Add your first vehicle to get started."
+                      }
+                    </div>
+                  )}
+                </>
               )}
             </TabsContent>
 
@@ -126,6 +145,13 @@ const Index = () => {
               <ServiceHistory vehicles={vehicles} />
             </TabsContent>
           </Tabs>
+
+          <VehicleServiceHistoryModal
+            isOpen={isServiceHistoryModalOpen}
+            onClose={() => setIsServiceHistoryModalOpen(false)}
+            vehicle={selectedVehicleForHistory}
+            vehicles={vehicles}
+          />
 
           <AddServiceModal
             isOpen={isAddServiceModalOpen}
