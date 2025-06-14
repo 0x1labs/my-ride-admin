@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Vehicle {
@@ -334,7 +333,7 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
       vehicle_id: record.vehicleId,
       date: record.date,
       type: record.type,
-      parts: record.parts,
+      parts: record.parts as any, // Cast to 'any' to resolve TypeScript error
       labor_cost: record.laborCost,
       discount: record.discount,
       technician: record.technician,
