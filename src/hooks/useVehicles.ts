@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getVehicles, addVehicle, Vehicle } from '@/services/supabaseService';
+import { getVehicles, addVehicle, updateVehicle, deleteVehicle, Vehicle } from '@/services/supabaseService';
 
 export const useVehicles = () => {
   return useQuery({
@@ -19,6 +18,29 @@ export const useAddVehicle = () => {
     mutationFn: (vehicle: Omit<Vehicle, 'id'>) => addVehicle(vehicle),
     onSuccess: () => {
       // Invalidate vehicles to refresh the data
+      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+    },
+  });
+};
+
+export const useUpdateVehicle = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, updates }: { id: string; updates: Partial<Vehicle> }) => updateVehicle(id, updates),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['vehicles'] });
+      queryClient.invalidateQueries({ queryKey: ['vehicle', variables.id] });
+    },
+  });
+};
+
+export const useDeleteVehicle = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => deleteVehicle(id),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['vehicles'] });
     },
   });

@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardStats from "@/components/DashboardStats";
 import VehicleCard from "@/components/VehicleCard";
@@ -12,10 +11,22 @@ import AnalyticsDashboard from "@/components/AnalyticsDashboard";
 import SuperAdminPanel from "@/components/auth/SuperAdminPanel";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useVehicles } from "@/hooks/useVehicles";
+import { useVehicles, useDeleteVehicle } from "@/hooks/useVehicles";
 import { useState } from "react";
 import { LogOut, Car, Phone, BarChart3, History } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
+import EditVehicleModal from "@/components/EditVehicleModal";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 const Index = () => {
   const { user, profile, signOut } = useAuth();
@@ -24,6 +35,12 @@ const Index = () => {
   const [selectedVehicleForHistory, setSelectedVehicleForHistory] = useState<Vehicle | null>(null);
   const [isServiceHistoryModalOpen, setIsServiceHistoryModalOpen] = useState(false);
   const [isAddServiceModalOpen, setIsAddServiceModalOpen] = useState(false);
+  const [vehicleToEdit, setVehicleToEdit] = useState<Vehicle | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [vehicleToDelete, setVehicleToDelete] = useState<Vehicle | null>(null);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
+  const { mutate: deleteVehicle, isPending: isDeleting } = useDeleteVehicle();
 
   const handleLogout = async () => {
     await signOut();
@@ -32,6 +49,33 @@ const Index = () => {
   const handleViewServiceHistory = (vehicle: Vehicle) => {
     setSelectedVehicleForHistory(vehicle);
     setIsServiceHistoryModalOpen(true);
+  };
+
+  const handleEditVehicle = (vehicle: Vehicle) => {
+    setVehicleToEdit(vehicle);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDeleteVehicle = (vehicle: Vehicle) => {
+    setVehicleToDelete(vehicle);
+    setIsDeleteAlertOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (vehicleToDelete) {
+      deleteVehicle(vehicleToDelete.id, {
+        onSuccess: () => {
+          toast.success(`Vehicle ${vehicleToDelete.make} ${vehicleToDelete.model} deleted.`);
+          setIsDeleteAlertOpen(false);
+          setVehicleToDelete(null);
+        },
+        onError: (error) => {
+          toast.error(`Failed to delete vehicle: ${error.message}`);
+          setIsDeleteAlertOpen(false);
+          setVehicleToDelete(null);
+        },
+      });
+    }
   };
 
   // Show SuperAdmin interface for superadmin users - only user management
@@ -118,6 +162,8 @@ const Index = () => {
                           key={vehicle.id}
                           vehicle={vehicle}
                           onViewHistory={() => handleViewServiceHistory(vehicle)}
+                          onEdit={() => handleEditVehicle(vehicle)}
+                          onDelete={() => handleDeleteVehicle(vehicle)}
                         />
                       ))}
                     </div>
@@ -158,6 +204,33 @@ const Index = () => {
             onClose={() => setIsAddServiceModalOpen(false)}
             vehicles={vehicles}
           />
+
+          <EditVehicleModal
+            isOpen={isEditModalOpen}
+            onClose={() => {
+              setIsEditModalOpen(false);
+              setVehicleToEdit(null);
+            }}
+            vehicle={vehicleToEdit}
+          />
+
+          <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the
+                  vehicle and all associated service and call records.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setVehicleToDelete(null)}>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={confirmDelete} disabled={isDeleting}>
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </div>

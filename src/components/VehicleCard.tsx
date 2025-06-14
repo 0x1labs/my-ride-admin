@@ -2,15 +2,18 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Car, Bike, Calendar, Phone, Eye } from "lucide-react";
+import { Car, Bike, Calendar, Phone, Eye, MoreVertical, Edit, Trash2 } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
   onViewHistory?: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-const VehicleCard = ({ vehicle, onViewHistory }: VehicleCardProps) => {
+const VehicleCard = ({ vehicle, onViewHistory, onEdit, onDelete }: VehicleCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
@@ -46,9 +49,29 @@ const VehicleCard = ({ vehicle, onViewHistory }: VehicleCardProps) => {
               {vehicle.variant && <span className="text-sm font-normal text-gray-600"> ({vehicle.variant})</span>}
             </CardTitle>
           </div>
-          <Badge className={getStatusColor(vehicle.status)}>
-            {vehicle.status}
-          </Badge>
+          <div className="flex items-center gap-1">
+            <Badge className={getStatusColor(vehicle.status)}>
+              {vehicle.status}
+            </Badge>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <span className="sr-only">Open menu</span>
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={onEdit}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  <span>Edit</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onDelete} className="text-red-600 focus:text-red-600 focus:bg-red-50">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  <span>Delete</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
         <p className="text-sm text-gray-600">VIN: {vehicle.id}</p>
       </CardHeader>
