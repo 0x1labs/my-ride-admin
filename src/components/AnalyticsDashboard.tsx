@@ -1,84 +1,158 @@
 
+import { useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
-import { TrendingUp, DollarSign, Wrench, Calendar } from "lucide-react";
-import { Vehicle } from "@/services/supabaseService";
+import { TrendingUp, DollarSign, Wrench, Users, UserCheck } from "lucide-react";
+import { Vehicle, ServiceRecord } from "@/services/supabaseService";
 
 interface AnalyticsDashboardProps {
   vehicles: Vehicle[];
+  serviceRecords: ServiceRecord[];
 }
 
-const getAnalyticsData = () => {
-  return {
-    metrics: {
-      averageServiceValue: 285,
-      monthlyServices: 42,
-      customerRetention: 85,
-      averageServiceTime: 2.5
-    },
-    monthlyRevenue: [
-      { month: "Jan", revenue: 12400, services: 38 },
-      { month: "Feb", revenue: 13200, services: 42 },
-      { month: "Mar", revenue: 11800, services: 35 },
-      { month: "Apr", revenue: 14500, services: 48 },
-      { month: "May", revenue: 13900, services: 45 },
-      { month: "Jun", revenue: 15200, services: 52 }
-    ],
-    serviceTypes: [
-      { name: "Oil Change", value: 35, color: "#3B82F6" },
-      { name: "Brake Service", value: 25, color: "#10B981" },
-      { name: "Tire Replacement", value: 20, color: "#F59E0B" },
-      { name: "Engine Tune-up", value: 15, color: "#EF4444" },
-      { name: "Other", value: 5, color: "#8B5CF6" }
-    ],
-    dailyServices: [
-      { day: "Mon", services: 8 },
-      { day: "Tue", services: 12 },
-      { day: "Wed", services: 10 },
-      { day: "Thu", services: 15 },
-      { day: "Fri", services: 14 },
-      { day: "Sat", services: 9 },
-      { day: "Sun", services: 4 }
-    ]
-  };
-};
+const COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#6366F1"];
 
-const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
-  // Get analytics data from centralized source
-  const analyticsData = getAnalyticsData();
+const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProps) => {
 
-  const vehicleTypes = [
+  const analyticsData = useMemo(() => {
+    if (!vehicles.length || !serviceRecords.length) {
+      return {
+        metrics: {
+          averageServiceValue: 0,
+          monthlyServices: 0,
+          repeatBusinessRate: 0,
+        },
+        monthlyRevenue: Array(6).fill({ month: 'N/A', revenue: 0, services: 0 }),
+        serviceTypes: [],
+        dailyServices: Array(7).fill({ day: 'N/A', services: 0 }),
+        topPerformer: { name: 'N/A', services: 0 },
+      };
+    }
+
+    // Metrics
+    const totalRevenue = serviceRecords.reduce((acc, record) => {
+      const partsCost = record.parts.reduce((sum, part) => sum + part.cost, 0);
+      return acc + record.laborCost + partsCost - record.discount;
+    }, 0);
+    const totalServices = serviceRecords.length;
+    const averageServiceValue = totalServices > 0 ? totalRevenue / totalServices : 0;
+
+    const now = new Date();
+    const currentMonthServices = serviceRecords.filter(r => {
+      const recordDate = new Date(r.date);
+      return recordDate.getFullYear() === now.getFullYear() && recordDate.getMonth() === now.getMonth();
+    }).length;
+
+    const serviceCountsByVehicle = serviceRecords.reduce((acc, record) => {
+      acc[record.vehicleId] = (acc[record.vehicleId] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const servicedVehiclesCount = Object.keys(serviceCountsByVehicle).length;
+    const repeatVehiclesCount = Object.values(serviceCountsByVehicle).filter(count => count > 1).length;
+    const repeatBusinessRate = servicedVehiclesCount > 0 ? (repeatVehiclesCount / servicedVehiclesCount) * 100 : 0;
+
+    // Monthly Revenue (last 6 months)
+    const monthlyRevenueData = [];
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const month = date.toLocaleString('default', { month: 'short' });
+      const year = date.getFullYear();
+
+      const monthRecords = serviceRecords.filter(r => {
+        const recordDate = new Date(r.date);
+        return recordDate.getFullYear() === year && recordDate.getMonth() === date.getMonth();
+      });
+
+      const revenue = monthRecords.reduce((acc, record) => {
+        const partsCost = record.parts.reduce((sum, part) => sum + part.cost, 0);
+        return acc + record.laborCost + partsCost - record.discount;
+      }, 0);
+
+      monthlyRevenueData.push({ month: `${month} ${year.toString().slice(-2)}`, revenue, services: monthRecords.length });
+    }
+
+    // Service Types
+    const serviceTypesCount = serviceRecords.reduce((acc, record) => {
+      acc[record.type] = (acc[record.type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    const serviceTypesData = Object.entries(serviceTypesCount).map(([name, value], index) => ({
+      name,
+      value,
+      color: COLORS[index % COLORS.length]
+    })).sort((a,b) => b.value - a.value);
+
+    // Daily Services (last 7 days)
+    const dailyServicesData = [];
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const day = dayNames[date.getDay()];
+      
+      const dayRecords = serviceRecords.filter(r => new Date(r.date).toDateString() === date.toDateString()).length;
+      dailyServicesData.push({ day, services: dayRecords });
+    }
+    
+    // Top Performer
+    const technicianCounts = serviceRecords.reduce((acc, record) => {
+        if (record.technician) {
+            acc[record.technician] = (acc[record.technician] || 0) + 1;
+        }
+        return acc;
+    }, {} as Record<string, number>);
+
+    const topPerformerData = Object.entries(technicianCounts).reduce(
+      (top, [name, services]) => (services > top.services ? { name, services } : top),
+      { name: 'N/A', services: 0 }
+    );
+
+    return {
+      metrics: {
+        averageServiceValue: Math.round(averageServiceValue),
+        monthlyServices: currentMonthServices,
+        repeatBusinessRate: Math.round(repeatBusinessRate),
+      },
+      monthlyRevenue: monthlyRevenueData,
+      serviceTypes: serviceTypesData,
+      dailyServices: dailyServicesData,
+      topPerformer: topPerformerData,
+    };
+  }, [vehicles, serviceRecords]);
+
+  const vehicleTypes = useMemo(() => [
     { name: "Cars", value: vehicles.filter(v => v.type === "car").length, color: "#3B82F6" },
     { name: "Bikes", value: vehicles.filter(v => v.type === "bike").length, color: "#10B981" }
-  ];
+  ], [vehicles]);
 
-  const metrics = [
+  const metricsCards = [
     {
       title: "Average Service Value",
       value: `$${analyticsData.metrics.averageServiceValue}`,
-      change: "+12%",
+      description: "from all services",
       icon: DollarSign,
       color: "text-green-600"
     },
     {
       title: "Services This Month",
       value: analyticsData.metrics.monthlyServices.toString(),
-      change: "+8%",
+      description: "in current month",
       icon: Wrench,
       color: "text-blue-600"
     },
     {
-      title: "Customer Retention",
-      value: `${analyticsData.metrics.customerRetention}%`,
-      change: "+5%",
+      title: "Repeat Business",
+      value: `${analyticsData.metrics.repeatBusinessRate}%`,
+      description: "of serviced vehicles",
       icon: TrendingUp,
       color: "text-purple-600"
     },
     {
-      title: "Avg. Service Time",
-      value: `${analyticsData.metrics.averageServiceTime}h`,
-      change: "-15min",
-      icon: Calendar,
+      title: "Total Vehicles",
+      value: vehicles.length,
+      description: `${vehicleTypes[0].value} cars, ${vehicleTypes[1].value} bikes`,
+      icon: Users,
       color: "text-orange-600"
     }
   ];
@@ -89,7 +163,7 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
       
       {/* Key Metrics */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {metrics.map((metric, index) => (
+        {metricsCards.map((metric, index) => (
           <Card key={index} className="bg-white">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">
@@ -99,8 +173,8 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{metric.value}</div>
-              <p className={`text-xs ${metric.color}`}>
-                {metric.change} from last month
+              <p className="text-xs text-muted-foreground">
+                {metric.description}
               </p>
             </CardContent>
           </Card>
@@ -109,25 +183,27 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
 
       {/* Charts Grid */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Monthly Revenue Chart */}
+        {/* Monthly Revenue & Services Chart */}
         <Card className="bg-white">
           <CardHeader>
-            <CardTitle>Monthly Revenue</CardTitle>
-            <CardDescription>Revenue and service count over the last 6 months</CardDescription>
+            <CardTitle>Monthly Revenue & Services</CardTitle>
+            <CardDescription>Over the last 6 months</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={analyticsData.monthlyRevenue}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
-                <YAxis />
+                <YAxis yAxisId="left" orientation="left" stroke="#3B82F6" />
+                <YAxis yAxisId="right" orientation="right" stroke="#10B981" />
                 <Tooltip 
                   formatter={(value, name) => [
-                    name === 'revenue' ? `$${value}` : value,
-                    name === 'revenue' ? 'Revenue' : 'Services'
+                    name === 'Revenue' ? `$${Intl.NumberFormat('en-US').format(value as number)}` : value,
+                    name
                   ]}
                 />
-                <Bar dataKey="revenue" fill="#3B82F6" name="revenue" />
+                <Bar yAxisId="left" dataKey="revenue" fill="#3B82F6" name="Revenue" />
+                <Bar yAxisId="right" dataKey="services" fill="#10B981" name="Services" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -137,7 +213,7 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
         <Card className="bg-white">
           <CardHeader>
             <CardTitle>Service Types Distribution</CardTitle>
-            <CardDescription>Breakdown of service types this month</CardDescription>
+            <CardDescription>Breakdown of all recorded service types</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -165,7 +241,7 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
         <Card className="bg-white">
           <CardHeader>
             <CardTitle>Vehicle Types</CardTitle>
-            <CardDescription>Distribution of cars vs bikes in service</CardDescription>
+            <CardDescription>Distribution of cars vs bikes in the system</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -200,7 +276,7 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
               <LineChart data={analyticsData.dailyServices}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="day" />
-                <YAxis />
+                <YAxis allowDecimals={false} />
                 <Tooltip />
                 <Line 
                   type="monotone" 
@@ -216,31 +292,20 @@ const AnalyticsDashboard = ({ vehicles }: AnalyticsDashboardProps) => {
       </div>
 
       {/* Additional Insights */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card className="bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
-          <CardHeader>
-            <CardTitle className="text-blue-800">Peak Hours</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-blue-700">Most services occur between 10 AM - 2 PM on weekdays</p>
-          </CardContent>
-        </Card>
-
+      <div className="grid gap-6 md:grid-cols-1">
         <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
           <CardHeader>
-            <CardTitle className="text-green-800">Top Performer</CardTitle>
+            <CardTitle className="text-green-800 flex items-center gap-2">
+              <UserCheck /> Top Performer
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-green-700">Mike Wilson completed 15 services this month</p>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200">
-          <CardHeader>
-            <CardTitle className="text-purple-800">Customer Satisfaction</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-purple-700">Average rating: 4.8/5 based on 124 reviews</p>
+            <p className="text-green-700 font-semibold text-lg">
+              {analyticsData.topPerformer.name}
+            </p>
+             <p className="text-green-600">
+              Completed {analyticsData.topPerformer.services} services in total.
+            </p>
           </CardContent>
         </Card>
       </div>

@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardStats from "@/components/DashboardStats";
 import VehicleCard from "@/components/VehicleCard";
@@ -12,6 +11,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import VehicleActions from "@/components/dashboard/VehicleActions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useVehicles, useDeleteVehicle } from "@/hooks/useVehicles";
+import { useServiceRecords } from "@/hooks/useServiceRecords";
 import { useState } from "react";
 import { Car, Phone, BarChart3, History } from "lucide-react";
 import { Vehicle } from "@/types/vehicle";
@@ -31,6 +31,7 @@ import { toast } from "sonner";
 const Index = () => {
   const { user, profile, signOut } = useAuth();
   const { data: vehicles = [], isLoading } = useVehicles();
+  const { data: serviceRecords = [] } = useServiceRecords();
   const [filteredVehicles, setFilteredVehicles] = useState<Vehicle[]>([]);
   const [selectedVehicleForHistory, setSelectedVehicleForHistory] = useState<Vehicle | null>(null);
   const [isServiceHistoryModalOpen, setIsServiceHistoryModalOpen] = useState(false);
@@ -176,7 +177,7 @@ const Index = () => {
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-6">
-              <AnalyticsDashboard vehicles={vehicles} />
+              <AnalyticsDashboard vehicles={vehicles} serviceRecords={serviceRecords} />
             </TabsContent>
 
             <TabsContent value="history" className="space-y-6">
