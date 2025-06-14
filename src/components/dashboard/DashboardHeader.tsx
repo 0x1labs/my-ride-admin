@@ -1,6 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
+import Logo from "@/components/Logo";
 
 interface DashboardHeaderProps {
   userEmail?: string;
@@ -12,13 +13,17 @@ interface DashboardHeaderProps {
 const DashboardHeader = ({ 
   userEmail, 
   onLogout, 
-  title = "ServiceTracker Pro", 
+  title, 
   subtitle 
 }: DashboardHeaderProps) => {
   return (
     <div className="flex justify-between items-center mb-8">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
+        {title ? (
+          <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
+        ) : (
+          <Logo />
+        )}
         <p className="text-gray-600">
           {subtitle || `Welcome back, ${userEmail}`}
         </p>

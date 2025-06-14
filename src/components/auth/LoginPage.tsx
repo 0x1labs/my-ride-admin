@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff, AlertCircle } from 'lucide-react';
+import Logo from '@/components/Logo';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -80,7 +82,9 @@ const LoginPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-gray-900">ServiceTracker Pro</CardTitle>
+          <div className="mx-auto mb-4">
+            <Logo />
+          </div>
           <CardDescription>Vehicle Service Management System</CardDescription>
         </CardHeader>
         <CardContent>

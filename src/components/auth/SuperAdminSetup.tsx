@@ -88,7 +88,7 @@ const SuperAdminSetup = () => {
             <Shield className="h-6 w-6 text-blue-600" />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">SuperAdmin Setup</CardTitle>
-          <CardDescription>Create the first SuperAdmin account for ServiceTracker Pro</CardDescription>
+          <CardDescription>Create the first SuperAdmin account for MyRide</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSetupSuperAdmin} className="space-y-4">
