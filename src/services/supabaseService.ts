@@ -125,6 +125,12 @@ export const addVehicle = async (vehicle: Omit<Vehicle, 'id'>): Promise<Vehicle>
   // Generate a new ID
   const newId = `VH${String(Date.now()).slice(-6)}`;
   
+  // Get current user ID
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+  
   const { data, error } = await supabase
     .from('vehicles')
     .insert({
@@ -140,6 +146,7 @@ export const addVehicle = async (vehicle: Omit<Vehicle, 'id'>): Promise<Vehicle>
       status: vehicle.status,
       last_service_kilometers: vehicle.lastServiceKilometers,
       current_kilometers: vehicle.currentKilometers,
+      user_id: user.id,
     })
     .select()
     .single();
@@ -194,6 +201,12 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
   // Generate a new ID
   const newId = `SRV${String(Date.now()).slice(-6)}`;
   
+  // Get current user ID
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+  
   // Convert parts array to JSON for database storage
   const partsJson = JSON.stringify(record.parts);
   
@@ -212,6 +225,7 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
       has_coupon: record.hasCoupon,
       coupon_type: record.couponType,
       kilometers: record.kilometers,
+      user_id: user.id,
     })
     .select()
     .single();
@@ -262,6 +276,12 @@ export const getCallRecordsByVehicleId = async (vehicleId: string): Promise<Call
 export const upsertCallRecord = async (vehicleId: string, called: boolean, notes?: string): Promise<CallRecord> => {
   console.log(`Upserting call record for vehicle: ${vehicleId}`);
   
+  // Get current user ID
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+  
   // First, check if a call record exists for this vehicle
   const { data: existingRecord } = await supabase
     .from('call_records')
@@ -298,6 +318,7 @@ export const upsertCallRecord = async (vehicleId: string, called: boolean, notes
         called,
         call_date: called ? new Date().toISOString() : null,
         notes,
+        user_id: user.id,
       })
       .select()
       .single();
