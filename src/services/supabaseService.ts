@@ -101,6 +101,7 @@ export const getVehicles = async (): Promise<Vehicle[]> => {
   const { data, error } = await supabase
     .from('vehicles')
     .select('*')
+    .eq('user_id', user.id) // Explicitly filter by user ID
     .order('id');
 
   if (error) {
@@ -254,6 +255,7 @@ export const getServiceRecords = async (): Promise<ServiceRecord[]> => {
   const { data, error } = await supabase
     .from('service_records')
     .select('*')
+    .eq('user_id', user.id) // Explicitly filter by user ID
     .order('date', { ascending: false });
 
   if (error) {
@@ -347,6 +349,7 @@ export const getCallRecords = async (): Promise<CallRecord[]> => {
   const { data, error } = await supabase
     .from('call_records')
     .select('*')
+    .eq('user_id', user.id) // Explicitly filter by user ID
     .order('created_at', { ascending: false });
 
   if (error) {
