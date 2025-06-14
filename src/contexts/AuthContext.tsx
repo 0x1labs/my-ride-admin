@@ -1,7 +1,7 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface Profile {
   id: string;
@@ -37,6 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -63,6 +64,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
+        
+        // When user signs out, clear cache
+        if (event === 'SIGNED_OUT') {
+          queryClient.clear();
+        }
+
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -96,13 +103,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [queryClient]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    if (!error) {
+      // On successful sign-in, invalidate all queries to refetch data for the new user
+      await queryClient.invalidateQueries();
+    }
     return { error };
   };
 
