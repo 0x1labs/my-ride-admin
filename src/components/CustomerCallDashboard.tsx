@@ -76,10 +76,16 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
     const overdueCount = vehicles.filter(v => v.status === "overdue").length;
     const upcomingCount = vehicles.filter(v => v.status === "upcoming").length;
     
+    const pendingCallVehicles = vehicles.filter(v => 
+      (v.status === 'overdue' || v.status === 'upcoming') &&
+      !callRecords.some(record => record.vehicleId === v.id && record.called)
+    );
+    const notCalledCount = pendingCallVehicles.length;
+
     return {
       totalVehicles,
       calledCount,
-      notCalledCount: totalVehicles - calledCount,
+      notCalledCount,
       overdueCount,
       upcomingCount,
       callRate: totalVehicles > 0 ? Math.round((calledCount / totalVehicles) * 100) : 0
