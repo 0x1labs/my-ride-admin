@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -181,17 +180,29 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Vehicle and Owner Selection */}
-          <VehicleOwnerSelect
-            vehicles={vehicles}
-            selectedOwnerId={selectedOwnerId}
-            selectedVehicleId={selectedVehicleId}
-            onOwnerChange={handleOwnerChange}
-            onVehicleChange={handleVehicleChange}
-            isAddingNewOwner={isAddingNewOwner}
-            onToggleAddNewOwner={() => setIsAddingNewOwner(!isAddingNewOwner)}
-            newOwnerName={newOwnerName}
-            onNewOwnerNameChange={setNewOwnerName}
-          />
+          {vehicle ? (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Vehicle Information</h3>
+              <div className="p-4 border rounded-md bg-gray-50 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+                <p><span className="font-medium text-gray-600">Owner:</span> {vehicle.owner}</p>
+                <p><span className="font-medium text-gray-600">Vehicle:</span> {vehicle.make} {vehicle.model} ({vehicle.year})</p>
+                <p><span className="font-medium text-gray-600">VIN:</span> {vehicle.id}</p>
+                {vehicle.variant && <p><span className="font-medium text-gray-600">Variant:</span> {vehicle.variant}</p>}
+              </div>
+            </div>
+          ) : (
+            <VehicleOwnerSelect
+              vehicles={vehicles}
+              selectedOwnerId={selectedOwnerId}
+              selectedVehicleId={selectedVehicleId}
+              onOwnerChange={handleOwnerChange}
+              onVehicleChange={handleVehicleChange}
+              isAddingNewOwner={isAddingNewOwner}
+              onToggleAddNewOwner={() => setIsAddingNewOwner(!isAddingNewOwner)}
+              newOwnerName={newOwnerName}
+              onNewOwnerNameChange={setNewOwnerName}
+            />
+          )}
 
           {/* Service Details */}
           {selectedVehicle && (
