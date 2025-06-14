@@ -13,6 +13,7 @@ export interface Vehicle {
   status: "active" | "overdue" | "upcoming";
   lastServiceKilometers: number;
   currentKilometers: number;
+  variant?: string;
 }
 
 export interface Part {
@@ -57,6 +58,7 @@ const transformVehicle = (row: any): Vehicle => ({
   status: row.status,
   lastServiceKilometers: row.last_service_kilometers,
   currentKilometers: row.current_kilometers,
+  variant: row.variant,
 });
 
 // Helper function to transform database row to ServiceRecord interface
@@ -164,6 +166,7 @@ export const addVehicle = async (vehicle: Omit<Vehicle, 'id'>): Promise<Vehicle>
       status: vehicle.status,
       last_service_kilometers: vehicle.lastServiceKilometers,
       current_kilometers: vehicle.currentKilometers,
+      variant: vehicle.variant,
       user_id: user.id,
     })
     .select()

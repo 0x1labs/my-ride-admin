@@ -15,6 +15,7 @@ const AddVehicleModal = () => {
     type: "car" as "car" | "bike",
     make: "",
     model: "",
+    variant: "",
     year: new Date().getFullYear(),
     owner: "",
     phone: "",
@@ -43,7 +44,7 @@ const AddVehicleModal = () => {
 
       toast({
         title: "Vehicle Added",
-        description: `${formData.make} ${formData.model} has been added successfully.`,
+        description: `${formData.make} ${formData.model} ${formData.variant ? `(${formData.variant})` : ''} has been added successfully.`,
       });
 
       // Reset form and close modal
@@ -51,6 +52,7 @@ const AddVehicleModal = () => {
         type: "car",
         make: "",
         model: "",
+        variant: "",
         year: new Date().getFullYear(),
         owner: "",
         phone: "",
@@ -116,6 +118,16 @@ const AddVehicleModal = () => {
               value={formData.model}
               onChange={(e) => setFormData({ ...formData, model: e.target.value })}
               required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="variant">Variant</Label>
+            <Input
+              id="variant"
+              value={formData.variant}
+              onChange={(e) => setFormData({ ...formData, variant: e.target.value })}
+              placeholder="e.g., Superior, Advanced, Base"
             />
           </div>
 

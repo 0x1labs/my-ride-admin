@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,10 @@ const VehicleCard = ({ vehicle, onViewHistory }: VehicleCardProps) => {
               <Car className="h-5 w-5 text-blue-600" /> : 
               <Bike className="h-5 w-5 text-green-600" />
             }
-            <CardTitle className="text-lg">{vehicle.make} {vehicle.model}</CardTitle>
+            <CardTitle className="text-lg">
+              {vehicle.make} {vehicle.model}
+              {vehicle.variant && <span className="text-sm font-normal text-gray-600"> ({vehicle.variant})</span>}
+            </CardTitle>
           </div>
           <Badge className={getStatusColor(vehicle.status)}>
             {vehicle.status}
