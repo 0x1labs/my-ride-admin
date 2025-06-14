@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Vehicle {
@@ -62,20 +63,39 @@ const transformVehicle = (row: any): Vehicle => ({
 });
 
 // Helper function to transform database row to ServiceRecord interface
-const transformServiceRecord = (row: any): ServiceRecord => ({
-  id: row.id,
-  vehicleId: row.vehicle_id,
-  date: row.date,
-  type: row.type,
-  parts: row.parts || [],
-  laborCost: parseFloat(row.labor_cost || 0),
-  discount: parseFloat(row.discount || 0),
-  technician: row.technician,
-  notes: row.notes || '',
-  hasCoupon: row.has_coupon || false,
-  couponType: row.coupon_type,
-  kilometers: row.kilometers,
-});
+const transformServiceRecord = (row: any): ServiceRecord => {
+  let parsedParts: Part[] = [];
+  if (row.parts) {
+    if (typeof row.parts === 'string') {
+      try {
+        const parts = JSON.parse(row.parts);
+        if (Array.isArray(parts)) {
+          parsedParts = parts;
+        }
+      } catch (error) {
+        console.error("Failed to parse parts JSON string:", row.parts, error);
+      }
+    } else if (Array.isArray(row.parts)) {
+      parsedParts = row.parts;
+    }
+  }
+
+  return {
+    id: row.id,
+    vehicleId: row.vehicle_id,
+    date: row.date,
+    type: row.type,
+    parts: parsedParts,
+    laborCost: parseFloat(row.labor_cost || 0),
+    discount: parseFloat(row.discount || 0),
+    technician: row.technician,
+    notes: row.notes || '',
+    hasCoupon: row.has_coupon || false,
+    couponType: row.coupon_type,
+    kilometers: row.kilometers,
+  };
+};
+
 
 // Helper function to transform database row to CallRecord interface
 const transformCallRecord = (row: any): CallRecord => ({
@@ -304,8 +324,8 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
     throw new Error('User not authenticated');
   }
   
-  // Convert parts array to JSON for database storage
-  const partsJson = JSON.stringify(record.parts);
+  // The 'parts' field is of type jsonb, so we can pass the array directly.
+  // The Supabase client will handle serialization.
   
   const { data, error } = await supabase
     .from('service_records')
@@ -314,7 +334,7 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
       vehicle_id: record.vehicleId,
       date: record.date,
       type: record.type,
-      parts: partsJson,
+      parts: record.parts,
       labor_cost: record.laborCost,
       discount: record.discount,
       technician: record.technician,
