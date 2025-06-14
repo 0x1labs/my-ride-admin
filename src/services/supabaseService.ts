@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface Vehicle {
@@ -88,6 +87,15 @@ const transformCallRecord = (row: any): CallRecord => ({
 export const getVehicles = async (): Promise<Vehicle[]> => {
   console.log('Fetching vehicles from Supabase...');
   
+  // Check if user is authenticated
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    console.log('User not authenticated, returning empty array');
+    return [];
+  }
+
+  console.log('User authenticated:', user.email);
+  
   const { data, error } = await supabase
     .from('vehicles')
     .select('*')
@@ -98,12 +106,20 @@ export const getVehicles = async (): Promise<Vehicle[]> => {
     throw error;
   }
 
+  console.log('Raw vehicles data from DB:', data);
   console.log('Vehicles fetched successfully:', data?.length);
   return data?.map(transformVehicle) || [];
 };
 
 export const getVehicleById = async (id: string): Promise<Vehicle | null> => {
   console.log(`Fetching vehicle by id: ${id}`);
+  
+  // Check if user is authenticated
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    console.log('User not authenticated, returning null');
+    return null;
+  }
   
   const { data, error } = await supabase
     .from('vehicles')
@@ -130,6 +146,8 @@ export const addVehicle = async (vehicle: Omit<Vehicle, 'id'>): Promise<Vehicle>
   if (!user) {
     throw new Error('User not authenticated');
   }
+  
+  console.log('Adding vehicle for user:', user.email);
   
   const { data, error } = await supabase
     .from('vehicles')
@@ -163,6 +181,13 @@ export const addVehicle = async (vehicle: Omit<Vehicle, 'id'>): Promise<Vehicle>
 export const getServiceRecords = async (): Promise<ServiceRecord[]> => {
   console.log('Fetching all service records from Supabase...');
   
+  // Check if user is authenticated
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    console.log('User not authenticated, returning empty array');
+    return [];
+  }
+  
   const { data, error } = await supabase
     .from('service_records')
     .select('*')
@@ -179,6 +204,13 @@ export const getServiceRecords = async (): Promise<ServiceRecord[]> => {
 
 export const getServiceRecordsByVehicleId = async (vehicleId: string): Promise<ServiceRecord[]> => {
   console.log(`Fetching service records for vehicle: ${vehicleId}`);
+  
+  // Check if user is authenticated
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    console.log('User not authenticated, returning empty array');
+    return [];
+  }
   
   const { data, error } = await supabase
     .from('service_records')
@@ -242,6 +274,13 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
 export const getCallRecords = async (): Promise<CallRecord[]> => {
   console.log('Fetching call records from Supabase...');
   
+  // Check if user is authenticated
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    console.log('User not authenticated, returning empty array');
+    return [];
+  }
+  
   const { data, error } = await supabase
     .from('call_records')
     .select('*')
@@ -258,6 +297,13 @@ export const getCallRecords = async (): Promise<CallRecord[]> => {
 
 export const getCallRecordsByVehicleId = async (vehicleId: string): Promise<CallRecord[]> => {
   console.log(`Fetching call records for vehicle: ${vehicleId}`);
+  
+  // Check if user is authenticated
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    console.log('User not authenticated, returning empty array');
+    return [];
+  }
   
   const { data, error } = await supabase
     .from('call_records')
