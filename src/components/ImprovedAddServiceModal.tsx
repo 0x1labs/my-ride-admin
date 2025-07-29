@@ -11,6 +11,8 @@ import { Vehicle, Part, addServiceRecord } from "@/services/supabaseService";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import VehicleOwnerSelect from "./VehicleOwnerSelect";
+import CouponTypeSelect from "./forms/CouponTypeSelect";
+import { CouponType } from "@/types/couponType";
 
 interface ImprovedAddServiceModalProps {
   isOpen: boolean;
@@ -42,6 +44,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
   const [notes, setNotes] = useState("");
   const [hasCoupon, setHasCoupon] = useState(false);
   const [couponType, setCouponType] = useState("");
+  const [selectedCouponType, setSelectedCouponType] = useState<CouponType | null>(null);
 
   // Parts Management
   const [parts, setParts] = useState<Part[]>([]);
@@ -106,6 +109,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
     setNotes("");
     setHasCoupon(false);
     setCouponType("");
+    setSelectedCouponType(null);
     setParts([]);
     setNewPartName("");
     setNewPartCost(0);
@@ -358,15 +362,17 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
               </div>
 
               {hasCoupon && (
-                <div>
-                  <Label htmlFor="couponType">Coupon Type</Label>
-                  <Input
-                    id="couponType"
-                    placeholder="Enter coupon type"
-                    value={couponType}
-                    onChange={(e) => setCouponType(e.target.value)}
-                  />
-                </div>
+                <CouponTypeSelect
+                  value={couponType}
+                  onValueChange={setCouponType}
+                  onCouponTypeSelect={(couponType) => {
+                    setSelectedCouponType(couponType);
+                    // Auto-set labor cost to 0 for Free coupons
+                    if (couponType?.laborDiscountType === 'none') {
+                      setLaborCost(0);
+                    }
+                  }}
+                />
               )}
 
               {/* Notes */}
