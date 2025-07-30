@@ -17,4 +17,5 @@ export interface ServiceRecord {
   hasCoupon: boolean;
   couponType: string | null;
   kilometers: number;
+  serviceCenterName?: string;
 }

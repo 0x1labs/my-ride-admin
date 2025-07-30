@@ -33,6 +33,7 @@ const transformServiceRecord = (row: any): ServiceRecord => {
     hasCoupon: row.has_coupon || false,
     couponType: row.coupon_type,
     kilometers: row.kilometers,
+    serviceCenterName: row.service_center_name,
   };
 };
 
@@ -48,7 +49,6 @@ export const getServiceRecords = async (): Promise<ServiceRecord[]> => {
   const { data, error } = await supabase
     .from('service_records')
     .select('*')
-    .eq('user_id', user.id)
     .order('date', { ascending: false });
 
   if (error) {
@@ -93,6 +93,18 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
   if (!user) {
     throw new Error('User not authenticated');
   }
+
+  // Get the current user's service center name
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('service_center_name')
+    .eq('id', user.id)
+    .single();
+
+  if (profileError) {
+    console.error('Error fetching user profile:', profileError);
+    throw profileError;
+  }
   
   const { data, error } = await supabase
     .from('service_records')
@@ -110,6 +122,7 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
       coupon_type: record.couponType,
       kilometers: record.kilometers,
       user_id: user.id,
+      service_center_name: profile.service_center_name,
     })
     .select()
     .single();
