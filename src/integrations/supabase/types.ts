@@ -46,7 +46,7 @@ export type Database = {
           id: string
           notes: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
           vehicle_id: string
         }
         Insert: {
@@ -56,7 +56,7 @@ export type Database = {
           id?: string
           notes?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
           vehicle_id: string
         }
         Update: {
@@ -66,7 +66,7 @@ export type Database = {
           id?: string
           notes?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
           vehicle_id?: string
         }
         Relationships: [
@@ -152,7 +152,7 @@ export type Database = {
           technician: string
           type: string
           updated_at: string | null
-          user_id: string | null
+          user_id: string
           vehicle_id: string
         }
         Insert: {
@@ -170,7 +170,7 @@ export type Database = {
           technician: string
           type: string
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
           vehicle_id: string
         }
         Update: {
@@ -188,7 +188,7 @@ export type Database = {
           technician?: string
           type?: string
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
           vehicle_id?: string
         }
         Relationships: [
@@ -216,7 +216,7 @@ export type Database = {
           status: string
           type: string
           updated_at: string | null
-          user_id: string | null
+          user_id: string
           variant: string | null
           year: number
         }
@@ -234,7 +234,7 @@ export type Database = {
           status: string
           type: string
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
           variant?: string | null
           year: number
         }
@@ -252,7 +252,7 @@ export type Database = {
           status?: string
           type?: string
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
           variant?: string | null
           year?: number
         }
