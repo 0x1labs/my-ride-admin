@@ -115,6 +115,7 @@ export type Database = {
           email: string
           id: string
           role: Database["public"]["Enums"]["user_role"]
+          service_center_name: string
           updated_at: string | null
         }
         Insert: {
@@ -122,6 +123,7 @@ export type Database = {
           email: string
           id: string
           role?: Database["public"]["Enums"]["user_role"]
+          service_center_name: string
           updated_at?: string | null
         }
         Update: {
@@ -129,6 +131,7 @@ export type Database = {
           email?: string
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
+          service_center_name?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -145,6 +148,7 @@ export type Database = {
           labor_cost: number
           notes: string | null
           parts: Json
+          service_center_name: string | null
           technician: string
           type: string
           updated_at: string | null
@@ -162,6 +166,7 @@ export type Database = {
           labor_cost?: number
           notes?: string | null
           parts?: Json
+          service_center_name?: string | null
           technician: string
           type: string
           updated_at?: string | null
@@ -179,6 +184,7 @@ export type Database = {
           labor_cost?: number
           notes?: string | null
           parts?: Json
+          service_center_name?: string | null
           technician?: string
           type?: string
           updated_at?: string | null
