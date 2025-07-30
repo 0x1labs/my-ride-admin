@@ -123,6 +123,9 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                         {formatDate(record.date)}
                       </div>
                       <p className="text-sm text-gray-600">by {record.technician}</p>
+                      {record.serviceCenterName && (
+                        <p className="text-xs text-blue-600 font-medium">{record.serviceCenterName}</p>
+                      )}
                     </div>
                   </div>
                 </CardHeader>

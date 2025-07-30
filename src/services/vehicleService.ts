@@ -69,10 +69,11 @@ export const getVehicleById = async (id: string): Promise<Vehicle | null> => {
   return data ? transformVehicle(data) : null;
 };
 
-export const addVehicle = async (vehicle: Omit<Vehicle, 'id'>): Promise<Vehicle> => {
+export const addVehicle = async (vehicle: Omit<Vehicle, 'id'> & { id?: string }): Promise<Vehicle> => {
   console.log('Adding new vehicle to Supabase...');
   
-  const newId = `VH${String(Date.now()).slice(-6)}`;
+  // Use provided ID or generate one if not provided
+  const vehicleId = vehicle.id || `VH${String(Date.now()).slice(-6)}`;
   
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
@@ -84,7 +85,7 @@ export const addVehicle = async (vehicle: Omit<Vehicle, 'id'>): Promise<Vehicle>
   const { data, error } = await supabase
     .from('vehicles')
     .insert({
-      id: newId,
+      id: vehicleId,
       type: vehicle.type,
       make: vehicle.make,
       model: vehicle.model,

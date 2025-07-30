@@ -10,6 +10,7 @@ import VehicleForm from "@/components/forms/VehicleForm";
 const AddVehicleModal = () => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
+    id: "",
     type: "car" as "car" | "bike",
     make: "",
     model: "",
@@ -45,6 +46,7 @@ const AddVehicleModal = () => {
       });
 
       setFormData({
+        id: "",
         type: "car",
         make: "",
         model: "",
