@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useVehicles, useDeleteVehicle } from "@/hooks/useVehicles";
 import { useServiceRecords } from "@/hooks/useServiceRecords";
 import { useState } from "react";
-import { Car, Phone, BarChart3, History } from "lucide-react";
+import { Bike, Phone, BarChart3, History } from "lucide-react";
 import { Vehicle } from "@/types/vehicle";
 import EditVehicleModal from "@/components/EditVehicleModal";
 import {
@@ -72,12 +72,12 @@ const Index = () => {
     if (vehicleToDelete) {
       deleteVehicle(vehicleToDelete.id, {
         onSuccess: () => {
-          toast.success(`Vehicle ${vehicleToDelete.make} ${vehicleToDelete.model} deleted.`);
+          toast.success(`Bike ${vehicleToDelete.make} ${vehicleToDelete.model} deleted.`);
           setIsDeleteAlertOpen(false);
           setVehicleToDelete(null);
         },
         onError: (error) => {
-          toast.error(`Failed to delete vehicle: ${error.message}`);
+          toast.error(`Failed to delete bike: ${error.message}`);
           setIsDeleteAlertOpen(false);
           setVehicleToDelete(null);
         },
@@ -88,7 +88,7 @@ const Index = () => {
   // Show SuperAdmin interface for superadmin users - only user management
   if (profile?.role === 'superadmin') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100">
         <div className="container mx-auto px-4 py-8">
           <DashboardHeader
             userEmail={user?.email}
@@ -102,7 +102,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-100">
       <div className="container mx-auto px-4 py-8">
         <DashboardHeader userEmail={user?.email} onLogout={handleLogout} />
 
@@ -112,8 +112,8 @@ const Index = () => {
           <Tabs defaultValue="vehicles" className="space-y-6">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="vehicles" className="flex items-center gap-2">
-                <Car className="h-4 w-4" />
-                Vehicles
+                <Bike className="h-4 w-4" />
+                Bikes
               </TabsTrigger>
               <TabsTrigger value="calls" className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
@@ -144,7 +144,7 @@ const Index = () => {
               />
               
               {isLoading ? (
-                <div className="text-center py-8">Loading vehicles...</div>
+                <div className="text-center py-8">Loading bikes...</div>
               ) : (
                 <>
                   {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).length > 0 ? (
@@ -163,8 +163,8 @@ const Index = () => {
                   ) : (
                     <div className="text-center py-8 text-gray-500">
                       {filteredVehicles.length === 0 && vehicles.length > 0 
-                        ? "No vehicles match your search criteria."
-                        : "No vehicles found. Add your first vehicle to get started."
+                        ? "No bikes match your search criteria."
+                        : "No bikes found. Add your first bike to get started."
                       }
                     </div>
                   )}
@@ -207,7 +207,7 @@ const Index = () => {
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete the
-                  vehicle and all associated service and call records.
+                  bike and all associated service and call records.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

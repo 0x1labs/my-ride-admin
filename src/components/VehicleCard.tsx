@@ -42,8 +42,8 @@ const VehicleCard = ({ vehicle, onViewHistory, onAddService, onEdit, onDelete }:
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {vehicle.type === "car" ? 
-              <Car className="h-5 w-5 text-blue-600" /> : 
-              <Bike className="h-5 w-5 text-green-600" />
+              <Car className="h-5 w-5 text-primary" /> : 
+              <Bike className="h-5 w-5 text-primary" />
             }
             <CardTitle className="text-lg">
               {vehicle.make} {vehicle.model}

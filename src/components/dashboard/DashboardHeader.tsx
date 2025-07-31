@@ -20,12 +20,12 @@ const DashboardHeader = ({
     <div className="flex justify-between items-center mb-8">
       <div>
         {title ? (
-          <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
+          <h1 className="text-3xl font-display font-bold text-gray-900">{title}</h1>
         ) : (
           <Logo />
         )}
         <p className="text-gray-600">
-          {subtitle || `Welcome back, ${userEmail}`}
+          {subtitle || `Ready to race, ${userEmail?.split('@')[0]}!`}
         </p>
       </div>
       <Button variant="outline" onClick={onLogout} className="flex items-center gap-2">
