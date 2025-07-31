@@ -84,7 +84,7 @@ export const getServiceRecordsByVehicleId = async (vehicleId: string): Promise<S
   return data?.map(transformServiceRecord) || [];
 };
 
-export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promise<ServiceRecord> => {
+export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'> & { serviceCenterName?: string }): Promise<ServiceRecord> => {
   console.log('Adding new service record to Supabase...');
   
   const newId = `SRV${String(Date.now()).slice(-6)}`;
@@ -94,16 +94,22 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
     throw new Error('User not authenticated');
   }
 
-  // Get the current user's service center name
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('service_center_name')
-    .eq('id', user.id)
-    .single();
+  let serviceCenterName = record.serviceCenterName;
 
-  if (profileError) {
-    console.error('Error fetching user profile:', profileError);
-    throw profileError;
+  // If no service center name provided, use the current user's service center name
+  if (!serviceCenterName) {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('service_center_name')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) {
+      console.error('Error fetching user profile:', profileError);
+      throw profileError;
+    }
+    
+    serviceCenterName = profile.service_center_name;
   }
   
   const { data, error } = await supabase
@@ -122,7 +128,7 @@ export const addServiceRecord = async (record: Omit<ServiceRecord, 'id'>): Promi
       coupon_type: record.couponType,
       kilometers: record.kilometers,
       user_id: user.id,
-      service_center_name: profile.service_center_name,
+      service_center_name: serviceCenterName,
     })
     .select()
     .single();

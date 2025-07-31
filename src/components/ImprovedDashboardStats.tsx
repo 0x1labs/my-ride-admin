@@ -55,17 +55,17 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
 
   const stats = [
     {
-      title: "Total Vehicles",
+      title: "Total Bikes",
       value: totalVehicles,
       description: `${totalCars} cars, ${totalBikes} bikes`,
-      icon: Car,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50"
+      icon: Bike,
+      color: "text-primary",
+      bgColor: "bg-orange-50"
     },
     {
       title: "Active Services",
       value: activeServices,
-      description: "Up to date vehicles",
+      description: "Up to date bikes",
       icon: CheckCircle,
       color: "text-green-600",
       bgColor: "bg-green-50"
@@ -88,7 +88,7 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
     },
     {
       title: "Monthly Revenue",
-      value: "$12,450",
+      value: "NRs 1,24,500",
       description: "+15% from last month",
       icon: DollarSign,
       color: "text-purple-600",

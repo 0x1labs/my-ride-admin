@@ -12,6 +12,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import VehicleOwnerSelect from "./VehicleOwnerSelect";
 import CouponTypeSelect from "./forms/CouponTypeSelect";
+import ServiceCenterSelect from "./forms/ServiceCenterSelect";
+import ServiceTypeSelect from "./forms/ServiceTypeSelect";
 import { CouponType } from "@/types/couponType";
 
 interface ImprovedAddServiceModalProps {
@@ -35,6 +37,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
 
   // Service Details
   const [serviceType, setServiceType] = useState("");
+  const [serviceCenterName, setServiceCenterName] = useState("");
   const [serviceDate, setServiceDate] = useState(new Date().toISOString().split('T')[0]);
   const [nextServiceDate, setNextServiceDate] = useState("");
   const [technician, setTechnician] = useState("");
@@ -100,6 +103,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
     setIsAddingNewOwner(false);
     setNewOwnerName("");
     setServiceType("");
+    setServiceCenterName("");
     setServiceDate(new Date().toISOString().split('T')[0]);
     setNextServiceDate("");
     setTechnician("");
@@ -142,6 +146,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
         hasCoupon,
         couponType: hasCoupon ? couponType : null,
         kilometers,
+        serviceCenterName: serviceCenterName || undefined,
       });
 
       // Invalidate and refetch related queries
@@ -214,16 +219,11 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
               <h3 className="text-lg font-semibold">Service Details</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="serviceType">Service Type *</Label>
-                  <Input
-                    id="serviceType"
-                    placeholder="e.g., Oil Change, Brake Service"
-                    value={serviceType}
-                    onChange={(e) => setServiceType(e.target.value)}
-                    required
-                  />
-                </div>
+                <ServiceTypeSelect
+                  value={serviceType}
+                  onValueChange={setServiceType}
+                  required
+                />
 
                 <div>
                   <Label htmlFor="serviceDate">Service Date *</Label>
@@ -256,6 +256,11 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     required
                   />
                 </div>
+
+                <ServiceCenterSelect
+                  value={serviceCenterName}
+                  onValueChange={setServiceCenterName}
+                />
 
                 <div>
                   <Label htmlFor="kilometers">Current Kilometers</Label>
@@ -299,7 +304,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                       <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
                         <Badge variant="secondary">{part.name}</Badge>
                         <div className="flex items-center gap-2">
-                          <span className="font-medium">${part.cost.toFixed(2)}</span>
+                          <span className="font-medium">NRs {part.cost.toFixed(2)}</span>
                           <Button
                             type="button"
                             variant="ghost"
@@ -344,8 +349,8 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                 <div className="flex items-end">
                   <div className="w-full">
                     <Label>Total Amount</Label>
-                    <div className="text-2xl font-bold text-blue-600">
-                      ${calculateTotal().toFixed(2)}
+                    <div className="text-2xl font-bold text-primary">
+                      NRs {calculateTotal().toFixed(2)}
                     </div>
                   </div>
                 </div>

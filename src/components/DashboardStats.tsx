@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Car, Bike, AlertTriangle, CheckCircle, DollarSign, Calendar } from "lucide-react";
+import { Bike, AlertTriangle, CheckCircle, DollarSign } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
 
 interface DashboardStatsProps {
@@ -40,7 +40,7 @@ const DashboardStats = ({ vehicles }: DashboardStatsProps) => {
     },
     {
       title: "Monthly Revenue",
-      value: "$12,450",
+      value: "NRs 1,24,500",
       description: "+15% from last month",
       icon: DollarSign,
       color: "text-purple-600",

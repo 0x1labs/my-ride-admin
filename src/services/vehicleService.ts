@@ -33,7 +33,6 @@ export const getVehicles = async (): Promise<Vehicle[]> => {
   const { data, error } = await supabase
     .from('vehicles')
     .select('*')
-    .eq('user_id', user.id)
     .order('id');
 
   if (error) {
