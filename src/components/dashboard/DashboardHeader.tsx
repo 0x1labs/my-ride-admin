@@ -1,7 +1,8 @@
 
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, Car, Bike } from "lucide-react";
 import Logo from "@/components/Logo";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface DashboardHeaderProps {
   userEmail?: string;
@@ -16,6 +17,8 @@ const DashboardHeader = ({
   title, 
   subtitle 
 }: DashboardHeaderProps) => {
+  const { vehicleType, setVehicleType } = useTheme();
+
   return (
     <div className="flex justify-between items-center mb-8">
       <div>
@@ -28,10 +31,32 @@ const DashboardHeader = ({
           {subtitle || `Welcome back, ${userEmail}`}
         </p>
       </div>
-      <Button variant="outline" onClick={onLogout} className="flex items-center gap-2">
-        <LogOut className="h-4 w-4" />
-        Logout
-      </Button>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 bg-gray-100 p-1 rounded-lg">
+          <Button
+            variant={vehicleType === 'bike' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setVehicleType('bike')}
+            className="flex items-center gap-1"
+          >
+            <Bike className="h-4 w-4" />
+            Bike
+          </Button>
+          <Button
+            variant={vehicleType === 'car' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setVehicleType('car')}
+            className="flex items-center gap-1"
+          >
+            <Car className="h-4 w-4" />
+            Car
+          </Button>
+        </div>
+        <Button variant="outline" onClick={onLogout} className="flex items-center gap-2">
+          <LogOut className="h-4 w-4" />
+          Logout
+        </Button>
+      </div>
     </div>
   );
 };

@@ -44,8 +44,8 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="car">Car</SelectItem>
             <SelectItem value="bike">Bike</SelectItem>
+            <SelectItem value="car">Car</SelectItem>
           </SelectContent>
         </Select>
       </div>

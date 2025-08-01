@@ -11,7 +11,7 @@ const AddVehicleModal = () => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
-    type: "car" as "car" | "bike",
+    type: "bike" as "car" | "bike",
     make: "",
     model: "",
     variant: "",
@@ -47,7 +47,7 @@ const AddVehicleModal = () => {
 
       setFormData({
         id: "",
-        type: "car",
+        type: "bike",
         make: "",
         model: "",
         variant: "",

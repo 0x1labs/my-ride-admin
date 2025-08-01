@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast";
 import VehicleOwnerSelect from "./VehicleOwnerSelect";
 import CouponTypeSelect from "./forms/CouponTypeSelect";
 import { CouponType } from "@/types/couponType";
+import { useProfiles } from "@/hooks/useProfiles";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface ImprovedAddServiceModalProps {
   isOpen: boolean;
@@ -24,6 +26,7 @@ interface ImprovedAddServiceModalProps {
 const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: ImprovedAddServiceModalProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { data: profiles = [] } = useProfiles();
 
   // Owner and Vehicle Selection
   const [selectedOwnerId, setSelectedOwnerId] = useState<string>("");
@@ -45,6 +48,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
   const [hasCoupon, setHasCoupon] = useState(false);
   const [couponType, setCouponType] = useState("");
   const [selectedCouponType, setSelectedCouponType] = useState<CouponType | null>(null);
+  const [serviceCenterName, setServiceCenterName] = useState("");
 
   // Parts Management
   const [parts, setParts] = useState<Part[]>([]);
@@ -110,6 +114,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
     setHasCoupon(false);
     setCouponType("");
     setSelectedCouponType(null);
+    setServiceCenterName("");
     setParts([]);
     setNewPartName("");
     setNewPartCost(0);
@@ -118,10 +123,10 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedVehicleId || !serviceType || !technician.trim()) {
+    if (!selectedVehicleId || !serviceType || !technician.trim() || !serviceCenterName.trim()) {
       toast({
         title: "Missing Information",
-        description: "Please fill in all required fields",
+        description: "Please fill in all required fields including service center",
         variant: "destructive",
       });
       return;
@@ -142,6 +147,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
         hasCoupon,
         couponType: hasCoupon ? couponType : null,
         kilometers,
+        serviceCenterName: serviceCenterName.trim(),
       });
 
       // Invalidate and refetch related queries
@@ -255,6 +261,22 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     onChange={(e) => setTechnician(e.target.value)}
                     required
                   />
+                </div>
+
+                <div>
+                  <Label htmlFor="serviceCenterName">Service Center *</Label>
+                  <Select value={serviceCenterName} onValueChange={setServiceCenterName} required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select service center" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {profiles.map((profile) => (
+                        <SelectItem key={profile.id} value={profile.service_center_name}>
+                          {profile.service_center_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
@@ -396,7 +418,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
             </Button>
             <Button 
               type="submit" 
-              disabled={isSubmitting || !selectedVehicleId || !serviceType || !technician.trim()}
+              disabled={isSubmitting || !selectedVehicleId || !serviceType || !technician.trim() || !serviceCenterName.trim()}
             >
               {isSubmitting ? "Adding..." : "Add Service Record"}
             </Button>
