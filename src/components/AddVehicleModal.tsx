@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -41,13 +40,13 @@ const AddVehicleModal = () => {
       });
 
       toast({
-        title: "Vehicle Added",
+        title: "Motorbike Added",
         description: `${formData.make} ${formData.model} ${formData.variant ? `(${formData.variant})` : ''} has been added successfully.`,
       });
 
       setFormData({
         id: "",
-        type: "car",
+        type: "bike",
         make: "",
         model: "",
         variant: "",
@@ -64,7 +63,7 @@ const AddVehicleModal = () => {
       console.error('Error adding vehicle:', error);
       toast({
         title: "Error",
-        description: "Failed to add vehicle. Please try again.",
+        description: "Failed to add motorbike. Please try again.",
         variant: "destructive",
       });
     }
@@ -77,26 +76,26 @@ const AddVehicleModal = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="bg-ktm-orange text-white">
           <Plus className="h-4 w-4 mr-2" />
-          Add Vehicle
+          Add Motorbike
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto bg-ktm-dark-gray">
         <DialogHeader>
-          <DialogTitle>Add New Vehicle</DialogTitle>
-          <DialogDescription>
-            Register a new vehicle when it's first bought.
+          <DialogTitle className="text-ktm-orange">Add New Motorbike</DialogTitle>
+          <DialogDescription className="text-ktm-light-gray">
+            Register a new motorbike when it's first bought.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <VehicleForm formData={formData} onChange={handleFormChange} />
           <div className="flex justify-end space-x-2 mt-6">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="bg-ktm-black text-white">
               Cancel
             </Button>
-            <Button type="submit" disabled={addVehicle.isPending}>
-              {addVehicle.isPending ? "Adding..." : "Add Vehicle"}
+            <Button type="submit" disabled={addVehicle.isPending} className="bg-ktm-orange text-white">
+              {addVehicle.isPending ? "Adding..." : "Add Motorbike"}
             </Button>
           </div>
         </form>

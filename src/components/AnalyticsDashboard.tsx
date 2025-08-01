@@ -1,4 +1,3 @@
-
 import { useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
@@ -10,7 +9,7 @@ interface AnalyticsDashboardProps {
   serviceRecords: ServiceRecord[];
 }
 
-const COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#6366F1"];
+const COLORS = ["#FF6600", "#333333", "#E6E6E6", "#FF9933", "#666666", "#CCCCCC"];
 
 const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProps) => {
 
@@ -123,7 +122,7 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
 
   const vehicleTypes = useMemo(() => [
     { name: "Cars", value: vehicles.filter(v => v.type === "car").length, color: "#3B82F6" },
-    { name: "Bikes", value: vehicles.filter(v => v.type === "bike").length, color: "#10B981" }
+    { name: "Bikes", value: vehicles.filter(v => v.type === "bike").length, color: "#FF6600" }
   ], [vehicles]);
 
   const metricsCards = [
@@ -132,48 +131,48 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
       value: `$${analyticsData.metrics.averageServiceValue}`,
       description: "from all services",
       icon: DollarSign,
-      color: "text-green-600"
+      color: "text-ktm-orange"
     },
     {
       title: "Services This Month",
       value: analyticsData.metrics.monthlyServices.toString(),
       description: "in current month",
       icon: Wrench,
-      color: "text-blue-600"
+      color: "text-ktm-orange"
     },
     {
       title: "Repeat Business",
       value: `${analyticsData.metrics.repeatBusinessRate}%`,
-      description: "of serviced vehicles",
+      description: "of serviced motorbikes",
       icon: TrendingUp,
-      color: "text-purple-600"
+      color: "text-ktm-orange"
     },
     {
-      title: "Total Vehicles",
+      title: "Total Motorbikes",
       value: vehicles.length,
-      description: `${vehicleTypes[0].value} cars, ${vehicleTypes[1].value} bikes`,
+      description: `${vehicleTypes[1].value} bikes`,
       icon: Users,
-      color: "text-orange-600"
+      color: "text-ktm-orange"
     }
   ];
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h2>
+    <div className="space-y-6 text-white">
+      <h2 className="text-2xl font-bold text-ktm-orange">Analytics Dashboard</h2>
       
       {/* Key Metrics */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {metricsCards.map((metric, index) => (
-          <Card key={index} className="bg-white">
+          <Card key={index} className="bg-ktm-dark-gray border-ktm-orange-dim">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600">
+              <CardTitle className="text-sm font-medium text-ktm-light-gray">
                 {metric.title}
               </CardTitle>
               <metric.icon className={`h-4 w-4 ${metric.color}`} />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{metric.value}</div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-ktm-light-gray">
                 {metric.description}
               </p>
             </CardContent>
@@ -184,36 +183,37 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
       {/* Charts Grid */}
       <div className="grid gap-6 md:grid-cols-2">
         {/* Monthly Revenue & Services Chart */}
-        <Card className="bg-white">
+        <Card className="bg-ktm-dark-gray border-ktm-orange-dim">
           <CardHeader>
             <CardTitle>Monthly Revenue & Services</CardTitle>
-            <CardDescription>Over the last 6 months</CardDescription>
+            <CardDescription className="text-ktm-light-gray">Over the last 6 months</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={analyticsData.monthlyRevenue}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis yAxisId="left" orientation="left" stroke="#3B82F6" />
-                <YAxis yAxisId="right" orientation="right" stroke="#10B981" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#333333" />
+                <XAxis dataKey="month" stroke="#E6E6E6" />
+                <YAxis yAxisId="left" orientation="left" stroke="#FF6600" />
+                <YAxis yAxisId="right" orientation="right" stroke="#FF9933" />
                 <Tooltip 
                   formatter={(value, name) => [
-                    name === 'Revenue' ? `$${Intl.NumberFormat('en-US').format(value as number)}` : value,
+                    name === 'Revenue' ? `NPR ${Intl.NumberFormat('en-US').format(value as number)}` : value,
                     name
                   ]}
+                  contentStyle={{ backgroundColor: '#333333', border: '1px solid #FF6600' }}
                 />
-                <Bar yAxisId="left" dataKey="revenue" fill="#3B82F6" name="Revenue" />
-                <Bar yAxisId="right" dataKey="services" fill="#10B981" name="Services" />
+                <Bar yAxisId="left" dataKey="revenue" fill="#FF6600" name="Revenue" />
+                <Bar yAxisId="right" dataKey="services" fill="#FF9933" name="Services" />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Service Types Distribution */}
-        <Card className="bg-white">
+        <Card className="bg-ktm-dark-gray border-ktm-orange-dim">
           <CardHeader>
             <CardTitle>Service Types Distribution</CardTitle>
-            <CardDescription>Breakdown of all recorded service types</CardDescription>
+            <CardDescription className="text-ktm-light-gray">Breakdown of all recorded service types</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -226,22 +226,23 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
                   fill="#8884d8"
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  stroke="#333333"
                 >
                   {analyticsData.serviceTypes.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={{ backgroundColor: '#333333', border: '1px solid #FF6600' }} />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Vehicle Types */}
-        <Card className="bg-white">
+        {/* Motorbike Types */}
+        <Card className="bg-ktm-dark-gray border-ktm-orange-dim">
           <CardHeader>
-            <CardTitle>Vehicle Types</CardTitle>
-            <CardDescription>Distribution of cars vs bikes in the system</CardDescription>
+            <CardTitle>Motorbike Types</CardTitle>
+            <CardDescription className="text-ktm-light-gray">Distribution of motorbikes in the system</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -254,36 +255,37 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
                   fill="#8884d8"
                   dataKey="value"
                   label={({ name, value }) => `${name}: ${value}`}
+                  stroke="#333333"
                 >
                   {vehicleTypes.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={{ backgroundColor: '#333333', border: '1px solid #FF6600' }} />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Daily Services Trend */}
-        <Card className="bg-white">
+        <Card className="bg-ktm-dark-gray border-ktm-orange-dim">
           <CardHeader>
             <CardTitle>Weekly Service Trend</CardTitle>
-            <CardDescription>Number of services per day this week</CardDescription>
+            <CardDescription className="text-ktm-light-gray">Number of services per day this week</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={analyticsData.dailyServices}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis allowDecimals={false} />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="#333333" />
+                <XAxis dataKey="day" stroke="#E6E6E6" />
+                <YAxis allowDecimals={false} stroke="#E6E6E6" />
+                <Tooltip contentStyle={{ backgroundColor: '#333333', border: '1px solid #FF6600' }} />
                 <Line 
                   type="monotone" 
                   dataKey="services" 
-                  stroke="#3B82F6" 
+                  stroke="#FF6600" 
                   strokeWidth={2}
-                  dot={{ fill: '#3B82F6' }}
+                  dot={{ fill: '#FF6600' }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -293,17 +295,17 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
 
       {/* Additional Insights */}
       <div className="grid gap-6 md:grid-cols-1">
-        <Card className="bg-gradient-to-r from-green-50 to-green-100 border-green-200">
+        <Card className="bg-ktm-dark-gray border-ktm-orange-dim">
           <CardHeader>
-            <CardTitle className="text-green-800 flex items-center gap-2">
+            <CardTitle className="text-ktm-orange flex items-center gap-2">
               <UserCheck /> Top Performer
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-green-700 font-semibold text-lg">
+            <p className="text-white font-semibold text-lg">
               {analyticsData.topPerformer.name}
             </p>
-             <p className="text-green-600">
+             <p className="text-ktm-light-gray">
               Completed {analyticsData.topPerformer.services} services in total.
             </p>
           </CardContent>

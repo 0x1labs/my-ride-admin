@@ -1,12 +1,11 @@
-
-import { Car } from 'lucide-react';
+import { Bike } from 'lucide-react';
 import React from 'react';
 
 const Logo = () => {
   return (
     <div className="flex items-center gap-2">
-      <Car className="h-8 w-8 text-primary" />
-      <span className="text-2xl font-bold tracking-tight text-primary">MyRide</span>
+      <Bike className="h-8 w-8 text-ktm-orange" />
+      <span className="text-2xl font-bold tracking-tight text-ktm-orange font-roboto-condensed">MyKTM</span>
     </div>
   );
 };

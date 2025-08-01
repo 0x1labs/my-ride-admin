@@ -19,6 +19,13 @@ export default {
 		},
 		extend: {
 			colors: {
+				ktm: {
+					orange: '#FF6600',
+					black: '#000000',
+					'dark-gray': '#333333',
+					'light-gray': '#E6E6E6',
+					'orange-dim': '#FF9933'
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -64,9 +71,13 @@ export default {
 				}
 			},
 			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				lg: '0.5rem',
+				md: '0.5rem',
+				sm: '0.5rem'
+			},
+			fontFamily: {
+				sora: ['Sora', 'sans-serif'],
+				'roboto-condensed': ['"Roboto Condensed"', 'sans-serif']
 			},
 			keyframes: {
 				'accordion-down': {

@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -25,27 +24,28 @@ interface VehicleFormProps {
 
 const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 text-ktm-light-gray">
       <div>
-        <Label htmlFor="id">Vehicle Identification Number (VIN)</Label>
+        <Label htmlFor="id">Motorbike Identification Number (VIN)</Label>
         <Input
           id="id"
           value={formData.id || ""}
           onChange={(e) => onChange({ id: e.target.value })}
-          placeholder="Enter Vehicle ID (e.g., VH123456)"
+          placeholder="Enter Motorbike ID (e.g., VH123456)"
           required
+          className="bg-ktm-black"
         />
       </div>
 
       <div>
-        <Label htmlFor="type">Vehicle Type</Label>
+        <Label htmlFor="type">Motorbike Type</Label>
         <Select value={formData.type} onValueChange={(value: "car" | "bike") => onChange({ type: value })}>
-          <SelectTrigger>
+          <SelectTrigger className="bg-ktm-black">
             <SelectValue />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-ktm-dark-gray text-white">
             <SelectItem value="car">Car</SelectItem>
-            <SelectItem value="bike">Bike</SelectItem>
+            <SelectItem value="bike">Motorbike</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -57,6 +57,7 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           value={formData.make}
           onChange={(e) => onChange({ make: e.target.value })}
           required
+          className="bg-ktm-black"
         />
       </div>
 
@@ -67,6 +68,7 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           value={formData.model}
           onChange={(e) => onChange({ model: e.target.value })}
           required
+          className="bg-ktm-black"
         />
       </div>
 
@@ -76,7 +78,8 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           id="variant"
           value={formData.variant}
           onChange={(e) => onChange({ variant: e.target.value })}
-          placeholder="e.g., Superior, Advanced, Base"
+          placeholder="e.g., Duke, RC, Adventure"
+          className="bg-ktm-black"
         />
       </div>
 
@@ -88,16 +91,18 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           value={formData.year}
           onChange={(e) => onChange({ year: parseInt(e.target.value) })}
           required
+          className="bg-ktm-black"
         />
       </div>
 
       <div>
-        <Label htmlFor="owner">Owner</Label>
+        <Label htmlFor="owner">Rider's Name</Label>
         <Input
           id="owner"
           value={formData.owner}
           onChange={(e) => onChange({ owner: e.target.value })}
           required
+          className="bg-ktm-black"
         />
       </div>
 
@@ -108,6 +113,7 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           value={formData.phone}
           onChange={(e) => onChange({ phone: e.target.value })}
           required
+          className="bg-ktm-black"
         />
       </div>
 
@@ -119,6 +125,7 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           value={formData.lastService}
           onChange={(e) => onChange({ lastService: e.target.value })}
           required
+          className="bg-ktm-black"
         />
       </div>
 
@@ -130,6 +137,7 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           value={formData.nextService}
           onChange={(e) => onChange({ nextService: e.target.value })}
           required
+          className="bg-ktm-black"
         />
       </div>
 
@@ -141,6 +149,7 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           value={formData.lastServiceKilometers}
           onChange={(e) => onChange({ lastServiceKilometers: parseInt(e.target.value) })}
           required
+          className="bg-ktm-black"
         />
       </div>
 
@@ -152,6 +161,7 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           value={formData.currentKilometers}
           onChange={(e) => onChange({ currentKilometers: parseInt(e.target.value) })}
           required
+          className="bg-ktm-black"
         />
       </div>
     </div>

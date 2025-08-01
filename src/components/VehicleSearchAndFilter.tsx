@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -50,22 +49,22 @@ const VehicleSearchAndFilter = ({ vehicles, onFilteredVehiclesChange }: VehicleS
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-6">
       <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ktm-orange h-4 w-4" />
         <Input
           placeholder="Search by VIN, owner, make, or model..."
           value={searchTerm}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-10"
+          className="pl-10 bg-ktm-dark-gray text-white"
         />
       </div>
       
       <div className="flex gap-2">
         <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
-          <SelectTrigger className="w-32">
-            <Filter className="h-4 w-4 mr-2" />
+          <SelectTrigger className="w-32 bg-ktm-dark-gray text-white">
+            <Filter className="h-4 w-4 mr-2 text-ktm-orange" />
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-ktm-dark-gray text-white">
             <SelectItem value="all">All Status</SelectItem>
             <SelectItem value="active">Active</SelectItem>
             <SelectItem value="overdue">Overdue</SelectItem>
@@ -74,13 +73,13 @@ const VehicleSearchAndFilter = ({ vehicles, onFilteredVehiclesChange }: VehicleS
         </Select>
 
         <Select value={typeFilter} onValueChange={handleTypeFilterChange}>
-          <SelectTrigger className="w-28">
+          <SelectTrigger className="w-28 bg-ktm-dark-gray text-white">
             <SelectValue placeholder="Type" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-ktm-dark-gray text-white">
             <SelectItem value="all">All Types</SelectItem>
             <SelectItem value="car">Car</SelectItem>
-            <SelectItem value="bike">Bike</SelectItem>
+            <SelectItem value="bike">Motorbike</SelectItem>
           </SelectContent>
         </Select>
       </div>

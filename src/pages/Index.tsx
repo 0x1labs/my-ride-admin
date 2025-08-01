@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useVehicles, useDeleteVehicle } from "@/hooks/useVehicles";
 import { useServiceRecords } from "@/hooks/useServiceRecords";
 import { useState } from "react";
-import { Car, Phone, BarChart3, History } from "lucide-react";
+import { Bike, Phone, BarChart3, History } from "lucide-react";
 import { Vehicle } from "@/types/vehicle";
 import EditVehicleModal from "@/components/EditVehicleModal";
 import {
@@ -72,12 +72,12 @@ const Index = () => {
     if (vehicleToDelete) {
       deleteVehicle(vehicleToDelete.id, {
         onSuccess: () => {
-          toast.success(`Vehicle ${vehicleToDelete.make} ${vehicleToDelete.model} deleted.`);
+          toast.success(`Motorbike ${vehicleToDelete.make} ${vehicleToDelete.model} deleted.`);
           setIsDeleteAlertOpen(false);
           setVehicleToDelete(null);
         },
         onError: (error) => {
-          toast.error(`Failed to delete vehicle: ${error.message}`);
+          toast.error(`Failed to delete motorbike: ${error.message}`);
           setIsDeleteAlertOpen(false);
           setVehicleToDelete(null);
         },
@@ -88,7 +88,7 @@ const Index = () => {
   // Show SuperAdmin interface for superadmin users - only user management
   if (profile?.role === 'superadmin') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+      <div className="min-h-screen bg-ktm-black">
         <div className="container mx-auto px-4 py-8">
           <DashboardHeader
             userEmail={user?.email}
@@ -102,7 +102,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-ktm-black text-white">
       <div className="container mx-auto px-4 py-8">
         <DashboardHeader userEmail={user?.email} onLogout={handleLogout} />
 
@@ -110,14 +110,14 @@ const Index = () => {
           <DashboardStats vehicles={vehicles} />
           
           <Tabs defaultValue="vehicles" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="vehicles" className="flex items-center gap-2">
-                <Car className="h-4 w-4" />
-                Vehicles
+            <TabsList className="grid w-full grid-cols-4 bg-ktm-dark-gray">
+              <TabsTrigger value="vehicles" className="flex items-center gap-2 text-ktm-orange">
+                <Bike className="h-4 w-4" />
+                My Garage
               </TabsTrigger>
               <TabsTrigger value="calls" className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
-                Customer Calls
+                Rider Calls
               </TabsTrigger>
               <TabsTrigger value="analytics" className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" />
@@ -144,7 +144,7 @@ const Index = () => {
               />
               
               {isLoading ? (
-                <div className="text-center py-8">Loading vehicles...</div>
+                <div className="text-center py-8">Loading motorbikes...</div>
               ) : (
                 <>
                   {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).length > 0 ? (
@@ -161,10 +161,10 @@ const Index = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
+                    <div className="text-center py-8 text-ktm-light-gray">
                       {filteredVehicles.length === 0 && vehicles.length > 0 
-                        ? "No vehicles match your search criteria."
-                        : "No vehicles found. Add your first vehicle to get started."
+                        ? "No motorbikes match your search criteria."
+                        : "No motorbikes found. Add your first motorbike to get started."
                       }
                     </div>
                   )}
@@ -202,17 +202,17 @@ const Index = () => {
           />
 
           <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
-            <AlertDialogContent>
+            <AlertDialogContent className="bg-ktm-dark-gray text-white">
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
+                <AlertDialogTitle className="text-ktm-orange">Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription className="text-ktm-light-gray">
                   This action cannot be undone. This will permanently delete the
-                  vehicle and all associated service and call records.
+                  motorbike and all associated service and call records.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel onClick={() => setVehicleToDelete(null)}>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={confirmDelete} disabled={isDeleting}>
+                <AlertDialogCancel onClick={() => setVehicleToDelete(null)} className="bg-ktm-black text-white">Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={confirmDelete} disabled={isDeleting} className="bg-red-600 text-white">
                   {isDeleting ? "Deleting..." : "Delete"}
                 </AlertDialogAction>
               </AlertDialogFooter>

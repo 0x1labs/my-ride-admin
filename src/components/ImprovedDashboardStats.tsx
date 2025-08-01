@@ -88,7 +88,7 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
     },
     {
       title: "Monthly Revenue",
-      value: "$12,450",
+      value: "NPR 12,450",
       description: "+15% from last month",
       icon: DollarSign,
       color: "text-purple-600",

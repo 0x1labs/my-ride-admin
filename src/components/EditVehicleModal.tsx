@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogContent,
@@ -70,11 +69,11 @@ const EditVehicleModal = ({ isOpen, onClose, vehicle }: EditVehicleModalProps) =
       { id: vehicle.id, updates: data },
       {
         onSuccess: () => {
-          toast.success("Vehicle updated successfully!");
+          toast.success("Motorbike updated successfully!");
           onClose();
         },
         onError: (error) => {
-          toast.error(`Failed to update vehicle: ${error.message}`);
+          toast.error(`Failed to update motorbike: ${error.message}`);
         },
       }
     );
@@ -82,20 +81,20 @@ const EditVehicleModal = ({ isOpen, onClose, vehicle }: EditVehicleModalProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-ktm-dark-gray text-white">
         <DialogHeader>
-          <DialogTitle>Edit Vehicle</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-ktm-orange">Edit Motorbike</DialogTitle>
+          <DialogDescription className="text-ktm-light-gray">
             Update the details for {vehicle?.make} {vehicle?.model}.
           </DialogDescription>
         </DialogHeader>
         <form id="edit-vehicle-form" onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-6">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="type" className="text-right">Type</Label>
+            <Label htmlFor="type" className="text-right text-ktm-light-gray">Type</Label>
             <Controller name="type" control={control} render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="col-span-3"><SelectValue placeholder="Select type" /></SelectTrigger>
-                  <SelectContent>
+                  <SelectTrigger className="col-span-3 bg-ktm-black"><SelectValue placeholder="Select type" /></SelectTrigger>
+                  <SelectContent className="bg-ktm-dark-gray text-white">
                     <SelectItem value="car">Car</SelectItem>
                     <SelectItem value="bike">Bike</SelectItem>
                   </SelectContent>
@@ -104,60 +103,60 @@ const EditVehicleModal = ({ isOpen, onClose, vehicle }: EditVehicleModalProps) =
             {errors.type && <p className="col-span-4 text-red-500 text-sm">{errors.type.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="make" className="text-right">Make</Label>
-            <Controller name="make" control={control} render={({ field }) => <Input id="make" {...field} className="col-span-3" />} />
+            <Label htmlFor="make" className="text-right text-ktm-light-gray">Make</Label>
+            <Controller name="make" control={control} render={({ field }) => <Input id="make" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
             {errors.make && <p className="col-span-4 text-red-500 text-sm">{errors.make.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="model" className="text-right">Model</Label>
-            <Controller name="model" control={control} render={({ field }) => <Input id="model" {...field} className="col-span-3" />} />
+            <Label htmlFor="model" className="text-right text-ktm-light-gray">Model</Label>
+            <Controller name="model" control={control} render={({ field }) => <Input id="model" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
             {errors.model && <p className="col-span-4 text-red-500 text-sm">{errors.model.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="variant" className="text-right">Variant</Label>
-            <Controller name="variant" control={control} render={({ field }) => <Input id="variant" {...field} className="col-span-3" />} />
+            <Label htmlFor="variant" className="text-right text-ktm-light-gray">Variant</Label>
+            <Controller name="variant" control={control} render={({ field }) => <Input id="variant" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="year" className="text-right">Year</Label>
-            <Controller name="year" control={control} render={({ field }) => <Input id="year" type="number" {...field} className="col-span-3" />} />
+            <Label htmlFor="year" className="text-right text-ktm-light-gray">Year</Label>
+            <Controller name="year" control={control} render={({ field }) => <Input id="year" type="number" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
             {errors.year && <p className="col-span-4 text-red-500 text-sm">{errors.year.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="owner" className="text-right">Owner</Label>
-            <Controller name="owner" control={control} render={({ field }) => <Input id="owner" {...field} className="col-span-3" />} />
+            <Label htmlFor="owner" className="text-right text-ktm-light-gray">Owner</Label>
+            <Controller name="owner" control={control} render={({ field }) => <Input id="owner" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
             {errors.owner && <p className="col-span-4 text-red-500 text-sm">{errors.owner.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="phone" className="text-right">Phone</Label>
-            <Controller name="phone" control={control} render={({ field }) => <Input id="phone" {...field} className="col-span-3" />} />
+            <Label htmlFor="phone" className="text-right text-ktm-light-gray">Phone</Label>
+            <Controller name="phone" control={control} render={({ field }) => <Input id="phone" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
             {errors.phone && <p className="col-span-4 text-red-500 text-sm">{errors.phone.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="lastService" className="text-right">Last Service</Label>
-            <Controller name="lastService" control={control} render={({ field }) => <Input id="lastService" type="date" {...field} className="col-span-3" />} />
+            <Label htmlFor="lastService" className="text-right text-ktm-light-gray">Last Service</Label>
+            <Controller name="lastService" control={control} render={({ field }) => <Input id="lastService" type="date" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
             {errors.lastService && <p className="col-span-4 text-red-500 text-sm">{errors.lastService.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="nextService" className="text-right">Next Service</Label>
-            <Controller name="nextService" control={control} render={({ field }) => <Input id="nextService" type="date" {...field} className="col-span-3" />} />
+            <Label htmlFor="nextService" className="text-right text-ktm-light-gray">Next Service</Label>
+            <Controller name="nextService" control={control} render={({ field }) => <Input id="nextService" type="date" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
             {errors.nextService && <p className="col-span-4 text-red-500 text-sm">{errors.nextService.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="lastServiceKilometers" className="text-right">Last Svc KM</Label>
-            <Controller name="lastServiceKilometers" control={control} render={({ field }) => <Input id="lastServiceKilometers" type="number" {...field} className="col-span-3" />} />
+            <Label htmlFor="lastServiceKilometers" className="text-right text-ktm-light-gray">Last Svc KM</Label>
+            <Controller name="lastServiceKilometers" control={control} render={({ field }) => <Input id="lastServiceKilometers" type="number" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
             {errors.lastServiceKilometers && <p className="col-span-4 text-red-500 text-sm">{errors.lastServiceKilometers.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="currentKilometers" className="text-right">Current KM</Label>
-            <Controller name="currentKilometers" control={control} render={({ field }) => <Input id="currentKilometers" type="number" {...field} className="col-span-3" />} />
+            <Label htmlFor="currentKilometers" className="text-right text-ktm-light-gray">Current KM</Label>
+            <Controller name="currentKilometers" control={control} render={({ field }) => <Input id="currentKilometers" type="number" {...field} className="col-span-3 bg-ktm-black border-ktm-orange" />} />
             {errors.currentKilometers && <p className="col-span-4 text-red-500 text-sm">{errors.currentKilometers.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="status" className="text-right">Status</Label>
+            <Label htmlFor="status" className="text-right text-ktm-light-gray">Status</Label>
             <Controller name="status" control={control} render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="col-span-3"><SelectValue placeholder="Select status" /></SelectTrigger>
-                  <SelectContent>
+                  <SelectTrigger className="col-span-3 bg-ktm-black border-ktm-orange-dim"><SelectValue placeholder="Select status" /></SelectTrigger>
+                  <SelectContent className="bg-ktm-dark-gray border-ktm-orange-dim text-white">
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="overdue">Overdue</SelectItem>
                     <SelectItem value="upcoming">Upcoming</SelectItem>
@@ -168,8 +167,8 @@ const EditVehicleModal = ({ isOpen, onClose, vehicle }: EditVehicleModalProps) =
           </div>
         </form>
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-          <Button type="submit" form="edit-vehicle-form" disabled={isPending}>
+          <Button type="button" variant="outline" onClick={onClose} className="bg-ktm-black text-white">Cancel</Button>
+          <Button type="submit" form="edit-vehicle-form" disabled={isPending} className="bg-ktm-orange text-white">
             {isPending ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>

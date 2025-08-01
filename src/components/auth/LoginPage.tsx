@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -79,17 +78,19 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen bg-ktm-black flex items-center justify-center p-4">
+      <Card className="w-full max-w-md bg-ktm-dark-gray">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
             <Logo />
           </div>
-          <CardDescription>Vehicle Service Management System</CardDescription>
+          <CardDescription className="text-ktm-light-gray font-sora">
+            Rider's Hub Access
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-3 bg-ktm-black">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
               <TabsTrigger value="reset">Reset</TabsTrigger>
@@ -98,7 +99,7 @@ const LoginPage = () => {
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-ktm-light-gray">Email</Label>
                   <Input
                     id="email"
                     type="email"
@@ -106,10 +107,11 @@ const LoginPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="Enter your email"
+                    className="bg-ktm-black text-ktm-light-gray"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password"  className="text-ktm-light-gray">Password</Label>
                   <div className="relative">
                     <Input
                       id="password"
@@ -118,13 +120,13 @@ const LoginPage = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       placeholder="Enter your password"
-                      className="pr-10"
+                      className="pr-10 bg-ktm-black text-ktm-light-gray"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-ktm-orange"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -132,12 +134,12 @@ const LoginPage = () => {
                   </div>
                 </div>
                 {error && (
-                  <Alert variant="destructive">
+                  <Alert variant="destructive" className="bg-red-900 border-red-500 text-white">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full bg-ktm-orange text-white" disabled={loading}>
                   {loading ? 'Signing in...' : 'Sign In'}
                 </Button>
               </form>
@@ -146,7 +148,7 @@ const LoginPage = () => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
+                  <Label htmlFor="signup-email" className="text-ktm-light-gray">Email</Label>
                   <Input
                     id="signup-email"
                     type="email"
@@ -154,10 +156,11 @@ const LoginPage = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="Enter your email"
+                    className="bg-ktm-black text-ktm-light-gray"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
+                  <Label htmlFor="signup-password"  className="text-ktm-light-gray">Password</Label>
                   <div className="relative">
                     <Input
                       id="signup-password"
@@ -166,13 +169,13 @@ const LoginPage = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       placeholder="Create a password"
-                      className="pr-10"
+                      className="pr-10 bg-ktm-black text-ktm-light-gray"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-ktm-orange"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -180,20 +183,20 @@ const LoginPage = () => {
                   </div>
                 </div>
                 {error && (
-                  <Alert variant="destructive">
+                  <Alert variant="destructive" className="bg-red-900 border-red-500 text-white">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
                 {message && (
-                  <Alert>
+                  <Alert className="bg-blue-900 border-blue-500 text-white">
                     <AlertDescription>{message}</AlertDescription>
                   </Alert>
                 )}
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full bg-ktm-orange text-white" disabled={loading}>
                   {loading ? 'Creating account...' : 'Create Account'}
                 </Button>
-                <p className="text-sm text-gray-600 text-center">
+                <p className="text-sm text-ktm-light-gray text-center">
                   Note: Only authorized emails can create accounts. Contact your administrator if you need access.
                 </p>
               </form>
@@ -202,7 +205,7 @@ const LoginPage = () => {
             <TabsContent value="reset">
               <form onSubmit={handleResetPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="reset-email">Email</Label>
+                  <Label htmlFor="reset-email"  className="text-ktm-light-gray">Email</Label>
                   <Input
                     id="reset-email"
                     type="email"
@@ -210,31 +213,32 @@ const LoginPage = () => {
                     onChange={(e) => setResetEmail(e.target.value)}
                     required
                     placeholder="Enter your email"
+                    className="bg-ktm-black text-ktm-light-gray"
                   />
                 </div>
                 {error && (
-                  <Alert variant="destructive">
+                  <Alert variant="destructive" className="bg-red-900 border-red-500 text-white">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
                 {message && (
-                  <Alert>
+                  <Alert className="bg-blue-900 border-blue-500 text-white">
                     <AlertDescription>{message}</AlertDescription>
                   </Alert>
                 )}
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full bg-ktm-orange text-white" disabled={loading}>
                   {loading ? 'Sending...' : 'Send Reset Link'}
                 </Button>
               </form>
             </TabsContent>
           </Tabs>
-          <div className="mt-6 pt-6 border-t border-gray-200">
+          <div className="mt-6 pt-6 border-t border-ktm-orange-dim">
             <div className="text-center">
-              <p className="text-sm text-gray-600 mb-2">Need to set up a SuperAdmin account?</p>
+              <p className="text-sm text-ktm-light-gray mb-2">Need to set up a SuperAdmin account?</p>
               <Button 
                 variant="link" 
-                className="text-blue-600 hover:text-blue-800"
+                className="text-ktm-orange hover:text-orange-400"
                 onClick={() => navigate('/setup-superadmin')}
               >
                 Create SuperAdmin Account

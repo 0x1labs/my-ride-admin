@@ -174,11 +174,11 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-ktm-dark-gray text-white">
         <DialogHeader>
-          <DialogTitle>Add New Service Record</DialogTitle>
-          <DialogDescription>
-            Create a new service record for a vehicle
+          <DialogTitle className="text-ktm-orange">Add New Service Record</DialogTitle>
+          <DialogDescription className="text-ktm-light-gray">
+            Create a new service record for a motorbike
           </DialogDescription>
         </DialogHeader>
 
@@ -186,12 +186,12 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
           {/* Vehicle and Owner Selection */}
           {vehicle ? (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Vehicle Information</h3>
-              <div className="p-4 border rounded-md bg-gray-50 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
-                <p><span className="font-medium text-gray-600">Owner:</span> {vehicle.owner}</p>
-                <p><span className="font-medium text-gray-600">Vehicle:</span> {vehicle.make} {vehicle.model} ({vehicle.year})</p>
-                <p><span className="font-medium text-gray-600">VIN:</span> {vehicle.id}</p>
-                {vehicle.variant && <p><span className="font-medium text-gray-600">Variant:</span> {vehicle.variant}</p>}
+              <h3 className="text-lg font-semibold">Motorbike Information</h3>
+              <div className="p-4 rounded-md bg-ktm-black grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+                <p><span className="font-medium text-ktm-light-gray">Rider:</span> {vehicle.owner}</p>
+                <p><span className="font-medium text-ktm-light-gray">Motorbike:</span> {vehicle.make} {vehicle.model} ({vehicle.year})</p>
+                <p><span className="font-medium text-ktm-light-gray">VIN:</span> {vehicle.id}</p>
+                {vehicle.variant && <p><span className="font-medium text-ktm-light-gray">Variant:</span> {vehicle.variant}</p>}
               </div>
             </div>
           ) : (
@@ -210,7 +210,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
 
           {/* Service Details */}
           {selectedVehicle && (
-            <div className="space-y-4 border-t pt-6">
+            <div className="space-y-4 pt-6">
               <h3 className="text-lg font-semibold">Service Details</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -222,6 +222,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     value={serviceType}
                     onChange={(e) => setServiceType(e.target.value)}
                     required
+                    className="bg-ktm-black"
                   />
                 </div>
 
@@ -233,6 +234,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     value={serviceDate}
                     onChange={(e) => setServiceDate(e.target.value)}
                     required
+                    className="bg-ktm-black"
                   />
                 </div>
 
@@ -243,6 +245,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     type="date"
                     value={nextServiceDate}
                     onChange={(e) => setNextServiceDate(e.target.value)}
+                    className="bg-ktm-black"
                   />
                 </div>
 
@@ -254,6 +257,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     value={technician}
                     onChange={(e) => setTechnician(e.target.value)}
                     required
+                    className="bg-ktm-black"
                   />
                 </div>
 
@@ -264,6 +268,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     type="number"
                     value={kilometers}
                     onChange={(e) => setKilometers(Number(e.target.value))}
+                    className="bg-ktm-black"
                   />
                 </div>
               </div>
@@ -277,18 +282,18 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     placeholder="Part name"
                     value={newPartName}
                     onChange={(e) => setNewPartName(e.target.value)}
-                    className="flex-1"
+                    className="flex-1 bg-ktm-black"
                   />
                   <Input
                     type="number"
                     placeholder="Cost"
                     value={newPartCost}
                     onChange={(e) => setNewPartCost(Number(e.target.value))}
-                    className="w-24"
+                    className="w-24 bg-ktm-black"
                     min="0"
                     step="0.01"
                   />
-                  <Button type="button" onClick={addPart}>
+                  <Button type="button" onClick={addPart} className="bg-ktm-orange text-white">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -296,15 +301,16 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                 {parts.length > 0 && (
                   <div className="space-y-2">
                     {parts.map((part, index) => (
-                      <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
-                        <Badge variant="secondary">{part.name}</Badge>
+                      <div key={index} className="flex items-center justify-between bg-ktm-black p-2 rounded">
+                        <Badge variant="secondary" className="bg-ktm-orange text-white">{part.name}</Badge>
                         <div className="flex items-center gap-2">
-                          <span className="font-medium">${part.cost.toFixed(2)}</span>
+                          <span className="font-medium">NPR {part.cost.toFixed(2)}</span>
                           <Button
                             type="button"
                             variant="ghost"
                             size="sm"
                             onClick={() => removePart(index)}
+                            className="text-red-500 hover:bg-red-700"
                           >
                             <X className="h-3 w-3" />
                           </Button>
@@ -326,6 +332,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     onChange={(e) => setLaborCost(Number(e.target.value))}
                     min="0"
                     step="0.01"
+                    className="bg-ktm-black"
                   />
                 </div>
 
@@ -338,14 +345,15 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                     onChange={(e) => setDiscount(Number(e.target.value))}
                     min="0"
                     step="0.01"
+                    className="bg-ktm-black"
                   />
                 </div>
 
                 <div className="flex items-end">
                   <div className="w-full">
                     <Label>Total Amount</Label>
-                    <div className="text-2xl font-bold text-blue-600">
-                      ${calculateTotal().toFixed(2)}
+                    <div className="text-2xl font-bold text-ktm-orange">
+                      NPR {calculateTotal().toFixed(2)}
                     </div>
                   </div>
                 </div>
@@ -357,6 +365,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                   id="hasCoupon"
                   checked={hasCoupon}
                   onCheckedChange={(checked) => setHasCoupon(checked === true)}
+                  className="border-ktm-orange-dim"
                 />
                 <Label htmlFor="hasCoupon">Applied coupon/discount</Label>
               </div>
@@ -384,19 +393,21 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   rows={3}
+                  className="bg-ktm-black"
                 />
               </div>
             </div>
           )}
 
           {/* Submit Buttons */}
-          <div className="flex justify-end gap-2 border-t pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button type="button" variant="outline" onClick={onClose} className="bg-ktm-black text-white">
               Cancel
             </Button>
             <Button 
               type="submit" 
               disabled={isSubmitting || !selectedVehicleId || !serviceType || !technician.trim()}
+              className="bg-ktm-orange text-white"
             >
               {isSubmitting ? "Adding..." : "Add Service Record"}
             </Button>
