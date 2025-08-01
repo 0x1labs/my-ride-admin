@@ -201,15 +201,39 @@ export type Database = {
           },
         ]
       }
-      vehicles: {
+      service_types: {
         Row: {
           created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      vehicles: {
+        Row: {
+          bike_model: string
+          created_at: string | null
           current_kilometers: number
+          engine_capacity: number | null
           id: string
           last_service: string
           last_service_kilometers: number
-          make: string
-          model: string
           next_service: string
           owner: string
           phone: string
@@ -217,17 +241,16 @@ export type Database = {
           type: string
           updated_at: string | null
           user_id: string
-          variant: string | null
           year: number
         }
         Insert: {
+          bike_model: string
           created_at?: string | null
           current_kilometers: number
+          engine_capacity?: number | null
           id: string
           last_service: string
           last_service_kilometers: number
-          make: string
-          model: string
           next_service: string
           owner: string
           phone: string
@@ -235,17 +258,16 @@ export type Database = {
           type: string
           updated_at?: string | null
           user_id: string
-          variant?: string | null
           year: number
         }
         Update: {
+          bike_model?: string
           created_at?: string | null
           current_kilometers?: number
+          engine_capacity?: number | null
           id?: string
           last_service?: string
           last_service_kilometers?: number
-          make?: string
-          model?: string
           next_service?: string
           owner?: string
           phone?: string
@@ -253,7 +275,6 @@ export type Database = {
           type?: string
           updated_at?: string | null
           user_id?: string
-          variant?: string | null
           year?: number
         }
         Relationships: []

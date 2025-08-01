@@ -57,10 +57,9 @@ export const useVehiclesWithFilters = (
   const filteredVehicles = vehicles.filter(vehicle => {
     const matchesSearch = vehicle.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vehicle.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.model.toLowerCase().includes(searchTerm.toLowerCase());
+      vehicle.bikeModel.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesManufacturer = manufacturerFilter === "all" || vehicle.make === manufacturerFilter;
+    const matchesManufacturer = manufacturerFilter === "all" || vehicle.bikeModel.includes(manufacturerFilter);
 
     let matchesService = true;
     if (serviceFilter === "recent") {

@@ -5,10 +5,10 @@ import { Vehicle } from "@/types/vehicle";
 // Helper function to transform database row to Vehicle interface
 const transformVehicle = (row: any): Vehicle => ({
   id: row.id,
-  type: row.type,
-  make: row.make,
-  model: row.model,
+  type: 'bike',
+  bikeModel: row.bike_model,
   year: row.year,
+  engineCapacity: row.engine_capacity,
   owner: row.owner,
   phone: row.phone,
   lastService: row.last_service,
@@ -16,7 +16,6 @@ const transformVehicle = (row: any): Vehicle => ({
   status: row.status,
   lastServiceKilometers: row.last_service_kilometers,
   currentKilometers: row.current_kilometers,
-  variant: row.variant,
 });
 
 export const getVehicles = async (): Promise<Vehicle[]> => {
@@ -85,10 +84,10 @@ export const addVehicle = async (vehicle: Omit<Vehicle, 'id'> & { id?: string })
     .from('vehicles')
     .insert({
       id: vehicleId,
-      type: vehicle.type,
-      make: vehicle.make,
-      model: vehicle.model,
+      type: 'bike',
+      bike_model: vehicle.bikeModel,
       year: vehicle.year,
+      engine_capacity: vehicle.engineCapacity,
       owner: vehicle.owner,
       phone: vehicle.phone,
       last_service: vehicle.lastService,
@@ -96,7 +95,6 @@ export const addVehicle = async (vehicle: Omit<Vehicle, 'id'> & { id?: string })
       status: vehicle.status,
       last_service_kilometers: vehicle.lastServiceKilometers,
       current_kilometers: vehicle.currentKilometers,
-      variant: vehicle.variant,
       user_id: user.id,
     })
     .select()
@@ -120,10 +118,9 @@ export const updateVehicle = async (id: string, updates: Partial<Vehicle>): Prom
   }
   
   const dbUpdates: { [key: string]: any } = { updated_at: new Date().toISOString() };
-  if (updates.type !== undefined) dbUpdates.type = updates.type;
-  if (updates.make !== undefined) dbUpdates.make = updates.make;
-  if (updates.model !== undefined) dbUpdates.model = updates.model;
+  if (updates.bikeModel !== undefined) dbUpdates.bike_model = updates.bikeModel;
   if (updates.year !== undefined) dbUpdates.year = updates.year;
+  if (updates.engineCapacity !== undefined) dbUpdates.engine_capacity = updates.engineCapacity;
   if (updates.owner !== undefined) dbUpdates.owner = updates.owner;
   if (updates.phone !== undefined) dbUpdates.phone = updates.phone;
   if (updates.lastService !== undefined) dbUpdates.last_service = updates.lastService;
@@ -131,7 +128,6 @@ export const updateVehicle = async (id: string, updates: Partial<Vehicle>): Prom
   if (updates.status !== undefined) dbUpdates.status = updates.status;
   if (updates.lastServiceKilometers !== undefined) dbUpdates.last_service_kilometers = updates.lastServiceKilometers;
   if (updates.currentKilometers !== undefined) dbUpdates.current_kilometers = updates.currentKilometers;
-  if (updates.variant !== undefined) dbUpdates.variant = updates.variant;
 
   const { data, error } = await supabase
     .from('vehicles')

@@ -1,70 +1,63 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useAddVehicle } from "@/hooks/useVehicles";
 import { useToast } from "@/hooks/use-toast";
-import VehicleForm from "@/components/forms/VehicleForm";
+import VehicleForm from "./forms/VehicleForm";
 
 const AddVehicleModal = () => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
-    type: "bike" as "car" | "bike",
-    make: "",
-    model: "",
-    variant: "",
+    type: "bike" as const,
+    bikeModel: "",
     year: new Date().getFullYear(),
+    engineCapacity: 0,
     owner: "",
     phone: "",
     lastService: "",
     nextService: "",
+    status: "good",
     lastServiceKilometers: 0,
     currentKilometers: 0,
   });
 
-  const addVehicle = useAddVehicle();
+  const addVehicleMutation = useAddVehicle();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
-      const nextServiceDate = new Date(formData.nextService);
-      const today = new Date();
-      const status = nextServiceDate < today ? "overdue" : nextServiceDate <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) ? "upcoming" : "active";
-
-      await addVehicle.mutateAsync({
-        ...formData,
-        status,
-      });
-
+      await addVehicleMutation.mutateAsync(formData);
+      
       toast({
-        title: "Vehicle Added",
-        description: `${formData.make} ${formData.model} ${formData.variant ? `(${formData.variant})` : ''} has been added successfully.`,
+        title: "Success",
+        description: "Bike added successfully!",
       });
 
       setFormData({
         id: "",
         type: "bike",
-        make: "",
-        model: "",
-        variant: "",
+        bikeModel: "",
         year: new Date().getFullYear(),
+        engineCapacity: 0,
         owner: "",
         phone: "",
         lastService: "",
         nextService: "",
+        status: "good",
         lastServiceKilometers: 0,
         currentKilometers: 0,
       });
+      
       setOpen(false);
     } catch (error) {
-      console.error('Error adding vehicle:', error);
+      console.error('Error adding bike:', error);
       toast({
         title: "Error",
-        description: "Failed to add vehicle. Please try again.",
+        description: "Failed to add bike. Please try again.",
         variant: "destructive",
       });
     }
@@ -77,26 +70,28 @@ const AddVehicleModal = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Vehicle
+        <Button className="flex items-center gap-2">
+          <Plus className="h-4 w-4" />
+          Add New Bike
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Add New Vehicle</DialogTitle>
+          <DialogTitle>Add New Bike</DialogTitle>
           <DialogDescription>
-            Register a new vehicle when it's first bought.
+            Enter the bike details below to add it to your fleet.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
           <VehicleForm formData={formData} onChange={handleFormChange} />
-          <div className="flex justify-end space-x-2 mt-6">
+          
+          <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={addVehicle.isPending}>
-              {addVehicle.isPending ? "Adding..." : "Add Vehicle"}
+            <Button type="submit" disabled={addVehicleMutation.isPending}>
+              {addVehicleMutation.isPending ? "Adding..." : "Add Bike"}
             </Button>
           </div>
         </form>

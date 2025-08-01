@@ -1,26 +1,25 @@
-
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface VehicleFormData {
   id?: string;
-  type: "car" | "bike";
-  make: string;
-  model: string;
-  variant: string;
+  type: 'bike';
+  bikeModel: string;
   year: number;
+  engineCapacity: number;
   owner: string;
   phone: string;
   lastService: string;
   nextService: string;
+  status: string;
   lastServiceKilometers: number;
   currentKilometers: number;
 }
 
 interface VehicleFormProps {
   formData: VehicleFormData;
-  onChange: (data: Partial<VehicleFormData>) => void;
+  onChange: (updates: Partial<VehicleFormData>) => void;
 }
 
 const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
@@ -38,45 +37,13 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
       </div>
 
       <div>
-        <Label htmlFor="type">Vehicle Type</Label>
-        <Select value={formData.type} onValueChange={(value: "car" | "bike") => onChange({ type: value })}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="bike">Bike</SelectItem>
-            <SelectItem value="car">Car</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div>
-        <Label htmlFor="make">Make</Label>
+        <Label htmlFor="bikeModel">Bike Model</Label>
         <Input
-          id="make"
-          value={formData.make}
-          onChange={(e) => onChange({ make: e.target.value })}
+          id="bikeModel"
+          value={formData.bikeModel}
+          onChange={(e) => onChange({ bikeModel: e.target.value })}
+          placeholder="Enter bike model"
           required
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="model">Model</Label>
-        <Input
-          id="model"
-          value={formData.model}
-          onChange={(e) => onChange({ model: e.target.value })}
-          required
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="variant">Variant</Label>
-        <Input
-          id="variant"
-          value={formData.variant}
-          onChange={(e) => onChange({ variant: e.target.value })}
-          placeholder="e.g., Superior, Advanced, Base"
         />
       </div>
 
@@ -87,26 +54,41 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           type="number"
           value={formData.year}
           onChange={(e) => onChange({ year: parseInt(e.target.value) })}
+          placeholder="Enter year"
           required
         />
       </div>
 
       <div>
-        <Label htmlFor="owner">Owner</Label>
+        <Label htmlFor="engineCapacity">Engine Capacity (CC)</Label>
+        <Input
+          id="engineCapacity"
+          type="number"
+          value={formData.engineCapacity}
+          onChange={(e) => onChange({ engineCapacity: parseInt(e.target.value) })}
+          placeholder="Enter engine capacity"
+          required
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="owner">Owner Name</Label>
         <Input
           id="owner"
           value={formData.owner}
           onChange={(e) => onChange({ owner: e.target.value })}
+          placeholder="Enter owner name"
           required
         />
       </div>
 
       <div>
-        <Label htmlFor="phone">Phone</Label>
+        <Label htmlFor="phone">Phone Number</Label>
         <Input
           id="phone"
           value={formData.phone}
           onChange={(e) => onChange({ phone: e.target.value })}
+          placeholder="Enter phone number"
           required
         />
       </div>
@@ -140,6 +122,7 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           type="number"
           value={formData.lastServiceKilometers}
           onChange={(e) => onChange({ lastServiceKilometers: parseInt(e.target.value) })}
+          placeholder="Enter kilometers"
           required
         />
       </div>
@@ -151,6 +134,7 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
           type="number"
           value={formData.currentKilometers}
           onChange={(e) => onChange({ currentKilometers: parseInt(e.target.value) })}
+          placeholder="Enter current kilometers"
           required
         />
       </div>
