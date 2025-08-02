@@ -20,8 +20,7 @@ const VehicleSearchAndFilter = ({ vehicles, onFilteredVehiclesChange }: VehicleS
       const matchesSearch = 
         vehicle.id.toLowerCase().includes(search.toLowerCase()) ||
         vehicle.owner.toLowerCase().includes(search.toLowerCase()) ||
-        vehicle.make.toLowerCase().includes(search.toLowerCase()) ||
-        vehicle.model.toLowerCase().includes(search.toLowerCase());
+        vehicle.bikeModel.toLowerCase().includes(search.toLowerCase());
 
       const matchesStatus = status === "all" || vehicle.status === status;
       const matchesType = type === "all" || vehicle.type === type;
@@ -52,7 +51,7 @@ const VehicleSearchAndFilter = ({ vehicles, onFilteredVehiclesChange }: VehicleS
       <div className="relative flex-1">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
         <Input
-          placeholder="Search by VIN, owner, make, or model..."
+          placeholder="Search by VIN, owner, or bike model..."
           value={searchTerm}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="pl-10"
@@ -73,16 +72,6 @@ const VehicleSearchAndFilter = ({ vehicles, onFilteredVehiclesChange }: VehicleS
           </SelectContent>
         </Select>
 
-        <Select value={typeFilter} onValueChange={handleTypeFilterChange}>
-          <SelectTrigger className="w-28">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="car">Car</SelectItem>
-            <SelectItem value="bike">Bike</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
     </div>
   );

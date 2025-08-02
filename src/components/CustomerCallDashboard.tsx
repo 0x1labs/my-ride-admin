@@ -34,8 +34,7 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
     let filtered = vehicles.filter(vehicle => {
       const matchesSearch = !searchTerm || 
         vehicle.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vehicle.make.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        vehicle.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        vehicle.bikeModel.toLowerCase().includes(searchTerm.toLowerCase()) ||
         vehicle.phone.includes(searchTerm);
 
       const callRecord = callRecords.find(record => record.vehicleId === vehicle.id);
@@ -281,8 +280,8 @@ const CustomerCallDashboard = ({ vehicles }: CustomerCallDashboardProps) => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <div>
-                        <p className="text-sm text-gray-500">Vehicle</p>
-                        <p className="font-medium">{vehicle.make} {vehicle.model} {vehicle.variant && `(${vehicle.variant})`} ({vehicle.year})</p>
+                        <p className="text-sm text-gray-500">Bike</p>
+                        <p className="font-medium">{vehicle.bikeModel} ({vehicle.year})</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-500">Last Service</p>

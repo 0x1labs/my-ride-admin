@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogContent,
@@ -20,11 +19,10 @@ import { Vehicle } from "@/types/vehicle";
 import { toast } from "sonner";
 
 const vehicleSchema = z.object({
-  type: z.enum(["car", "bike"]),
-  make: z.string().min(1, "Make is required"),
-  model: z.string().min(1, "Model is required"),
-  variant: z.string().optional(),
+  type: z.literal("bike"),
+  bikeModel: z.string().min(1, "Bike model is required"),
   year: z.coerce.number().min(1900, "Invalid year").max(new Date().getFullYear() + 1, "Invalid year"),
+  engineCapacity: z.coerce.number().min(0, "Engine capacity must be positive"),
   owner: z.string().min(1, "Owner name is required"),
   phone: z.string().min(1, "Phone number is required"),
   lastService: z.string().min(1, "Last service date is required"),
@@ -57,9 +55,17 @@ const EditVehicleModal = ({ isOpen, onClose, vehicle }: EditVehicleModalProps) =
   useEffect(() => {
     if (vehicle) {
       reset({
-        ...vehicle,
+        type: "bike",
+        bikeModel: vehicle.bikeModel,
+        year: vehicle.year,
+        engineCapacity: vehicle.engineCapacity,
+        owner: vehicle.owner,
+        phone: vehicle.phone,
         lastService: vehicle.lastService.split('T')[0],
         nextService: vehicle.nextService.split('T')[0],
+        lastServiceKilometers: vehicle.lastServiceKilometers,
+        currentKilometers: vehicle.currentKilometers,
+        status: vehicle.status as "active" | "overdue" | "upcoming",
       });
     }
   }, [vehicle, reset]);
@@ -70,11 +76,11 @@ const EditVehicleModal = ({ isOpen, onClose, vehicle }: EditVehicleModalProps) =
       { id: vehicle.id, updates: data },
       {
         onSuccess: () => {
-          toast.success("Vehicle updated successfully!");
+          toast.success("Bike updated successfully!");
           onClose();
         },
         onError: (error) => {
-          toast.error(`Failed to update vehicle: ${error.message}`);
+          toast.error(`Failed to update bike: ${error.message}`);
         },
       }
     );
@@ -84,43 +90,36 @@ const EditVehicleModal = ({ isOpen, onClose, vehicle }: EditVehicleModalProps) =
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit Vehicle</DialogTitle>
+          <DialogTitle>Edit Bike</DialogTitle>
           <DialogDescription>
-            Update the details for {vehicle?.make} {vehicle?.model}.
+            Update the details for {vehicle?.bikeModel}.
           </DialogDescription>
         </DialogHeader>
         <form id="edit-vehicle-form" onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-6">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="type" className="text-right">Type</Label>
-            <Controller name="type" control={control} render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="col-span-3"><SelectValue placeholder="Select type" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="car">Car</SelectItem>
-                    <SelectItem value="bike">Bike</SelectItem>
-                  </SelectContent>
-                </Select>
-              )} />
-            {errors.type && <p className="col-span-4 text-red-500 text-sm">{errors.type.message}</p>}
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="make" className="text-right">Make</Label>
-            <Controller name="make" control={control} render={({ field }) => <Input id="make" {...field} className="col-span-3" />} />
-            {errors.make && <p className="col-span-4 text-red-500 text-sm">{errors.make.message}</p>}
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="model" className="text-right">Model</Label>
-            <Controller name="model" control={control} render={({ field }) => <Input id="model" {...field} className="col-span-3" />} />
-            {errors.model && <p className="col-span-4 text-red-500 text-sm">{errors.model.message}</p>}
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="variant" className="text-right">Variant</Label>
-            <Controller name="variant" control={control} render={({ field }) => <Input id="variant" {...field} className="col-span-3" />} />
+            <Label htmlFor="bikeModel" className="text-right">Bike Model</Label>
+            <Controller name="bikeModel" control={control} render={({ field }) => (
+              <Select onValueChange={field.onChange} value={field.value}>
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select bike model" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Duke">Duke</SelectItem>
+                  <SelectItem value="Adventure">Adventure</SelectItem>
+                </SelectContent>
+              </Select>
+            )} />
+            {errors.bikeModel && <p className="col-span-4 text-red-500 text-sm">{errors.bikeModel.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="year" className="text-right">Year</Label>
             <Controller name="year" control={control} render={({ field }) => <Input id="year" type="number" {...field} className="col-span-3" />} />
             {errors.year && <p className="col-span-4 text-red-500 text-sm">{errors.year.message}</p>}
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="engineCapacity" className="text-right">Engine Capacity (CC)</Label>
+            <Controller name="engineCapacity" control={control} render={({ field }) => <Input id="engineCapacity" type="number" {...field} className="col-span-3" />} />
+            {errors.engineCapacity && <p className="col-span-4 text-red-500 text-sm">{errors.engineCapacity.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="owner" className="text-right">Owner</Label>

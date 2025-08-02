@@ -72,7 +72,7 @@ const Index = () => {
     if (vehicleToDelete) {
       deleteVehicle(vehicleToDelete.id, {
         onSuccess: () => {
-          toast.success(`Vehicle ${vehicleToDelete.make} ${vehicleToDelete.model} deleted.`);
+          toast.success(`Bike ${vehicleToDelete.bikeModel} deleted.`);
           setIsDeleteAlertOpen(false);
           setVehicleToDelete(null);
         },

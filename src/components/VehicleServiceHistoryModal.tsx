@@ -17,7 +17,7 @@ const VehicleServiceHistoryModal = ({ isOpen, onClose, vehicle, vehicles }: Vehi
         <DialogHeader>
           <DialogTitle>Service History</DialogTitle>
           <DialogDescription>
-            {vehicle ? `Service history for ${vehicle.make} ${vehicle.model} (${vehicle.owner})` : "Vehicle service history"}
+            {vehicle ? `Service history for ${vehicle.bikeModel} (${vehicle.owner})` : "Bike service history"}
           </DialogDescription>
         </DialogHeader>
         

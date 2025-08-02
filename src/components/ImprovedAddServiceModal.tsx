@@ -195,9 +195,8 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
               <h3 className="text-lg font-semibold">Vehicle Information</h3>
               <div className="p-4 border rounded-md bg-gray-50 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
                 <p><span className="font-medium text-gray-600">Owner:</span> {vehicle.owner}</p>
-                <p><span className="font-medium text-gray-600">Vehicle:</span> {vehicle.make} {vehicle.model} ({vehicle.year})</p>
+                <p><span className="font-medium text-gray-600">Bike:</span> {vehicle.bikeModel} ({vehicle.year})</p>
                 <p><span className="font-medium text-gray-600">VIN:</span> {vehicle.id}</p>
-                {vehicle.variant && <p><span className="font-medium text-gray-600">Variant:</span> {vehicle.variant}</p>}
               </div>
             </div>
           ) : (

@@ -8,17 +8,17 @@ interface DashboardStatsProps {
 
 const DashboardStats = ({ vehicles }: DashboardStatsProps) => {
   const totalVehicles = vehicles.length;
-  const totalCars = vehicles.filter(v => v.type === "car").length;
+  
   const totalBikes = vehicles.filter(v => v.type === "bike").length;
   const overdueServices = vehicles.filter(v => v.status === "overdue").length;
   const activeServices = vehicles.filter(v => v.status === "active").length;
 
   const stats = [
     {
-      title: "Total Vehicles",
+      title: "Total Bikes",
       value: totalVehicles,
-      description: `${totalCars} cars, ${totalBikes} bikes`,
-      icon: Car,
+      description: `${totalBikes} bikes`,
+      icon: Bike,
       color: "text-blue-600",
       bgColor: "bg-blue-50"
     },

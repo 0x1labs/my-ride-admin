@@ -59,7 +59,7 @@ const VehicleOwnerSelect = ({
 
   // Get vehicles for selected owner
   const ownerVehicles = selectedOwnerId ? 
-    vehicles.filter(v => v.owner === selectedOwnerId).sort((a, b) => a.make.localeCompare(b.make)) : 
+    vehicles.filter(v => v.owner === selectedOwnerId).sort((a, b) => a.bikeModel.localeCompare(b.bikeModel)) : 
     [];
 
   const handleOwnerSelect = (ownerId: string) => {
@@ -192,7 +192,7 @@ const VehicleOwnerSelect = ({
                     <SelectItem key={vehicle.id} value={vehicle.id}>
                       <div className="flex items-center gap-2">
                         <span className="font-medium">
-                          {vehicle.make} {vehicle.model}
+                          {vehicle.bikeModel}
                         </span>
                         <span className="text-xs text-gray-500">
                           ({vehicle.year}) - {vehicle.id}

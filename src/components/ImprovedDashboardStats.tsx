@@ -10,7 +10,7 @@ interface ImprovedDashboardStatsProps {
 
 const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
   const totalVehicles = vehicles.length;
-  const totalCars = vehicles.filter(v => v.type === "car").length;
+  
   const totalBikes = vehicles.filter(v => v.type === "bike").length;
   const overdueServices = vehicles.filter(v => v.status === "overdue").length;
   const activeServices = vehicles.filter(v => v.status === "active").length;
@@ -55,10 +55,10 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
 
   const stats = [
     {
-      title: "Total Vehicles",
+      title: "Total Bikes",
       value: totalVehicles,
-      description: `${totalCars} cars, ${totalBikes} bikes`,
-      icon: Car,
+      description: `${totalBikes} bikes`,
+      icon: Bike,
       color: "text-blue-600",
       bgColor: "bg-blue-50"
     },
@@ -143,12 +143,9 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
                 {recentlyServiced.map((vehicle) => (
                   <div key={vehicle.id} className="flex items-center justify-between border-b pb-2 last:border-b-0">
                     <div className="flex items-center gap-2">
-                      {vehicle.type === "car" ? 
-                        <Car className="h-4 w-4 text-blue-600" /> : 
-                        <Bike className="h-4 w-4 text-green-600" />
-                      }
+                      <Bike className="h-4 w-4 text-orange-600" />
                       <div>
-                        <p className="font-medium text-sm">{vehicle.make} {vehicle.model}</p>
+                        <p className="font-medium text-sm">{vehicle.bikeModel}</p>
                         <p className="text-xs text-gray-500">{vehicle.owner}</p>
                       </div>
                     </div>
@@ -189,13 +186,10 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
                   
                   return (
                     <div key={vehicle.id} className="flex items-center justify-between border-b pb-2 last:border-b-0">
-                      <div className="flex items-center gap-2">
-                        {vehicle.type === "car" ? 
-                          <Car className="h-4 w-4 text-blue-600" /> : 
-                          <Bike className="h-4 w-4 text-green-600" />
-                        }
+                       <div className="flex items-center gap-2">
+                        <Bike className="h-4 w-4 text-orange-600" />
                         <div>
-                          <p className="font-medium text-sm">{vehicle.make} {vehicle.model}</p>
+                          <p className="font-medium text-sm">{vehicle.bikeModel}</p>
                           <p className="text-xs text-gray-500">{vehicle.owner}</p>
                         </div>
                       </div>

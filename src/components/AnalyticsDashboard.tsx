@@ -122,7 +122,6 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
   }, [vehicles, serviceRecords]);
 
   const vehicleTypes = useMemo(() => [
-    { name: "Cars", value: vehicles.filter(v => v.type === "car").length, color: "#3B82F6" },
     { name: "Bikes", value: vehicles.filter(v => v.type === "bike").length, color: "#10B981" }
   ], [vehicles]);
 
@@ -149,9 +148,9 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
       color: "text-purple-600"
     },
     {
-      title: "Total Vehicles",
+      title: "Total Bikes",
       value: vehicles.length,
-      description: `${vehicleTypes[0].value} cars, ${vehicleTypes[1].value} bikes`,
+      description: `${vehicleTypes[0].value} bikes`,
       icon: Users,
       color: "text-orange-600"
     }
@@ -240,8 +239,8 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
         {/* Vehicle Types */}
         <Card className="bg-white">
           <CardHeader>
-            <CardTitle>Vehicle Types</CardTitle>
-            <CardDescription>Distribution of cars vs bikes in the system</CardDescription>
+            <CardTitle>Bike Types</CardTitle>
+            <CardDescription>Distribution of bikes in the system</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>

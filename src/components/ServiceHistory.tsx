@@ -70,8 +70,8 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
             {vehicles.map((vehicle) => (
               <SelectItem key={vehicle.id} value={vehicle.id}>
                 <div className="flex items-center gap-2">
-                  {vehicle.type === "car" ? <Car className="h-4 w-4" /> : <Bike className="h-4 w-4" />}
-                  {vehicle.make} {vehicle.model} - {vehicle.owner}
+                  <Bike className="h-4 w-4" />
+                  {vehicle.bikeModel} - {vehicle.owner}
                 </div>
               </SelectItem>
             ))}
@@ -83,11 +83,8 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
           <CardHeader>
             <div className="flex items-center gap-2">
-              {selectedVehicleData.type === "car" ? 
-                <Car className="h-5 w-5 text-blue-600" /> : 
-                <Bike className="h-5 w-5 text-green-600" />
-              }
-              <CardTitle>{selectedVehicleData.make} {selectedVehicleData.model}</CardTitle>
+              <Bike className="h-5 w-5 text-orange-600" />
+              <CardTitle>{selectedVehicleData.bikeModel}</CardTitle>
             </div>
             <CardDescription>Owner: {selectedVehicleData.owner} | VIN: {selectedVehicleData.id}</CardDescription>
           </CardHeader>
@@ -132,8 +129,8 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                 <CardContent className="space-y-4">
                   {currentVehicle === "all" && vehicle && (
                     <div className="flex items-center gap-2 text-sm text-gray-600">
-                      {vehicle.type === "car" ? <Car className="h-4 w-4" /> : <Bike className="h-4 w-4" />}
-                      <span>{vehicle.make} {vehicle.model} - {vehicle.owner}</span>
+                      <Bike className="h-4 w-4" />
+                      <span>{vehicle.bikeModel} - {vehicle.owner}</span>
                     </div>
                   )}
 
