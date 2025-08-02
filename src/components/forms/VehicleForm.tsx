@@ -26,12 +26,12 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="id">Vehicle Identification Number (VIN)</Label>
+        <Label htmlFor="id">Bike Identification Number (VIN)</Label>
         <Input
           id="id"
           value={formData.id || ""}
           onChange={(e) => onChange({ id: e.target.value })}
-          placeholder="Enter Vehicle ID (e.g., VH123456)"
+          placeholder="Enter Bike ID (e.g., VH123456)"
           required
         />
       </div>

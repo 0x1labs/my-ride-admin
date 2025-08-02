@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Car, Bike, AlertTriangle, CheckCircle, DollarSign, Calendar } from "lucide-react";
+import { Bike, AlertTriangle, CheckCircle, DollarSign, Calendar } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
+import { useRevenue } from "@/hooks/useRevenue";
 
 interface DashboardStatsProps {
   vehicles: Vehicle[];
@@ -12,6 +13,7 @@ const DashboardStats = ({ vehicles }: DashboardStatsProps) => {
   const totalBikes = vehicles.filter(v => v.type === "bike").length;
   const overdueServices = vehicles.filter(v => v.status === "overdue").length;
   const activeServices = vehicles.filter(v => v.status === "active").length;
+  const { data: revenueData, isLoading: revenueLoading } = useRevenue();
 
   const stats = [
     {
@@ -25,7 +27,7 @@ const DashboardStats = ({ vehicles }: DashboardStatsProps) => {
     {
       title: "Active Services",
       value: activeServices,
-      description: "Up to date vehicles",
+      description: "Up to date bikes",
       icon: CheckCircle,
       color: "text-green-600",
       bgColor: "bg-green-50"
@@ -40,8 +42,10 @@ const DashboardStats = ({ vehicles }: DashboardStatsProps) => {
     },
     {
       title: "Monthly Revenue",
-      value: "$12,450",
-      description: "+15% from last month",
+      value: revenueLoading ? "Loading..." : `रु ${revenueData?.monthlyRevenue?.toLocaleString('en-IN') || '0'}`,
+      description: revenueData && revenueData.percentageChange !== 0 
+        ? `${revenueData.percentageChange > 0 ? '+' : ''}${revenueData.percentageChange.toFixed(1)}% from last month`
+        : "from last month",
       icon: DollarSign,
       color: "text-purple-600",
       bgColor: "bg-purple-50"
