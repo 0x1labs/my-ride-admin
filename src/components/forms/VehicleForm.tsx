@@ -56,8 +56,8 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
         <Input
           id="year"
           type="number"
-          value={formData.year}
-          onChange={(e) => onChange({ year: parseInt(e.target.value) })}
+          value={formData.year || ""}
+          onChange={(e) => onChange({ year: parseInt(e.target.value) || 0 })}
           placeholder="Enter year"
           required
         />
@@ -68,8 +68,8 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
         <Input
           id="engineCapacity"
           type="number"
-          value={formData.engineCapacity}
-          onChange={(e) => onChange({ engineCapacity: parseInt(e.target.value) })}
+          value={formData.engineCapacity || ""}
+          onChange={(e) => onChange({ engineCapacity: parseInt(e.target.value) || 0 })}
           placeholder="Enter engine capacity"
           required
         />
@@ -124,8 +124,8 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
         <Input
           id="lastServiceKilometers"
           type="number"
-          value={formData.lastServiceKilometers}
-          onChange={(e) => onChange({ lastServiceKilometers: parseInt(e.target.value) })}
+          value={formData.lastServiceKilometers || ""}
+          onChange={(e) => onChange({ lastServiceKilometers: parseInt(e.target.value) || 0 })}
           placeholder="Enter kilometers"
           required
         />
@@ -136,8 +136,8 @@ const VehicleForm = ({ formData, onChange }: VehicleFormProps) => {
         <Input
           id="currentKilometers"
           type="number"
-          value={formData.currentKilometers}
-          onChange={(e) => onChange({ currentKilometers: parseInt(e.target.value) })}
+          value={formData.currentKilometers || ""}
+          onChange={(e) => onChange({ currentKilometers: parseInt(e.target.value) || 0 })}
           placeholder="Enter current kilometers"
           required
         />

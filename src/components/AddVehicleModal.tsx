@@ -18,7 +18,7 @@ const AddVehicleModal = () => {
     phone: "",
     lastService: "",
     nextService: "",
-    status: "good",
+    status: "active",
     lastServiceKilometers: 0,
     currentKilometers: 0,
   });
@@ -47,7 +47,7 @@ const AddVehicleModal = () => {
         phone: "",
         lastService: "",
         nextService: "",
-        status: "good",
+        status: "active",
         lastServiceKilometers: 0,
         currentKilometers: 0,
       });
