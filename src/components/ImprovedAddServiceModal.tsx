@@ -221,13 +221,23 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="serviceType">Service Type *</Label>
-                  <Input
-                    id="serviceType"
-                    placeholder="e.g., Oil Change, Brake Service"
-                    value={serviceType}
-                    onChange={(e) => setServiceType(e.target.value)}
-                    required
-                  />
+                  <Select value={serviceType} onValueChange={setServiceType} required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select service type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="regular servicing">Regular Servicing</SelectItem>
+                      <SelectItem value="brake pad replacement">Brake Pad Replacement</SelectItem>
+                      <SelectItem value="oil change">Oil Change</SelectItem>
+                      <SelectItem value="tire replacement">Tire Replacement</SelectItem>
+                      <SelectItem value="chain cleaning">Chain Cleaning</SelectItem>
+                      <SelectItem value="engine maintenance">Engine Maintenance</SelectItem>
+                      <SelectItem value="electrical repair">Electrical Repair</SelectItem>
+                      <SelectItem value="suspension service">Suspension Service</SelectItem>
+                      <SelectItem value="carburetor cleaning">Carburetor Cleaning</SelectItem>
+                      <SelectItem value="general inspection">General Inspection</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
@@ -320,7 +330,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                       <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
                         <Badge variant="secondary">{part.name}</Badge>
                         <div className="flex items-center gap-2">
-                          <span className="font-medium">${part.cost.toFixed(2)}</span>
+                          <span className="font-medium">Nrs {part.cost.toFixed(2)}</span>
                           <Button
                             type="button"
                             variant="ghost"
@@ -366,7 +376,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                   <div className="w-full">
                     <Label>Total Amount</Label>
                     <div className="text-2xl font-bold text-blue-600">
-                      ${calculateTotal().toFixed(2)}
+                      Nrs {calculateTotal().toFixed(2)}
                     </div>
                   </div>
                 </div>

@@ -1,8 +1,9 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Car, Bike, AlertTriangle, CheckCircle, DollarSign, Calendar, Clock, Wrench } from "lucide-react";
+import { Car, Bike, AlertTriangle, CheckCircle, DollarSign, Calendar, Clock, Wrench, PieChart } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
+import { PieChart as RechartsPieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 interface ImprovedDashboardStatsProps {
   vehicles: Vehicle[];
@@ -15,6 +16,31 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
   const overdueServices = vehicles.filter(v => v.status === "overdue").length;
   const activeServices = vehicles.filter(v => v.status === "active").length;
   const upcomingServices = vehicles.filter(v => v.status === "upcoming").length;
+
+  // Get bike types data for chart
+  const bikeTypeMap = vehicles.reduce((acc, vehicle) => {
+    const bikeType = vehicle.bikeModel.toLowerCase().includes('duke') ? 'Duke' :
+                    vehicle.bikeModel.toLowerCase().includes('adventure') ? 'Adventure' :
+                    vehicle.bikeModel.toLowerCase().includes('ktm') ? 'KTM' :
+                    vehicle.bikeModel.toLowerCase().includes('yamaha') ? 'Yamaha' :
+                    vehicle.bikeModel.toLowerCase().includes('honda') ? 'Honda' :
+                    vehicle.bikeModel.toLowerCase().includes('kawasaki') ? 'Kawasaki' :
+                    vehicle.bikeModel.toLowerCase().includes('bajaj') ? 'Bajaj' :
+                    vehicle.bikeModel.toLowerCase().includes('royal enfield') ? 'Royal Enfield' :
+                    vehicle.bikeModel.toLowerCase().includes('tvs') ? 'TVS' :
+                    vehicle.bikeModel.toLowerCase().includes('hero') ? 'Hero' :
+                    'Other';
+    
+    acc[bikeType] = (acc[bikeType] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const bikeTypesData = Object.entries(bikeTypeMap).map(([name, value]) => ({
+    name,
+    value,
+  }));
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF7C7C', '#8DD1E1', '#D084D0'];
 
   // Get recently serviced vehicles (last 30 days)
   const recentlyServiced = vehicles
@@ -119,6 +145,42 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
           </Card>
         ))}
       </div>
+
+      {/* Bike Types Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <PieChart className="h-5 w-5 text-blue-600" />
+            Bike Types Distribution
+          </CardTitle>
+          <CardDescription>
+            Distribution of different bike types in your fleet
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <RechartsPieChart>
+                <Pie
+                  data={bikeTypesData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {bikeTypesData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </RechartsPieChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Activity Sections */}
       <div className="grid gap-6 lg:grid-cols-2">
