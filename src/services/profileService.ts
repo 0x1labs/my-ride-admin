@@ -28,3 +28,24 @@ export const getProfiles = async (): Promise<Profile[]> => {
   console.log('Profiles fetched successfully:', data?.length);
   return data || [];
 };
+
+export const updateServiceCenterName = async (serviceCenterName: string): Promise<void> => {
+  console.log('Updating service center name...');
+  
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    throw new Error('User not authenticated');
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ service_center_name: serviceCenterName })
+    .eq('id', user.id);
+
+  if (error) {
+    console.error('Error updating service center name:', error);
+    throw error;
+  }
+
+  console.log('Service center name updated successfully');
+};

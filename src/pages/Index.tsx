@@ -102,127 +102,121 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
-        <DashboardHeader userEmail={user?.email} onLogout={handleLogout} />
+    <div className="min-h-screen bg-gray-50 p-8">
+      <DashboardHeader userEmail={user?.email} onLogout={handleLogout} />
 
-        <div className="space-y-4 sm:space-y-8">
-          <DashboardStats vehicles={vehicles} />
-          
-          <Tabs defaultValue="vehicles" className="space-y-4 sm:space-y-6">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
-              <TabsTrigger value="vehicles" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3">
-                <Bike className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden xs:inline">Bikes</span>
-                <span className="xs:hidden">🏍️</span>
-              </TabsTrigger>
-              <TabsTrigger value="calls" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3">
-                <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden xs:inline">Calls</span>
-                <span className="xs:hidden">📞</span>
-              </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3">
-                <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden xs:inline">Analytics</span>
-                <span className="xs:hidden">📊</span>
-              </TabsTrigger>
-              <TabsTrigger value="history" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3">
-                <History className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden xs:inline">History</span>
-                <span className="xs:hidden">📋</span>
-              </TabsTrigger>
-            </TabsList>
+      <div className="space-y-8">
+        <DashboardStats vehicles={vehicles} />
+        
+        <Tabs defaultValue="vehicles" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="vehicles" className="flex items-center gap-2">
+              <Bike className="h-4 w-4" />
+              Bikes
+            </TabsTrigger>
+            <TabsTrigger value="calls" className="flex items-center gap-2">
+              <Phone className="h-4 w-4" />
+              Calls
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="history" className="flex items-center gap-2">
+              <History className="h-4 w-4" />
+              History
+            </TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="vehicles" className="space-y-6">
-              <VehicleActions
-                vehicles={vehicles}
-                isAddServiceModalOpen={isAddServiceModalOpen}
-                onAddServiceModalChange={setIsAddServiceModalOpen}
-                vehicleForNewService={vehicleForNewService}
-                onVehicleForNewServiceChange={setVehicleForNewService}
-              />
-              
-              <VehicleSearchAndFilter 
-                vehicles={vehicles} 
-                onFilteredVehiclesChange={setFilteredVehicles}
-              />
-              
-              {isLoading ? (
-                <div className="text-center py-8">Loading vehicles...</div>
-              ) : (
-                <>
-                  {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).length > 0 ? (
-                    <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                      {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).map((vehicle) => (
-                        <VehicleCard
-                          key={vehicle.id}
-                          vehicle={vehicle}
-                          onViewHistory={() => handleViewServiceHistory(vehicle)}
-                          onAddService={() => handleAddServiceRecord(vehicle)}
-                          onEdit={() => handleEditVehicle(vehicle)}
-                          onDelete={() => handleDeleteVehicle(vehicle)}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      {filteredVehicles.length === 0 && vehicles.length > 0 
-                        ? "No bikes match your search criteria."
-                        : "No bikes found. Add your first bike to get started."
-                      }
-                    </div>
-                  )}
-                </>
-              )}
-            </TabsContent>
+          <TabsContent value="vehicles" className="space-y-6">
+            <VehicleActions
+              vehicles={vehicles}
+              isAddServiceModalOpen={isAddServiceModalOpen}
+              onAddServiceModalChange={setIsAddServiceModalOpen}
+              vehicleForNewService={vehicleForNewService}
+              onVehicleForNewServiceChange={setVehicleForNewService}
+            />
+            
+            <VehicleSearchAndFilter 
+              vehicles={vehicles} 
+              onFilteredVehiclesChange={setFilteredVehicles}
+            />
+            
+            {isLoading ? (
+              <div className="text-center py-8">Loading vehicles...</div>
+            ) : (
+              <>
+                {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).length > 0 ? (
+                  <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).map((vehicle) => (
+                      <VehicleCard
+                        key={vehicle.id}
+                        vehicle={vehicle}
+                        onViewHistory={() => handleViewServiceHistory(vehicle)}
+                        onAddService={() => handleAddServiceRecord(vehicle)}
+                        onEdit={() => handleEditVehicle(vehicle)}
+                        onDelete={() => handleDeleteVehicle(vehicle)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    {filteredVehicles.length === 0 && vehicles.length > 0 
+                      ? "No bikes match your search criteria."
+                      : "No bikes found. Add your first bike to get started."
+                    }
+                  </div>
+                )}
+              </>
+            )}
+          </TabsContent>
 
-            <TabsContent value="calls" className="space-y-6">
-              <CustomerCallDashboard vehicles={vehicles} />
-            </TabsContent>
+          <TabsContent value="calls" className="space-y-6">
+            <CustomerCallDashboard vehicles={vehicles} />
+          </TabsContent>
 
-            <TabsContent value="analytics" className="space-y-6">
-              <AnalyticsDashboard vehicles={vehicles} serviceRecords={serviceRecords} />
-            </TabsContent>
+          <TabsContent value="analytics" className="space-y-6">
+            <AnalyticsDashboard vehicles={vehicles} serviceRecords={serviceRecords} />
+          </TabsContent>
 
-            <TabsContent value="history" className="space-y-6">
-              <ServiceHistory vehicles={vehicles} />
-            </TabsContent>
-          </Tabs>
+          <TabsContent value="history" className="space-y-6">
+            <ServiceHistory vehicles={vehicles} />
+          </TabsContent>
+        </Tabs>
 
-          <VehicleServiceHistoryModal
-            isOpen={isServiceHistoryModalOpen}
-            onClose={() => setIsServiceHistoryModalOpen(false)}
-            vehicle={selectedVehicleForHistory}
-            vehicles={vehicles}
-          />
+        <VehicleServiceHistoryModal
+          isOpen={isServiceHistoryModalOpen}
+          onClose={() => setIsServiceHistoryModalOpen(false)}
+          vehicle={selectedVehicleForHistory}
+          vehicles={vehicles}
+        />
 
-          <EditVehicleModal
-            isOpen={isEditModalOpen}
-            onClose={() => {
-              setIsEditModalOpen(false);
-              setVehicleToEdit(null);
-            }}
-            vehicle={vehicleToEdit}
-          />
+        <EditVehicleModal
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setVehicleToEdit(null);
+          }}
+          vehicle={vehicleToEdit}
+        />
 
-          <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete the
-                  bike and all associated service and call records.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel onClick={() => setVehicleToDelete(null)}>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={confirmDelete} disabled={isDeleting}>
-                  {isDeleting ? "Deleting..." : "Delete"}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
+        <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete the
+                bike and all associated service and call records.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setVehicleToDelete(null)}>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDelete} disabled={isDeleting}>
+                {isDeleting ? "Deleting..." : "Delete"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
