@@ -140,14 +140,14 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                       {record.parts.map((part, index) => (
                         <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
                           <Badge variant="secondary">{part.name}</Badge>
-                          <span className="text-sm font-medium">${part.cost.toFixed(2)}</span>
+                          <span className="text-sm font-medium">Nrs {part.cost.toFixed(2)}</span>
                         </div>
                       ))}
                       {record.parts.length > 0 && (
                         <div className="border-t pt-2">
                           <div className="flex justify-between text-sm font-medium">
                             <span>Total Parts Cost:</span>
-                            <span>${totalPartsCost.toFixed(2)}</span>
+                            <span>Nrs {totalPartsCost.toFixed(2)}</span>
                           </div>
                         </div>
                       )}
@@ -159,7 +159,7 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                       <p className="text-sm text-gray-600">Parts Cost</p>
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">${totalPartsCost.toFixed(2)}</span>
+                        <span className="font-medium">Nrs {totalPartsCost.toFixed(2)}</span>
                       </div>
                     </div>
                     
@@ -167,7 +167,7 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                       <p className="text-sm text-gray-600">Labor Cost</p>
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">${record.laborCost.toFixed(2)}</span>
+                        <span className="font-medium">Nrs {record.laborCost.toFixed(2)}</span>
                       </div>
                     </div>
                     
@@ -176,7 +176,7 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                         <p className="text-sm text-gray-600">Discount</p>
                         <div className="flex items-center gap-1">
                           <DollarSign className="h-4 w-4 text-green-600" />
-                          <span className="font-medium text-green-600">-${record.discount.toFixed(2)}</span>
+                          <span className="font-medium text-green-600">-Nrs {record.discount.toFixed(2)}</span>
                         </div>
                       </div>
                     )}
@@ -185,7 +185,7 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                       <p className="text-sm text-gray-600">Final Amount</p>
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-4 w-4 text-blue-600" />
-                        <span className="font-bold text-blue-600">${finalCost.toFixed(2)}</span>
+                        <span className="font-bold text-blue-600">Nrs {finalCost.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>

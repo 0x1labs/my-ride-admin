@@ -103,29 +103,33 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <DashboardHeader userEmail={user?.email} onLogout={handleLogout} />
 
-        <div className="space-y-8">
+        <div className="space-y-4 sm:space-y-8">
           <DashboardStats vehicles={vehicles} />
           
-          <Tabs defaultValue="vehicles" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="vehicles" className="flex items-center gap-2">
-                <Bike className="h-4 w-4" />
-                Bikes
+          <Tabs defaultValue="vehicles" className="space-y-4 sm:space-y-6">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+              <TabsTrigger value="vehicles" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3">
+                <Bike className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">Bikes</span>
+                <span className="xs:hidden">🏍️</span>
               </TabsTrigger>
-              <TabsTrigger value="calls" className="flex items-center gap-2">
-                <Phone className="h-4 w-4" />
-                Customer Calls
+              <TabsTrigger value="calls" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3">
+                <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">Calls</span>
+                <span className="xs:hidden">📞</span>
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4" />
-                Analytics
+              <TabsTrigger value="analytics" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3">
+                <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">Analytics</span>
+                <span className="xs:hidden">📊</span>
               </TabsTrigger>
-              <TabsTrigger value="history" className="flex items-center gap-2">
-                <History className="h-4 w-4" />
-                Service History
+              <TabsTrigger value="history" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm p-2 sm:p-3">
+                <History className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden xs:inline">History</span>
+                <span className="xs:hidden">📋</span>
               </TabsTrigger>
             </TabsList>
 
@@ -148,7 +152,7 @@ const Index = () => {
               ) : (
                 <>
                   {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).length > 0 ? (
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                       {(filteredVehicles.length > 0 ? filteredVehicles : vehicles).map((vehicle) => (
                         <VehicleCard
                           key={vehicle.id}

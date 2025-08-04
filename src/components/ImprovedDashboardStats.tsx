@@ -17,19 +17,25 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
   const activeServices = vehicles.filter(v => v.status === "active").length;
   const upcomingServices = vehicles.filter(v => v.status === "upcoming").length;
 
-  // Get bike types data for chart
+  // Get bike types data for chart - extract actual model names
   const bikeTypeMap = vehicles.reduce((acc, vehicle) => {
-    const bikeType = vehicle.bikeModel.toLowerCase().includes('duke') ? 'Duke' :
-                    vehicle.bikeModel.toLowerCase().includes('adventure') ? 'Adventure' :
-                    vehicle.bikeModel.toLowerCase().includes('ktm') ? 'KTM' :
-                    vehicle.bikeModel.toLowerCase().includes('yamaha') ? 'Yamaha' :
-                    vehicle.bikeModel.toLowerCase().includes('honda') ? 'Honda' :
-                    vehicle.bikeModel.toLowerCase().includes('kawasaki') ? 'Kawasaki' :
-                    vehicle.bikeModel.toLowerCase().includes('bajaj') ? 'Bajaj' :
-                    vehicle.bikeModel.toLowerCase().includes('royal enfield') ? 'Royal Enfield' :
-                    vehicle.bikeModel.toLowerCase().includes('tvs') ? 'TVS' :
-                    vehicle.bikeModel.toLowerCase().includes('hero') ? 'Hero' :
-                    'Other';
+    // Extract bike model name, prioritize specific models
+    let bikeType = vehicle.bikeModel;
+    
+    // Handle specific model extraction
+    if (vehicle.bikeModel.toLowerCase().includes('duke')) {
+      bikeType = 'Duke';
+    } else if (vehicle.bikeModel.toLowerCase().includes('adventure')) {
+      bikeType = 'Adventure';
+    } else if (vehicle.bikeModel.toLowerCase().includes('ninja')) {
+      bikeType = 'Ninja';
+    } else if (vehicle.bikeModel.toLowerCase().includes('royal enfield')) {
+      bikeType = 'Royal Enfield';
+    } else {
+      // For other bikes, try to extract the main model name (first part before space or dash)
+      const modelParts = vehicle.bikeModel.split(/[\s-]/);
+      bikeType = modelParts[0] || vehicle.bikeModel;
+    }
     
     acc[bikeType] = (acc[bikeType] || 0) + 1;
     return acc;
