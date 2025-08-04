@@ -157,36 +157,24 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-1">
                       <p className="text-sm text-gray-600">Parts Cost</p>
-                      <div className="flex items-center gap-1">
-                        <DollarSign className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">Nrs {totalPartsCost.toFixed(2)}</span>
-                      </div>
+                      <span className="font-medium">Nrs {totalPartsCost.toFixed(2)}</span>
                     </div>
                     
                     <div className="space-y-1">
                       <p className="text-sm text-gray-600">Labor Cost</p>
-                      <div className="flex items-center gap-1">
-                        <DollarSign className="h-4 w-4 text-gray-400" />
-                        <span className="font-medium">Nrs {record.laborCost.toFixed(2)}</span>
-                      </div>
+                      <span className="font-medium">Nrs {record.laborCost.toFixed(2)}</span>
                     </div>
                     
                     {record.discount > 0 && (
                       <div className="space-y-1">
                         <p className="text-sm text-gray-600">Discount</p>
-                        <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4 text-green-600" />
-                          <span className="font-medium text-green-600">-Nrs {record.discount.toFixed(2)}</span>
-                        </div>
+                        <span className="font-medium text-green-600">-Nrs {record.discount.toFixed(2)}</span>
                       </div>
                     )}
                     
                     <div className="space-y-1">
                       <p className="text-sm text-gray-600">Final Amount</p>
-                      <div className="flex items-center gap-1">
-                        <DollarSign className="h-4 w-4 text-blue-600" />
-                        <span className="font-bold text-blue-600">Nrs {finalCost.toFixed(2)}</span>
-                      </div>
+                      <span className="font-bold text-blue-600">Nrs {finalCost.toFixed(2)}</span>
                     </div>
                   </div>
 

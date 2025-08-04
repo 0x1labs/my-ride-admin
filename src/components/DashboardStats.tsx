@@ -42,7 +42,7 @@ const DashboardStats = ({ vehicles }: DashboardStatsProps) => {
     },
     {
       title: "Monthly Revenue",
-      value: revenueLoading ? "Loading..." : `रु ${revenueData?.monthlyRevenue?.toLocaleString('en-IN') || '0'}`,
+      value: revenueLoading ? "Loading..." : `Nrs ${revenueData?.monthlyRevenue?.toLocaleString('en-IN') || '0'}`,
       description: revenueData && revenueData.percentageChange !== 0 
         ? `${revenueData.percentageChange > 0 ? '+' : ''}${revenueData.percentageChange.toFixed(1)}% from last month`
         : "from last month",
