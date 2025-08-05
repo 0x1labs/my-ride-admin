@@ -59,10 +59,10 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Service History</h2>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Service History</h2>
         <Select value={currentVehicle} onValueChange={setCurrentVehicle}>
-          <SelectTrigger className="w-80">
+          <SelectTrigger className="w-full sm:w-80">
             <SelectValue placeholder="Select a vehicle" />
           </SelectTrigger>
           <SelectContent>
@@ -109,12 +109,12 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
             return (
               <Card key={record.id} className="bg-white shadow-sm hover:shadow-md transition-shadow">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
                       <CardTitle className="text-lg">{record.type}</CardTitle>
                       <CardDescription>Service ID: {record.id}</CardDescription>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left sm:text-right">
                       <div className="flex items-center gap-1 text-sm text-gray-600">
                         <Calendar className="h-4 w-4" />
                         {formatDate(record.date)}
@@ -154,7 +154,7 @@ const ServiceHistory = ({ selectedVehicle, vehicles }: ServiceHistoryProps) => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div className="space-y-1">
                       <p className="text-sm text-gray-600">Parts Cost</p>
                       <span className="font-medium">Nrs {totalPartsCost.toFixed(2)}</span>

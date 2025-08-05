@@ -22,10 +22,10 @@ const VehicleActions = ({
 }: VehicleActionsProps) => {
   return (
     <>
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-semibold text-gray-900">Vehicle Management</h2>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => onAddServiceModalChange(true)}>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Vehicle Management</h2>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <Button variant="outline" onClick={() => onAddServiceModalChange(true)} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Add Service
           </Button>
