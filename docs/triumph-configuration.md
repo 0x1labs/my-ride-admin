@@ -80,7 +80,9 @@ vehicle_models:
   bike:
     - model: "Speed"
       variants:
-        - { name: "400", engine_capacity: 399, years: [2022, 2023, 2024, 2025] }
+        - name: "400"
+          engine_capacity: 399
+          years: [2022, 2023, 2024, 2025]
 ```
 
 ## Updating Brand Colors

@@ -17,20 +17,31 @@ vehicle_models:
   bike:
     - model: "Speed"
       variants:
-        - { name: "400", engine_capacity: 399, years: [2022, 2023, 2024, 2025] }
+        - name: "400"
+          engine_capacity: 399
+          years: [2022, 2023, 2024, 2025]
     - model: "Scrambler"
       variants:
-        - { name: "400X", engine_capacity: 399, years: [2022, 2023, 2024, 2025] }
+        - name: "400X"
+          engine_capacity: 399
+          years: [2022, 2023, 2024, 2025]
   car: []
 
 selectable_colors:
-  - { name: "Black", hex: "#000000" }
-  - { name: "White", hex: "#FFFFFF" }
-  - { name: "Silver", hex: "#C0C0C0" }
-  - { name: "Red", hex: "#FF0000" }
-  - { name: "Blue", hex: "#0000FF" }
-  - { name: "Green", hex: "#008000" }
-  - { name: "Yellow", hex: "#FFFF00" }
+  - name: "Black"
+    hex: "#000000"
+  - name: "White"
+    hex: "#FFFFFF"
+  - name: "Silver"
+    hex: "#C0C0C0"
+  - name: "Red"
+    hex: "#FF0000"
+  - name: "Blue"
+    hex: "#0000FF"
+  - name: "Green"
+    hex: "#008000"
+  - name: "Yellow"
+    hex: "#FFFF00"
 
 color_theme:
   primary: "#000000" # Triumph Black

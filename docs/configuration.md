@@ -41,12 +41,20 @@ vehicle_models:
   bike:
     - model: "Duke"
       variants:
-        - { name: "200", engine_capacity: 200, years: [2020, 2024, 2025] }
-        - { name: "250", engine_capacity: 250, years: [2021, 2022, 2023] }
-        - { name: "390", engine_capacity: 390, years: [2022, 2023, 2024] }
+        - name: "200"
+          engine_capacity: 200
+          years: [2020, 2024, 2025]
+        - name: "250"
+          engine_capacity: 250
+          years: [2021, 2022, 2023]
+        - name: "390"
+          engine_capacity: 390
+          years: [2022, 2023, 2024]
     - model: "Adventure"
       variants:
-        - { name: "390", engine_capacity: 390, years: [2022, 2023, 2024] }
+        - name: "390"
+          engine_capacity: 390
+          years: [2022, 2023, 2024]
   car: []
 ```
 
@@ -55,9 +63,12 @@ Defines the available vehicle models and their variants for each vehicle type. T
 ### Selectable Colors
 ```yaml
 selectable_colors:
-  - { name: "Black", hex: "#000000" }
-  - { name: "White", hex: "#FFFFFF" }
-  - { name: "Orange", hex: "#FF5C00" }
+  - name: "Black"
+    hex: "#000000"
+  - name: "White"
+    hex: "#FFFFFF"
+  - name: "Orange"
+    hex: "#FF5C00"
 ```
 
 Defines colors that can be selected in the application, used for UI theming and potentially vehicle color tracking.
