@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useAddVehicle } from "@/hooks/useVehicles";
 import { useToast } from "@/hooks/use-toast";
-import VehicleForm from "./forms/VehicleForm";
+import ConfigurableVehicleForm from "./ConfigurableVehicleForm";
 
 const AddVehicleModal = () => {
   const [open, setOpen] = useState(false);
@@ -84,7 +84,7 @@ const AddVehicleModal = () => {
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
-          <VehicleForm formData={formData} onChange={handleFormChange} />
+          <ConfigurableVehicleForm formData={formData} onChange={handleFormChange} />
           
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>

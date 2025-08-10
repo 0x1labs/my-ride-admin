@@ -11,6 +11,7 @@ import LoginPage from "./components/auth/LoginPage";
 import SuperAdminSetup from "./components/auth/SuperAdminSetup";
 import ResetPasswordPage from "./components/auth/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
+import EnhancedBranding from "@/components/EnhancedBranding";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <EnhancedBranding />
           <Routes>
             <Route path="/auth" element={<LoginPage />} />
             <Route path="/setup-superadmin" element={<SuperAdminSetup />} />

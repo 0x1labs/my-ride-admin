@@ -6,14 +6,17 @@ import VehicleServiceHistoryModal from "@/components/VehicleServiceHistoryModal"
 import ServiceHistory from "@/components/ServiceHistory";
 import CustomerCallDashboard from "@/components/CustomerCallDashboard";
 import AnalyticsDashboard from "@/components/AnalyticsDashboard";
+import EnhancedAnalyticsDashboard from "@/components/EnhancedAnalyticsDashboard";
+import ReportsDashboard from "@/components/ReportsDashboard";
 import SuperAdminPanel from "@/components/auth/SuperAdminPanel";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import VehicleActions from "@/components/dashboard/VehicleActions";
+import DistributorBrandingShowcase from "@/components/DistributorBrandingShowcase";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useVehicles, useDeleteVehicle } from "@/hooks/useVehicles";
 import { useServiceRecords } from "@/hooks/useServiceRecords";
 import { useState } from "react";
-import { Bike, Phone, BarChart3, History } from "lucide-react";
+import { Bike, Phone, BarChart3, History, Home, FileText } from "lucide-react";
 import { Vehicle } from "@/types/vehicle";
 import EditVehicleModal from "@/components/EditVehicleModal";
 import {
@@ -108,11 +111,15 @@ const Index = () => {
       <div className="space-y-8">
         <DashboardStats vehicles={vehicles} />
         
-        <Tabs defaultValue="vehicles" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="home" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="home" className="flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              Home
+            </TabsTrigger>
             <TabsTrigger value="vehicles" className="flex items-center gap-2">
               <Bike className="h-4 w-4" />
-              Bikes
+              Vehicles
             </TabsTrigger>
             <TabsTrigger value="calls" className="flex items-center gap-2">
               <Phone className="h-4 w-4" />
@@ -122,11 +129,19 @@ const Index = () => {
               <BarChart3 className="h-4 w-4" />
               Analytics
             </TabsTrigger>
+            <TabsTrigger value="reports" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Reports
+            </TabsTrigger>
             <TabsTrigger value="history" className="flex items-center gap-2">
               <History className="h-4 w-4" />
               History
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="home" className="space-y-6">
+            <DistributorBrandingShowcase />
+          </TabsContent>
 
           <TabsContent value="vehicles" className="space-y-6">
             <VehicleActions
@@ -176,7 +191,11 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <AnalyticsDashboard vehicles={vehicles} serviceRecords={serviceRecords} />
+            <EnhancedAnalyticsDashboard vehicles={vehicles} serviceRecords={serviceRecords} />
+          </TabsContent>
+
+          <TabsContent value="reports" className="space-y-6">
+            <ReportsDashboard vehicles={vehicles} serviceRecords={serviceRecords} />
           </TabsContent>
 
           <TabsContent value="history" className="space-y-6">

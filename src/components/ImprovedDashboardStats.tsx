@@ -1,5 +1,6 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getSelectableColors } from "@/config";
 import { Badge } from "@/components/ui/badge";
 import { Car, Bike, AlertTriangle, CheckCircle, DollarSign, Calendar, Clock, Wrench, PieChart } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
@@ -46,7 +47,7 @@ const ImprovedDashboardStats = ({ vehicles }: ImprovedDashboardStatsProps) => {
     value,
   }));
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FFC658', '#FF7C7C', '#8DD1E1', '#D084D0'];
+  const COLORS = getSelectableColors().map(color => color.hex);
 
   // Get recently serviced vehicles (last 30 days)
   const recentlyServiced = vehicles

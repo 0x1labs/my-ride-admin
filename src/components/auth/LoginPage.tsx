@@ -8,8 +8,9 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
-import { Eye, EyeOff, AlertCircle } from 'lucide-react';
-import Logo from '@/components/Logo';
+import { Eye, EyeOff, AlertCircle, ExternalLink } from 'lucide-react';
+import { config, getDistributorFullName } from '@/config';
+import ConfigurableLogo from '@/components/ConfigurableLogo';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -23,6 +24,7 @@ const LoginPage = () => {
   
   const { signIn, signUp, resetPassword } = useAuth();
   const navigate = useNavigate();
+  const websiteUrl = config.distributor.website;
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,8 +85,9 @@ const LoginPage = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
-            <Logo />
+            <ConfigurableLogo size="lg" variant="full" linkToWebsite={true} />
           </div>
+          <CardTitle className="text-2xl">{getDistributorFullName()}</CardTitle>
           <CardDescription>Vehicle Service Management System</CardDescription>
         </CardHeader>
         <CardContent>
@@ -229,6 +232,21 @@ const LoginPage = () => {
               </form>
             </TabsContent>
           </Tabs>
+          
+          {(websiteUrl) && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="text-center">
+                <Button 
+                  variant="link" 
+                  className="text-blue-600 hover:text-blue-800"
+                  onClick={() => window.open(websiteUrl, '_blank')}
+                >
+                  Visit Our Website <ExternalLink className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+          
           <div className="mt-6 pt-6 border-t border-gray-200">
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">Need to set up a SuperAdmin account?</p>

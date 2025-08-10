@@ -6,38 +6,40 @@ database:
   # Additional database config if needed in future
 
 distributor:
-  name: "Triumph"
-  full_name: "Triumph Nepal"
-  logo_url: "https://www.triumphmotorcyclesnepal.com/wp-content/uploads/2024/12/triumph-white-logo.png"
-  website: "https://www.triumphmotorcyclesnepal.com"
+  name: "KTM"
+  full_name: "KTM Nepal"
+  logo_url: "https://banner2.cleanpng.com/20180525/xzr/avqp4yoni.webp"
+  website: "https://ktm.com.np"
 
 vehicle_types: ["bike"] # Options: ["car"], ["bike"], ["car", "bike"]
 
 vehicle_models:
   bike:
-    - model: "Speed"
+    - model: "Duke"
       variants:
-        - { name: "400", engine_capacity: 399, years: [2022, 2023, 2024, 2025] }
-    - model: "Scrambler"
+        - { name: "200", engine_capacity: 200, years: [2020, 2024, 2025] }
+        - { name: "250", engine_capacity: 250, years: [2021, 2022, 2023] }
+        - { name: "390", engine_capacity: 390, years: [2022, 2023, 2024] }
+    - model: "Adventure"
       variants:
-        - { name: "400X", engine_capacity: 399, years: [2022, 2023, 2024, 2025] }
+        - { name: "390", engine_capacity: 390, years: [2022, 2023, 2024] }
+    - model: "RC"
+      variants:
+        - { name: "200", engine_capacity: 200, years: [2020, 2024, 2025] }
+        - { name: "390", engine_capacity: 390, years: [2022, 2023, 2024] }
   car: []
 
 selectable_colors:
   - { name: "Black", hex: "#000000" }
   - { name: "White", hex: "#FFFFFF" }
-  - { name: "Silver", hex: "#C0C0C0" }
-  - { name: "Red", hex: "#FF0000" }
-  - { name: "Blue", hex: "#0000FF" }
-  - { name: "Green", hex: "#008000" }
-  - { name: "Yellow", hex: "#FFFF00" }
+  - { name: "Orange", hex: "#FF5C00" }
 
 color_theme:
-  primary: "#000000" # Triumph Black
+  primary: "#FF5C00" # KTM Orange
   secondary: "#FFFFFF" # White
-  tertiary: "#F6F6F6" # Light Gray
-  accent: "#faf7f2" # Off-white
-  muted: "#616670" # Dark Gray
+  tertiary: "#000000" # Black
+  accent: "#F5F5F5" # Light Grey
+  muted: "#6B7280" # Grey
   destructive: "#EF4444" # Red
   success: "#10B981" # Green
   warning: "#F59E0B" # Yellow
@@ -45,7 +47,7 @@ color_theme:
 analytics_theme:
   # Chart colors for data visualization
   chart_colors: 
-    - "#000000" # Primary (Triumph Black)
+    - "#FF5C00" # Primary (KTM Orange)
     - "#10B981" # Success (Green)
     - "#3B82F6" # Blue
     - "#8B5CF6" # Purple
@@ -78,7 +80,7 @@ features:
 
 business_settings:
   service_interval_km: 5000
-  default_warranty_months: 24
+  default_warranty_months: 12
   service_types:
     - "Regular Service"
     - "Major Service"
@@ -88,4 +90,3 @@ business_settings:
     - "Chain & Sprocket"
     - "Tire Replacement"
     - "Battery Service"
-    - "Pre-Delivery Inspection"

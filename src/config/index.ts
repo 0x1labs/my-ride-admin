@@ -14,6 +14,28 @@ export interface AppConfig {
     website?: string;
   };
   vehicle_types: ('car' | 'bike')[];
+  vehicle_models: {
+    bike: {
+      model: string;
+      variants: {
+        name: string;
+        engine_capacity: number;
+        years: number[];
+      }[];
+    }[];
+    car: {
+      model: string;
+      variants: {
+        name: string;
+        engine_capacity: number;
+        years: number[];
+      }[];
+    }[];
+  };
+  selectable_colors: {
+    name: string;
+    hex: string;
+  }[];
   color_theme: {
     primary: string;
     secondary: string;
@@ -23,6 +45,14 @@ export interface AppConfig {
     destructive: string;
     success: string;
     warning: string;
+  };
+  analytics_theme: {
+    chart_colors: string[];
+    dashboard_background: string;
+    card_background: string;
+    grid_color: string;
+    text_color: string;
+    axis_color: string;
   };
   typography: {
     primary_font: string;
@@ -97,27 +127,35 @@ export const getServiceTypes = (): string[] => {
   return config.business_settings.service_types;
 };
 
+export const getVehicleModels = (type: 'car' | 'bike'): { model: string; variants: { name: string; engine_capacity: number; years: number[] }[] }[] => {
+  return config.vehicle_models[type] || [];
+};
+
+export const getSelectableColors = (): { name: string; hex: string }[] => {
+  return config.selectable_colors || [];
+};
+
 // Theme utilities
 export const hexToHsl = (hex: string): string => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return '0 0% 0%';
-  
+
   const r = parseInt(result[1], 16) / 255;
   const g = parseInt(result[2], 16) / 255;
   const b = parseInt(result[3], 16) / 255;
-  
+
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   let h = 0;
   let s = 0;
   const l = (max + min) / 2;
-  
+
   if (max === min) {
     h = s = 0;
   } else {
     const d = max - min;
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    
+
     switch (max) {
       case r: h = (g - b) / d + (g < b ? 6 : 0); break;
       case g: h = (b - r) / d + 2; break;
@@ -125,7 +163,7 @@ export const hexToHsl = (hex: string): string => {
     }
     h /= 6;
   }
-  
+
   return `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
 };
 
@@ -141,3 +179,11 @@ export const generateThemeVariables = (): string => {
     --warning: ${hexToHsl(theme.warning)};
   `;
 };
+
+export const getAnalyticsChartColors = (): string[] => {
+  return config.analytics_theme?.chart_colors || [
+    '#0088FE', '#00C49F', '#FFBB28', '#FF8042'
+  ];
+};
+
+export const ANALYTICS_COLORS = getAnalyticsChartColors();

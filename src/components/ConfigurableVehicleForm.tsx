@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Vehicle } from "@/types/vehicle";
-import { config, hasBikes, hasCars, getDistributorName } from "@/config";
+import { config, hasBikes, hasCars, getVehicleModels } from "@/config";
 
 interface ConfigurableVehicleFormProps {
   formData: Partial<Vehicle>;
@@ -12,32 +12,48 @@ interface ConfigurableVehicleFormProps {
 
 const ConfigurableVehicleForm: React.FC<ConfigurableVehicleFormProps> = ({ formData, onChange }) => {
   const vehicleTypes = config.vehicle_types;
-  const distributorName = getDistributorName();
+  const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
 
-  // Generate model options based on vehicle type and distributor
-  const getModelOptions = (type: string) => {
-    if (distributorName.toLowerCase() === 'ktm' && type === 'bike') {
-      return ['Duke 200', 'Duke 250', 'Duke 390', 'Adventure 390', 'RC 200', 'RC 390'];
+  const vehicleModels = getVehicleModels(formData.type as 'car' | 'bike');
+
+  useEffect(() => {
+    setSelectedModel(null);
+    setSelectedVariant(null);
+    setAvailableYears([]);
+  }, [formData.type]);
+
+  const handleModelChange = (modelName: string) => {
+    setSelectedModel(modelName);
+    setSelectedVariant(null);
+    setAvailableYears([]);
+  };
+
+  const handleVariantChange = (variantName: string) => {
+    setSelectedVariant(variantName);
+    const model = vehicleModels.find(m => m.model === selectedModel);
+    if (model) {
+      const variant = model.variants.find(v => v.name === variantName);
+      if (variant) {
+        setAvailableYears(variant.years);
+        const fullModelName = `${model.model} ${variant.name}`;
+        const updates: Partial<Vehicle> = {
+          engineCapacity: variant.engine_capacity,
+        };
+        if (formData.type === 'bike') {
+          updates.bikeModel = fullModelName;
+        } else {
+          (updates as any).carModel = fullModelName;
+        }
+        onChange(updates);
+      }
     }
-    if (distributorName.toLowerCase() === 'toyota' && type === 'car') {
-      return ['Corolla', 'Camry', 'Prius', 'RAV4', 'Highlander', 'Land Cruiser'];
-    }
-    if (distributorName.toLowerCase() === 'honda' && type === 'car') {
-      return ['Civic', 'Accord', 'CR-V', 'Pilot', 'Fit', 'Insight'];
-    }
-    if (distributorName.toLowerCase() === 'hyundai' && type === 'car') {
-      return ['Elantra', 'Sonata', 'Tucson', 'Santa Fe', 'Accent', 'Creta'];
-    }
-    
-    // Default generic options
-    return type === 'bike' 
-      ? ['Sport Bike', 'Cruiser', 'Adventure', 'Standard', 'Touring'] 
-      : ['Sedan', 'SUV', 'Hatchback', 'Coupe', 'Wagon', 'Truck'];
   };
 
   return (
     <div className="grid gap-4">
-      {/* Vehicle Type Selection - only show if multiple types are supported */}
+      {/* Vehicle Type Selection */}
       {vehicleTypes.length > 1 && (
         <div className="grid gap-2">
           <Label htmlFor="type">Vehicle Type</Label>
@@ -53,57 +69,67 @@ const ConfigurableVehicleForm: React.FC<ConfigurableVehicleFormProps> = ({ formD
         </div>
       )}
 
-      {/* Model Selection based on vehicle type */}
+      {/* Model Dropdown */}
       {formData.type && (
         <div className="grid gap-2">
-          <Label htmlFor="model">{formData.type === 'bike' ? 'Bike' : 'Car'} Model</Label>
-          <Select 
-            value={formData.type === 'bike' ? formData.bikeModel || '' : (formData as any).carModel || ''} 
-            onValueChange={(value) => 
-              formData.type === 'bike' 
-                ? onChange({ bikeModel: value })
-                : onChange({ carModel: value } as any)
-            }
-          >
+          <Label htmlFor="model">Model</Label>
+          <Select value={selectedModel || ''} onValueChange={handleModelChange}>
             <SelectTrigger>
-              <SelectValue placeholder={`Select ${formData.type} model`} />
+              <SelectValue placeholder="Select a model" />
             </SelectTrigger>
             <SelectContent>
-              {getModelOptions(formData.type as 'car' | 'bike').map((model) => (
-                <SelectItem key={model} value={model}>{model}</SelectItem>
+              {vehicleModels.map((model) => (
+                <SelectItem key={model.model} value={model.model}>
+                  {model.model}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
       )}
 
-      {/* Year */}
-      <div className="grid gap-2">
-        <Label htmlFor="year">Year</Label>
-        <Input
-          id="year"
-          type="number"
-          min="1990"
-          max={new Date().getFullYear() + 1}
-          value={formData.year || ''}
-          onChange={(e) => onChange({ year: parseInt(e.target.value) || 0 })}
-          placeholder="e.g., 2023"
-        />
-      </div>
+      {/* Variant Dropdown */}
+      {selectedModel && (
+        <div className="grid gap-2">
+          <Label htmlFor="variant">Variant</Label>
+          <Select value={selectedVariant || ''} onValueChange={handleVariantChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a variant" />
+            </SelectTrigger>
+            <SelectContent>
+              {vehicleModels.find(m => m.model === selectedModel)?.variants.map((variant) => (
+                <SelectItem key={variant.name} value={variant.name}>
+                  {variant.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
-      {/* Engine Capacity */}
+      {/* Year Dropdown */}
+      {selectedVariant && (
+        <div className="grid gap-2">
+          <Label htmlFor="year">Year</Label>
+          <Select value={formData.year?.toString() || ''} onValueChange={(year) => onChange({ ...formData, year: parseInt(year) })}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a year" />
+            </SelectTrigger>
+            <SelectContent>
+              {availableYears.map((year) => (
+                <SelectItem key={year} value={year.toString()}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      {/* Engine Capacity (Read-only) */}
       <div className="grid gap-2">
-        <Label htmlFor="engineCapacity">
-          {formData.type === 'bike' ? 'Engine Capacity (CC)' : 'Engine Capacity (L)'}
-        </Label>
-        <Input
-          id="engineCapacity"
-          type="number"
-          min="0"
-          value={formData.engineCapacity || ''}
-          onChange={(e) => onChange({ engineCapacity: parseInt(e.target.value) || 0 })}
-          placeholder={formData.type === 'bike' ? "e.g., 390" : "e.g., 2.0"}
-        />
+        <Label htmlFor="engineCapacity">Engine Capacity (CC)</Label>
+        <Input id="engineCapacity" type="number" value={formData.engineCapacity || ''} readOnly />
       </div>
 
       {/* Owner Name */}
@@ -130,7 +156,7 @@ const ConfigurableVehicleForm: React.FC<ConfigurableVehicleFormProps> = ({ formD
 
       {/* Current Kilometers */}
       <div className="grid gap-2">
-        <Label htmlFor="currentKilometers">Current {formData.type === 'bike' ? 'Kilometers' : 'Mileage'}</Label>
+        <Label htmlFor="currentKilometers">Current Kilometers</Label>
         <Input
           id="currentKilometers"
           type="number"
@@ -143,7 +169,7 @@ const ConfigurableVehicleForm: React.FC<ConfigurableVehicleFormProps> = ({ formD
 
       {/* Last Service Kilometers */}
       <div className="grid gap-2">
-        <Label htmlFor="lastServiceKilometers">Last Service {formData.type === 'bike' ? 'Kilometers' : 'Mileage'}</Label>
+        <Label htmlFor="lastServiceKilometers">Last Service Kilometers</Label>
         <Input
           id="lastServiceKilometers"
           type="number"

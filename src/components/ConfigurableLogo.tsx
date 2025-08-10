@@ -1,19 +1,25 @@
 import React from 'react';
 import { config, getDistributorName, getDistributorFullName } from '@/config';
+import DefaultLogo from './DefaultLogo';
 
 interface ConfigurableLogoProps {
   className?: string;
   showText?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'compact' | 'full';
+  linkToWebsite?: boolean;
 }
 
 const ConfigurableLogo: React.FC<ConfigurableLogoProps> = ({ 
   className = "", 
   showText = true, 
-  size = 'md' 
+  size = 'md',
+  variant = 'default',
+  linkToWebsite = false
 }) => {
   const distributorName = getDistributorName();
   const distributorFullName = getDistributorFullName();
+  const websiteUrl = config.distributor.website;
   
   const sizeClasses = {
     sm: 'h-8 w-8',
@@ -27,31 +33,46 @@ const ConfigurableLogo: React.FC<ConfigurableLogoProps> = ({
     lg: 'text-2xl'
   };
 
-  return (
+  const renderLogoContent = () => (
     <div className={`flex items-center gap-3 ${className}`}>
       {config.distributor.logo_url ? (
         <img 
           src={config.distributor.logo_url} 
           alt={`${distributorName} Logo`}
-          className={`${sizeClasses[size]} object-contain`}
+          className={`${sizeClasses[size]} object-contain rounded-sm`}
         />
       ) : (
-        <div className={`${sizeClasses[size]} bg-primary text-primary-foreground rounded-lg flex items-center justify-center font-bold text-sm`}>
-          {distributorName.substring(0, 2).toUpperCase()}
-        </div>
+        <DefaultLogo className={sizeClasses[size].replace('h-', '').replace('w-', '')} />
       )}
       {showText && (
         <div className="flex flex-col">
           <span className={`font-bold text-foreground ${textSizeClasses[size]}`}>
-            {distributorName}
+            {variant === 'full' ? distributorFullName : distributorName}
           </span>
-          <span className="text-xs text-muted-foreground">
-            Service Center
-          </span>
+          {variant !== 'compact' && (
+            <span className="text-xs text-muted-foreground">
+              {variant === 'full' ? 'Authorized Dealer' : 'Service Center'}
+            </span>
+          )}
         </div>
       )}
     </div>
   );
+
+  if (linkToWebsite && websiteUrl) {
+    return (
+      <a 
+        href={websiteUrl} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="hover:opacity-80 transition-opacity"
+      >
+        {renderLogoContent()}
+      </a>
+    );
+  }
+
+  return renderLogoContent();
 };
 
 export default ConfigurableLogo;

@@ -1,0 +1,27 @@
+import React from 'react';
+
+const Favicon: React.FC = () => {
+  return (
+    <svg 
+      width="32" 
+      height="32" 
+      viewBox="0 0 32 32" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="32" height="32" rx="6" className="fill-primary" />
+      <path 
+        d="M10 12L15 9L20 12L23 10L18 7L15 9L12 7L7 10L10 12Z" 
+        className="fill-primary-foreground"
+      />
+      <path 
+        d="M20 18L15 15L10 18L7 16L12 13L15 15L18 13L23 16L20 18Z" 
+        className="fill-primary-foreground"
+      />
+      <circle cx="22" cy="22" r="2" className="fill-primary-foreground" />
+      <circle cx="10" cy="22" r="2" className="fill-primary-foreground" />
+    </svg>
+  );
+};
+
+export default Favicon;

@@ -59,6 +59,19 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- Recharts (for data visualization)
+
+## Documentation
+
+Comprehensive documentation is available in the [docs](docs/) directory:
+
+- [User Guide](docs/user-guide.md) - Instructions for end users of the application
+- [Configuration Guide](docs/configuration.md) - Information about configuring the application for your business
+- [Triumph Nepal Configuration](docs/triumph-configuration.md) - Pre-configured settings for Triumph Nepal dealerships
+- [Technical Documentation](docs/technical.md) - Detailed technical information about the system architecture
+- [API Documentation](docs/api.md) - Information about the backend API and data models
+- [Development Guide](docs/development.md) - Instructions for developers contributing to the project
+- [Deployment Guide](docs/deployment.md) - Instructions for deploying the application
 
 ## How can I deploy this project?
 

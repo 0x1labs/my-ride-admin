@@ -15,6 +15,7 @@ import CouponTypeSelect from "./forms/CouponTypeSelect";
 import { CouponType } from "@/types/couponType";
 import { useProfiles } from "@/hooks/useProfiles";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getServiceTypes } from "@/config";
 
 interface ImprovedAddServiceModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { data: profiles = [] } = useProfiles();
+  const configuredServiceTypes = getServiceTypes();
 
   // Owner and Vehicle Selection
   const [selectedOwnerId, setSelectedOwnerId] = useState<string>("");
@@ -226,16 +228,11 @@ const ImprovedAddServiceModal = ({ isOpen, onClose, vehicles, vehicle }: Improve
                       <SelectValue placeholder="Select service type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="regular servicing">Regular Servicing</SelectItem>
-                      <SelectItem value="brake pad replacement">Brake Pad Replacement</SelectItem>
-                      <SelectItem value="oil change">Oil Change</SelectItem>
-                      <SelectItem value="tire replacement">Tire Replacement</SelectItem>
-                      <SelectItem value="chain cleaning">Chain Cleaning</SelectItem>
-                      <SelectItem value="engine maintenance">Engine Maintenance</SelectItem>
-                      <SelectItem value="electrical repair">Electrical Repair</SelectItem>
-                      <SelectItem value="suspension service">Suspension Service</SelectItem>
-                      <SelectItem value="carburetor cleaning">Carburetor Cleaning</SelectItem>
-                      <SelectItem value="general inspection">General Inspection</SelectItem>
+                      {configuredServiceTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>

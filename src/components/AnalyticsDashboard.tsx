@@ -4,13 +4,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { TrendingUp, DollarSign, Wrench, Users, UserCheck } from "lucide-react";
 import { Vehicle, ServiceRecord } from "@/services/supabaseService";
+import { getSelectableColors, getCurrencySymbol } from "@/config";
 
 interface AnalyticsDashboardProps {
   vehicles: Vehicle[];
   serviceRecords: ServiceRecord[];
 }
 
-const COLORS = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6", "#6366F1"];
+const COLORS = getSelectableColors().map(color => color.hex);
+const currencySymbol = getCurrencySymbol();
 
 const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProps) => {
 
@@ -128,7 +130,7 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
   const metricsCards = [
     {
       title: "Average Service Value",
-      value: `$${analyticsData.metrics.averageServiceValue}`,
+      value: `${currencySymbol} ${analyticsData.metrics.averageServiceValue}`,
       description: "from all services",
       icon: DollarSign,
       color: "text-green-600"
@@ -197,7 +199,7 @@ const AnalyticsDashboard = ({ vehicles, serviceRecords }: AnalyticsDashboardProp
                 <YAxis yAxisId="right" orientation="right" stroke="#10B981" />
                 <Tooltip 
                   formatter={(value, name) => [
-                    name === 'Revenue' ? `$${Intl.NumberFormat('en-US').format(value as number)}` : value,
+                    name === 'Revenue' ? `${currencySymbol} ${Intl.NumberFormat('en-US').format(value as number)}` : value,
                     name
                   ]}
                 />
