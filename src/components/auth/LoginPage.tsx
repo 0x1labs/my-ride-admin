@@ -87,7 +87,6 @@ const LoginPage = () => {
           <div className="mx-auto mb-4">
             <ConfigurableLogo size="lg" variant="full" linkToWebsite={true} />
           </div>
-          <CardTitle className="text-2xl">{getDistributorFullName()}</CardTitle>
           <CardDescription>Vehicle Service Management System</CardDescription>
         </CardHeader>
         <CardContent>
