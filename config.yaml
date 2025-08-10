@@ -1,0 +1,52 @@
+supabase_config:
+  supabase_url: "https://hsvnifjcvymrqnuacfsg.supabase.co"
+  supabase_publishable_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhzdm5pZmpjdnltcnFudWFjZnNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyNTkyMTEsImV4cCI6MjA2NDgzNTIxMX0.klK46_OGoTWyJHyJ4OeZZ_7_RmBMrSL1I1u41GZEfto"
+
+database:
+  # Additional database config if needed in future
+
+distributor:
+  name: "KTM"
+  full_name: "KTM Nepal"
+  logo_url: "/ktm-logo.png"
+  website: "https://ktm.com.np"
+  
+vehicle_types: ["bike"] # Options: ["car"], ["bike"], ["car", "bike"]
+
+color_theme:
+  primary: "#FF5C00" # KTM Orange
+  secondary: "#FFFFFF" # White
+  tertiary: "#000000" # Black
+  accent: "#F5F5F5" # Light Grey
+  muted: "#6B7280" # Grey
+  destructive: "#EF4444" # Red
+  success: "#10B981" # Green
+  warning: "#F59E0B" # Yellow
+
+typography:
+  primary_font: "Inter"
+  secondary_font: "Inter"
+  
+currency:
+  symbol: "Nrs"
+  name: "Nepalese Rupees"
+  
+features:
+  analytics: true
+  customer_calls: true
+  service_history: true
+  coupon_system: true
+  reports: true
+  
+business_settings:
+  service_interval_km: 5000
+  default_warranty_months: 12
+  service_types:
+    - "Regular Service"
+    - "Major Service" 
+    - "Engine Overhaul"
+    - "Brake Service"
+    - "Oil Change"
+    - "Chain & Sprocket"
+    - "Tire Replacement"
+    - "Battery Service"

@@ -1,14 +1,13 @@
 
-import { Car } from 'lucide-react';
 import React from 'react';
+import ConfigurableLogo from './ConfigurableLogo';
 
-const Logo = () => {
-  return (
-    <div className="flex items-center gap-2">
-      <Car className="h-8 w-8 text-primary" />
-      <span className="text-2xl font-bold tracking-tight text-primary">MyRide</span>
-    </div>
-  );
+interface LogoProps {
+  className?: string;
+}
+
+const Logo = ({ className }: LogoProps) => {
+  return <ConfigurableLogo className={className} />;
 };
 
 export default Logo;

@@ -1,8 +1,9 @@
 
 export interface Vehicle {
   id: string;
-  type: 'bike';
-  bikeModel: string;
+  type: 'bike' | 'car';
+  bikeModel?: string;
+  carModel?: string;
   year: number;
   engineCapacity: number;
   owner: string;
@@ -12,4 +13,7 @@ export interface Vehicle {
   status: string;
   lastServiceKilometers: number;
   currentKilometers: number;
+  user_id?: string;
+  created_at?: string;
+  updated_at?: string;
 }

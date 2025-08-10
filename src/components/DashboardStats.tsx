@@ -1,7 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bike, AlertTriangle, CheckCircle, DollarSign, Calendar } from "lucide-react";
+import { Bike, AlertTriangle, CheckCircle, DollarSign, Calendar, Car } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
 import { useRevenue } from "@/hooks/useRevenue";
+import ConfigurableCurrency from "./ConfigurableCurrency";
+import { config, hasBikes, hasCars, getDistributorName } from "@/config";
 
 interface DashboardStatsProps {
   vehicles: Vehicle[];
@@ -17,10 +19,10 @@ const DashboardStats = ({ vehicles }: DashboardStatsProps) => {
 
   const stats = [
     {
-      title: "Total Bikes",
+      title: `Total ${hasCars() && hasBikes() ? 'Vehicles' : hasBikes() ? 'Bikes' : 'Cars'}`,
       value: totalVehicles,
-      description: `${totalBikes} bikes`,
-      icon: Bike,
+      description: `${hasBikes() ? totalBikes : totalVehicles} ${hasBikes() ? 'bikes' : 'cars'}`,
+      icon: hasBikes() ? Bike : Car,
       color: "text-blue-600",
       bgColor: "bg-blue-50"
     },
@@ -42,7 +44,7 @@ const DashboardStats = ({ vehicles }: DashboardStatsProps) => {
     },
     {
       title: "Monthly Revenue",
-      value: revenueLoading ? "Loading..." : `Nrs ${revenueData?.monthlyRevenue?.toLocaleString('en-IN') || '0'}`,
+      value: revenueLoading ? "Loading..." : <ConfigurableCurrency amount={revenueData?.monthlyRevenue || 0} />,
       description: revenueData && revenueData.percentageChange !== 0 
         ? `${revenueData.percentageChange > 0 ? '+' : ''}${revenueData.percentageChange.toFixed(1)}% from last month`
         : "from last month",
@@ -65,7 +67,9 @@ const DashboardStats = ({ vehicles }: DashboardStatsProps) => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+            <div className="text-2xl font-bold text-gray-900">
+              {typeof stat.value === 'string' || typeof stat.value === 'number' ? stat.value : stat.value}
+            </div>
             <CardDescription className="text-xs text-gray-500">
               {stat.description}
             </CardDescription>

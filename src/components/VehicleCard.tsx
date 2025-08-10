@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Car, Bike, Calendar, Phone, Eye, MoreVertical, Edit, Trash2, Plus } from "lucide-react";
 import { Vehicle } from "@/services/supabaseService";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { config, hasBikes, hasCars } from "@/config";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -41,9 +42,13 @@ const VehicleCard = ({ vehicle, onViewHistory, onAddService, onEdit, onDelete }:
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Bike className="h-5 w-5 text-orange-600" />
+            {vehicle.type === 'bike' ? (
+              <Bike className="h-5 w-5 text-orange-600" />
+            ) : (
+              <Car className="h-5 w-5 text-blue-600" />
+            )}
             <CardTitle className="text-lg">
-              {vehicle.bikeModel}
+              {vehicle.type === 'bike' ? vehicle.bikeModel : vehicle.carModel}
             </CardTitle>
           </div>
           <div className="flex items-center gap-1">
